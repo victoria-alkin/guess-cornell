@@ -23,23 +23,31 @@ js/map.js             Leaflet map setup (tiles or a custom campus image)
 js/locations.js       loads/validates locations, picks random rounds
 js/placeholder.js     generated stand-in panoramas until real photos exist
 data/locations.json   the list of locations
-panos/                put 360° photos here
+panos/                built photos for local play (git-ignored; live site uses R2)
+scripts/              spreadsheet converter + R2 upload
 ```
 
 ## Adding locations
 
-1. Export each 360° photo as an **equirectangular JPG** (2:1 aspect ratio) into `panos/`. A width of 4096–8192 px works well. Larger files load slowly on phones.
-2. Add an entry to `data/locations.json`:
+Locations come from a spreadsheet, `assets/Photos and Infos.xlsx`. The whole `assets/` folder is git-ignored, so it never reaches GitHub.
 
-```json
-{ "id": "mcgraw-tower", "name": "McGraw Tower", "lat": 42.44736, "lng": -76.48514, "image": "panos/mcgraw-tower.jpg" }
+| Column | Contents |
+|---|---|
+| Photo | Filename of the 360° JPG in `assets/photos/`. If this is empty, the script uses a photo embedded in that row of the spreadsheet. |
+| Title | Location name, shown after the player guesses |
+| Pin | `42.4490, -76.4889` or `42°26'55.8"N 76°29'20.0"W` |
+| Fun Fact | Optional. Shown on the result card. A leading "Fun Fact:" is removed. |
+| Start Direction | Optional. The initial view direction in degrees (0 = photo center). |
+
+Then run:
+
+```sh
+python -m pip install -r scripts/requirements.txt   # once
+npm run build:locations   # writes data/locations.json + resized photos in panos/
+npm run upload            # sends new photos to Cloudflare R2 (run `npx wrangler login` once first)
 ```
 
-- `name` is shown only after the player guesses.
-- `image: null` uses a generated placeholder.
-- `startYaw` (optional, in degrees) fixes the initial view direction. When it's omitted, the view starts at a random direction.
-
-The sample entries use approximate coordinates and serve only as placeholders.
+The build step resizes each photo to 6000 px wide and strips camera and GPS metadata. It names each file after a hash of its contents (e.g. `33df99c2119c3cde.jpg`), so filenames don't give away the answer. During local development, photos load from `panos/`. The live site loads them from R2, set by `R2_PUBLIC_URL` in `js/config.js`.
 
 ## Tuning
 

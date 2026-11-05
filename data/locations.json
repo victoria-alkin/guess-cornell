@@ -1,9 +1,17 @@
 [
-  { "id": "mcgraw-tower",    "name": "McGraw Tower",          "lat": 42.44736, "lng": -76.48514, "image": null },
-  { "id": "willard-straight","name": "Willard Straight Hall", "lat": 42.44645, "lng": -76.48585, "image": null },
-  { "id": "arts-quad",       "name": "Arts Quad",             "lat": 42.44890, "lng": -76.48460, "image": null },
-  { "id": "duffield",        "name": "Duffield Hall",         "lat": 42.44468, "lng": -76.48270, "image": null },
-  { "id": "beebe-lake",      "name": "Beebe Lake",            "lat": 42.45115, "lng": -76.47810, "image": null },
-  { "id": "mann-library",    "name": "Mann Library",          "lat": 42.44880, "lng": -76.47640, "image": null },
-  { "id": "ho-plaza",        "name": "Ho Plaza",              "lat": 42.44700, "lng": -76.48460, "image": null }
+  {
+    "id": "fba6118e1db63f11",
+    "name": "North Baker and Boldt Hall Courtyard",
+    "lat": 42.4488333,
+    "lng": -76.4888889,
+    "image": "fba6118e1db63f11.jpg"
+  },
+  {
+    "id": "33df99c2119c3cde",
+    "name": "Boldt Hall Arch",
+    "lat": 42.4490164,
+    "lng": -76.4889776,
+    "image": "33df99c2119c3cde.jpg",
+    "funFact": "Boldt Tower features an embedded red sandstone block taken from the original Waldorf Astoria hotel in Manhattan, given that the complex was named in honor of Cornell trustee and hotel proprietor George C. Boldt."
+  }
 ]

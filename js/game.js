@@ -25,6 +25,7 @@ const els = {
   resultPoints: $('result-points'),
   resultBar: $('result-bar'),
   resultDistance: $('result-distance'),
+  resultFact: $('result-fact'),
   btnNext: $('btn-next'),
   summaryCard: $('summary-card'),
   summaryTotal: $('summary-total'),
@@ -293,7 +294,9 @@ function showResult() {
   els.resultDistance.textContent = r.guess
     ? `Your guess was ${formatDistance(r.distance)} away${r.timedOut ? ' (time ran out)' : ''}.`
     : "Time's up. No guess was placed.";
-  els.resultBar.style.width = `${(r.points / CONFIG.scoring.maxPoints) * 100}%`;
+  els.resultFact.hidden = !r.loc.funFact;
+  els.resultFact.textContent = r.loc.funFact || '';
+  els.resultBar.style.width =`${(r.points / CONFIG.scoring.maxPoints) * 100}%`;
   countUp(els.resultPoints, r.points);
 
   const last = state.index >= state.rounds.length - 1;

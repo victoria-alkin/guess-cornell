@@ -1,10 +1,13 @@
+import { CONFIG } from './config.js';
 import { placeholderPano } from './placeholder.js';
 
 /**
  * Load and validate locations.
- * Each entry: { id, name, lat, lng, image?, startYaw? }
- *   image    - path to an equirectangular JPG, e.g. "panos/mcgraw-tower.jpg".
- *              Leave empty/null to use a generated placeholder.
+ * Each entry: { id, name, lat, lng, image?, funFact?, startYaw? }
+ *   image    - filename of an equirectangular JPG (served from
+ *              CONFIG.imageBaseUrl) or a full URL. Leave empty/null to use a
+ *              generated placeholder.
+ *   funFact  - optional text shown on the result card after guessing.
  *   startYaw - optional initial view direction in degrees (0 = image center).
  */
 export async function loadLocations(url) {
@@ -37,7 +40,12 @@ const placeholderCache = new Map();
 
 /** URL to feed the panorama viewer for a location. */
 export async function panoUrlFor(loc, index) {
-  if (loc.image) return loc.image;
+  if (loc.image) {
+    // Full URLs are used as-is; bare filenames are served from imageBaseUrl.
+    if (/^(https?:|blob:|data:|\/)/.test(loc.image)) return loc.image;
+    const base = CONFIG.imageBaseUrl.endsWith('/') ? CONFIG.imageBaseUrl : `${CONFIG.imageBaseUrl}/`;
+    return base + loc.image;
+  }
   if (!placeholderCache.has(loc.id)) {
     placeholderCache.set(loc.id, placeholderPano(`Placeholder ${index + 1}`, index));
   }

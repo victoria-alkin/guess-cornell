@@ -1,11 +1,22 @@
 // All the knobs for the game live here.
 
+// Public URL of the Cloudflare R2 bucket holding the panoramas, ending in "/".
+// e.g. 'https://pub-0123456789abcdef.r2.dev/'. Leave empty until R2 is set up.
+const R2_PUBLIC_URL = 'https://pub-11a8582e4e344fa49517a8b4184409b8.r2.dev/';
+
+const isLocal =
+  typeof location !== 'undefined' && ['localhost', '127.0.0.1'].includes(location.hostname);
+
 export const CONFIG = {
   roundsPerGame: 5,
   roundTimeSeconds: 60,
 
   // Where the list of locations lives (see data/locations.json).
   locationsUrl: 'data/locations.json',
+
+  // Where panorama photos load from. Local development uses the panos/ folder
+  // (filled by `npm run build:locations`); the live site uses R2.
+  imageBaseUrl: isLocal || !R2_PUBLIC_URL ? 'panos/' : R2_PUBLIC_URL,
 
   // Scoring: full points inside `perfectRadiusMeters`, then exponential decay
   // so that a guess `halfPointsMeters` away earns half the max.
