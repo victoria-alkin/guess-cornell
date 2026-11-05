@@ -8,6 +8,12 @@
   --actual: #1e8e3e;
   --radius: 14px;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  /* vintage postcard palette */
+  --cream: #f6ecd6;
+  --cream-dark: #e9d9b6;
+  --sepia: #4a3426;
+  --faded-red: #a8322d;
+  --postmark: rgba(74, 52, 38, 0.55);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -51,11 +57,6 @@ html, body {
 /* ---------- Start (vintage postcard) ---------- */
 
 #screen-start {
-  --cream: #f6ecd6;
-  --cream-dark: #e9d9b6;
-  --sepia: #4a3426;
-  --faded-red: #a8322d;
-  --postmark: rgba(74, 52, 38, 0.55);
   padding: 16px;
   overflow-y: auto;
   background:
@@ -491,26 +492,54 @@ html, body {
 .summary-table td:last-child, .summary-table th:last-child,
 .summary-table td:nth-child(3), .summary-table th:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; }
 
+/* Fun fact: a little vintage note taped to the result card */
 .result-fact {
-  margin: -0.4em 0 1.2em;
-  padding: 0.75em 0.9em;
-  background: #fff;
-  border-left: 4px solid var(--carnelian);
-  border-radius: 6px;
+  position: relative;
+  margin: 0.6em 6px 1.5em;
+  padding: 1.5em 1.1em 1em;
+  background: linear-gradient(170deg, #fbf4e3, var(--cream) 60%, var(--cream-dark));
+  border: 1.5px dashed rgba(74, 52, 38, 0.45);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(74, 52, 38, 0.18);
+  transform: rotate(-0.8deg);
   text-align: left;
-  font-size: 0.88rem;
-  line-height: 1.45;
-  color: var(--ink);
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--sepia);
+  animation: fact-in 0.45s 0.35s cubic-bezier(0.2, 0.8, 0.25, 1.1) both;
 }
+.result-fact[hidden] { display: none; }
 .result-fact::before {
-  content: "Fun fact";
-  display: block;
-  margin-bottom: 0.2em;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--carnelian);
+  content: "Fun fact!";
+  position: absolute;
+  top: -0.85em;
+  left: 50%;
+  transform: translateX(-50%) rotate(-3deg);
+  padding: 0 0.35em;
+  background: var(--paper);
+  font-family: "Yellowtail", cursive;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  color: var(--faded-red);
+  white-space: nowrap;
+}
+.result-fact::after {
+  /* strip of tape */
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: 18px;
+  width: 64px;
+  height: 20px;
+  background: rgba(233, 217, 182, 0.8);
+  border-left: 1px dashed rgba(74, 52, 38, 0.15);
+  border-right: 1px dashed rgba(74, 52, 38, 0.15);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  transform: rotate(7deg);
+}
+@keyframes fact-in {
+  from { opacity: 0; transform: translateY(10px) rotate(-3deg); }
 }
 
 /* Shown while a round's photo is still downloading */
