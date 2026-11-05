@@ -4,8 +4,17 @@
 //  - Local development (no env vars, not on Vercel): an in-memory stand-in, so
 //    `npm start` works without any accounts. Data resets when the server stops.
 
-const URL_ = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+// The integration may add a custom prefix (e.g. STORAGE_KV_REST_API_URL), so
+// match on the suffix. The read-only token is deliberately not used.
+function envBySuffix(suffixes) {
+  for (const suffix of suffixes) {
+    const name = Object.keys(process.env).find((k) => k === suffix || k.endsWith(`_${suffix}`));
+    if (name && process.env[name]) return process.env[name];
+  }
+  return undefined;
+}
+const URL_ = envBySuffix(['KV_REST_API_URL', 'UPSTASH_REDIS_REST_URL']);
+const TOKEN = envBySuffix(['KV_REST_API_TOKEN', 'UPSTASH_REDIS_REST_TOKEN']);
 
 export class StoreNotConfigured extends Error {}
 
@@ -13,7 +22,12 @@ export class StoreNotConfigured extends Error {}
 export async function pipeline(commands) {
   if (URL_ && TOKEN) return upstash(commands);
   if (process.env.VERCEL) {
-    throw new StoreNotConfigured('Leaderboard storage is not connected (Upstash env vars missing).');
+    // Names only (never values), to help diagnose a misconfigured integration.
+    const seen = Object.keys(process.env).filter((k) => /KV|REDIS|UPSTASH/i.test(k));
+    throw new StoreNotConfigured(
+      `Leaderboard storage is not connected (Upstash env vars missing in ${process.env.VERCEL_ENV}). ` +
+      `Related variables found: ${seen.length ? seen.join(', ') : 'none'}.`,
+    );
   }
   return commands.map((c) => memory(c));
 }
