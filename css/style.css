@@ -563,8 +563,7 @@ html, body {
   place-items: center;
   padding: 16px;
   pointer-events: none;
-  /* Wait a moment before appearing, so preloaded photos don't flash it */
-  animation: loader-in 0.3s 0.2s ease-out both;
+  animation: loader-in 0.15s ease-out both;
 }
 .pano-loading[hidden] { display: none; }
 @keyframes loader-in {
