@@ -1,7 +1,9 @@
 import { CONFIG } from './config.js';
 import { distanceMeters, scoreForDistance, formatDistance, formatPoints } from './scoring.js';
 import { createMap, pinIcon, resetView } from './map.js';
-import { loadLocations, pickRounds, panoUrlFor, checkImageHost, switchToProxy } from './locations.js';
+import {
+  loadLocations, pickRounds, panoUrlFor, checkImageHost, switchToProxy, loadPano, forgetPanos,
+} from './locations.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -26,6 +28,7 @@ const els = {
   resultBar: $('result-bar'),
   resultDistance: $('result-distance'),
   resultFact: $('result-fact'),
+  panoLoading: $('pano-loading'),
   btnNext: $('btn-next'),
   summaryCard: $('summary-card'),
   summaryTotal: $('summary-total'),
@@ -82,8 +85,10 @@ async function init() {
     return;
   }
 
-  // Runs in the background while the start page is showing.
+  // Runs in the background while the start page is showing: check the photo
+  // host, then pick the first game's rounds and start downloading round 1.
   state.hostCheck = checkImageHost(state.locations);
+  prepareNextGame();
 
   els.btnStart.disabled = false;
   els.btnStart.textContent = 'Start game';
@@ -114,9 +119,27 @@ function onKey(e) {
 
 // ---------- Game flow ----------
 
+// ---------- Preloading ----------
+
+/** Pick the next game's rounds now so its first photo can download early. */
+function prepareNextGame() {
+  state.nextRounds = pickRounds(state.locations, CONFIG.roundsPerGame);
+  prefetch(state.nextRounds[0], 0);
+}
+
+async function prefetch(loc, index) {
+  if (!loc) return;
+  await state.hostCheck;
+  const url = await panoUrlFor(loc, index);
+  loadPano(url).catch(() => {}); // failures are handled when the round starts
+}
+
 function startGame() {
-  state.rounds = pickRounds(state.locations, CONFIG.roundsPerGame);
+  state.rounds = state.nextRounds || pickRounds(state.locations, CONFIG.roundsPerGame);
+  state.nextRounds = null;
   state.index = 0;
+  // Free photos from the previous game, except ones this game will reuse.
+  Promise.all(state.rounds.map((loc, i) => panoUrlFor(loc, i))).then(forgetPanos);
   state.results = [];
   startRound();
 }
@@ -153,11 +176,26 @@ async function startRound() {
 async function showPano(loc, token, randomYaw, isRetry) {
   const url = await panoUrlFor(loc, state.index);
   if (token !== state.roundToken) return;
+
+  // Usually already downloaded by prefetch(); otherwise wait for it here.
+  els.panoLoading.hidden = false;
+  let src;
+  try {
+    src = await loadPano(url);
+  } catch {
+    if (token !== state.roundToken) return;
+    // Photo host blocked or down: switch to our proxy and try again.
+    if (!isRetry && switchToProxy()) return showPano(loc, token, randomYaw, true);
+    src = url; // let the viewer show its error message
+  } finally {
+    if (token === state.roundToken) els.panoLoading.hidden = true;
+  }
+  if (token !== state.roundToken) return;
   if (state.viewer) { state.viewer.destroy(); state.viewer = null; }
 
   const viewer = pannellum.viewer('pano', {
     type: 'equirectangular',
-    panorama: url,
+    panorama: src,
     autoLoad: true,
     yaw: loc.startYaw ?? randomYaw,
     hfov: 100,
@@ -170,7 +208,11 @@ async function showPano(loc, token, randomYaw, isRetry) {
 
   // Clock starts once the photo is visible, so slow downloads don't eat time.
   const begin = () => { if (token === state.roundToken && !state.timerId && !state.submitted) startTimer(); };
-  viewer.on('load', begin);
+  viewer.on('load', () => {
+    begin();
+    // While this round is played, download the next round's photo.
+    prefetch(state.rounds[state.index + 1], state.index + 1);
+  });
   viewer.on('error', () => {
     // Photo host blocked or down: retry this photo (and all later ones) via our proxy.
     if (!isRetry && token === state.roundToken && switchToProxy()) {
@@ -337,7 +379,9 @@ function showSummary() {
   const pts = state.results.flatMap((r, i) => drawPair(r, String(i + 1)));
   fitTo(pts);
 
-  els.summaryMax.textContent = formatPoints(state.rounds.length * CONFIG.scoring.maxPoints);
+  prepareNextGame(); // so "Play again" starts instantly
+
+  els.summaryMax.textContent =formatPoints(state.rounds.length * CONFIG.scoring.maxPoints);
   countUp(els.summaryTotal, totalScore());
   els.summaryRows.innerHTML = '';
   state.results.forEach((r, i) => {

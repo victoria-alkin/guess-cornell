@@ -2,7 +2,7 @@
 """Build data/locations.json and web-ready panoramas from the locations spreadsheet.
 
     python scripts/build_locations.py
-    python scripts/build_locations.py --xlsx "assets/Photos and Infos.xlsx" --max-width 6000
+    python scripts/build_locations.py --xlsx "assets/Photos and Infos.xlsx" --max-width 5000
 
 Spreadsheet columns (header row, any order, case-insensitive):
     Photo            filename of the 360° JPG in assets/photos/ (e.g. "Courtyard.jpg").
@@ -173,8 +173,8 @@ def main():
     ap.add_argument("--photos", default=str(ROOT / "assets" / "photos"), help="folder with the original 360° JPGs")
     ap.add_argument("--out-images", default=str(ROOT / "panos"))
     ap.add_argument("--out-json", default=str(ROOT / "data" / "locations.json"))
-    ap.add_argument("--max-width", type=int, default=6000)
-    ap.add_argument("--quality", type=int, default=82)
+    ap.add_argument("--max-width", type=int, default=5000)
+    ap.add_argument("--quality", type=int, default=80)
     args = ap.parse_args()
 
     xlsx = Path(args.xlsx)

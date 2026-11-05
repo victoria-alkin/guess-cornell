@@ -47,7 +47,7 @@ npm run build:locations   # writes data/locations.json + resized photos in panos
 npm run upload            # sends new photos to Cloudflare R2 (run `npx wrangler login` once first)
 ```
 
-The build step resizes each photo to 6000 px wide and strips camera and GPS metadata. It names each file after a hash of its contents (e.g. `33df99c2119c3cde.jpg`), so filenames don't give away the answer. During local development, photos load from `panos/`. The live site loads them from R2, set by `R2_PUBLIC_URL` in `js/config.js`.
+The build step resizes each photo to 5000 px wide (JPEG quality 80) and strips camera and GPS metadata. It names each file after a hash of its contents (e.g. `33df99c2119c3cde.jpg`), so filenames don't give away the answer. During local development, photos load from `panos/`. The live site loads them from R2, set by `R2_PUBLIC_URL` in `js/config.js`.
 
 ## Tuning
 

@@ -73,6 +73,39 @@ export async function checkImageHost(locations, timeoutMs = 4000) {
   }
 }
 
+// ---------- Preloading ----------
+
+const downloads = new Map(); // photo URL -> Promise<blob: URL of the downloaded photo>
+
+/**
+ * Download a photo (once) and return a local blob: URL for it. Calling this
+ * early, e.g. for the next round, makes the photo appear instantly later.
+ */
+export function loadPano(url) {
+  if (url.startsWith('blob:')) return Promise.resolve(url);
+  if (!downloads.has(url)) {
+    const p = fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+        return res.blob();
+      })
+      .then((blob) => URL.createObjectURL(blob));
+    p.catch(() => downloads.delete(url)); // allow a retry later
+    downloads.set(url, p);
+  }
+  return downloads.get(url);
+}
+
+/** Free downloaded photos that aren't in `keepUrls`. */
+export function forgetPanos(keepUrls = []) {
+  const keep = new Set(keepUrls);
+  for (const [url, p] of downloads) {
+    if (keep.has(url)) continue;
+    downloads.delete(url);
+    p.then((blobUrl) => URL.revokeObjectURL(blobUrl)).catch(() => {});
+  }
+}
+
 // ---------- Panorama URLs ----------
 
 const placeholderCache = new Map();
