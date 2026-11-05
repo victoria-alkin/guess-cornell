@@ -168,6 +168,7 @@ async function startRound() {
 
   // Panorama
   if (state.viewer) { state.viewer.destroy(); state.viewer = null; }
+  showLoader();
   await state.hostCheck;
   if (token !== state.roundToken) return;
   showPano(loc, token, Math.random() * 360 - 180, false);
@@ -178,7 +179,7 @@ async function showPano(loc, token, randomYaw, isRetry) {
   if (token !== state.roundToken) return;
 
   // Usually already downloaded by prefetch(); otherwise wait for it here.
-  els.panoLoading.hidden = false;
+  // The loader stays up until the viewer reports the photo is on screen.
   let src;
   try {
     src = await loadPano(url);
@@ -187,8 +188,6 @@ async function showPano(loc, token, randomYaw, isRetry) {
     // Photo host blocked or down: switch to our proxy and try again.
     if (!isRetry && switchToProxy()) return showPano(loc, token, randomYaw, true);
     src = url; // let the viewer show its error message
-  } finally {
-    if (token === state.roundToken) els.panoLoading.hidden = true;
   }
   if (token !== state.roundToken) return;
   if (state.viewer) { state.viewer.destroy(); state.viewer = null; }
@@ -209,6 +208,7 @@ async function showPano(loc, token, randomYaw, isRetry) {
   // Clock starts once the photo is visible, so slow downloads don't eat time.
   const begin = () => { if (token === state.roundToken && !state.timerId && !state.submitted) startTimer(); };
   viewer.on('load', () => {
+    if (token === state.roundToken) hideLoader();
     begin();
     // While this round is played, download the next round's photo.
     prefetch(state.rounds[state.index + 1], state.index + 1);
@@ -218,9 +218,42 @@ async function showPano(loc, token, randomYaw, isRetry) {
     if (!isRetry && token === state.roundToken && switchToProxy()) {
       setTimeout(() => showPano(loc, token, randomYaw, true), 0);
     } else {
+      if (token === state.roundToken) hideLoader();
       begin();
     }
   });
+}
+
+// ---------- Loading screen ----------
+
+const LOADING_LINES = [
+  'Climbing Libe Slope…',
+  'Waiting for the TCAT…',
+  'Crossing the gorge bridge…',
+  'Listening for the chimes…',
+  'Grabbing a Dairy Bar cone…',
+  'Cutting across the Arts Quad…',
+  'Bundling up for Ithaca weather…',
+  'Finding a seat in Libe Café…',
+];
+let loaderTimer = null;
+
+function showLoader() {
+  const line = els.panoLoading.querySelector('.loader-line');
+  let i = Math.floor(Math.random() * LOADING_LINES.length);
+  line.textContent = LOADING_LINES[i];
+  clearInterval(loaderTimer);
+  loaderTimer = setInterval(() => {
+    i = (i + 1) % LOADING_LINES.length;
+    line.textContent = LOADING_LINES[i];
+  }, 2200);
+  els.panoLoading.hidden = false;
+}
+
+function hideLoader() {
+  clearInterval(loaderTimer);
+  loaderTimer = null;
+  els.panoLoading.hidden = true;
 }
 
 function placeGuess(latlng) {

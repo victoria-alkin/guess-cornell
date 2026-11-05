@@ -542,29 +542,103 @@ html, body {
   from { opacity: 0; transform: translateY(10px) rotate(-3deg); }
 }
 
-/* Shown while a round's photo is still downloading */
+/* ---------- Loading screen (waving bear on a postcard) ---------- */
+
+/* Themed backdrop behind the photo instead of the viewer's grey pattern */
+#pano,
+#pano.pnlm-container {
+  background:
+    radial-gradient(ellipse at center, transparent 40%, rgba(40, 8, 8, 0.55) 100%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0 14px, transparent 14px 28px),
+    #8e1d1b;
+}
+/* Hide the viewer's built-in loading box; ours replaces it */
+#pano .pnlm-load-box { display: none !important; }
+
 .pano-loading {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;
   z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 18px;
-  border-radius: 999px;
-  background: rgba(20, 20, 22, 0.8);
-  color: #fff;
-  font-weight: 600;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  pointer-events: none;
+  /* Wait a moment before appearing, so preloaded photos don't flash it */
+  animation: loader-in 0.3s 0.2s ease-out both;
 }
 .pano-loading[hidden] { display: none; }
-.spinner {
-  width: 18px;
-  height: 18px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+@keyframes loader-in {
+  from { opacity: 0; transform: translateY(8px); }
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+
+.loader-card {
+  width: min(280px, 100%);
+  padding: 22px 22px 18px;
+  text-align: center;
+  color: var(--sepia);
+  background: radial-gradient(ellipse at 30% 20%, #fbf4e3, var(--cream) 55%, var(--cream-dark));
+  border-radius: 6px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+  outline: 2px solid var(--faded-red);
+  outline-offset: -10px;
+  transform: rotate(-1.5deg);
+}
+
+.bear {
+  display: block;
+  width: 108px;
+  height: 108px;
+  margin: 0 auto 4px;
+  animation: bear-bob 1.6s ease-in-out infinite;
+}
+.bear-arm {
+  transform-box: view-box;
+  transform-origin: 90px 90px; /* shoulder */
+  animation: bear-wave 0.9s ease-in-out infinite alternate;
+}
+.bear-eyes {
+  transform-box: view-box;
+  transform-origin: 60px 47px;
+  animation: bear-blink 3.6s infinite;
+}
+@keyframes bear-wave {
+  from { transform: rotate(-4deg); }
+  to { transform: rotate(28deg); }
+}
+@keyframes bear-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@keyframes bear-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+.loader-title {
+  margin: 0;
+  font-family: "Yellowtail", cursive;
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--faded-red);
+}
+.dots span {
+  display: inline-block;
+  animation: dot-hop 1.2s ease-in-out infinite;
+}
+.dots span:nth-child(2) { animation-delay: 0.15s; }
+.dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dot-hop {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+.loader-line {
+  margin: 0.4em 0 0;
+  min-height: 1.4em;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.85rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bear, .bear-arm, .bear-eyes, .dots span { animation: none; }
+}
