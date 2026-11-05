@@ -18,6 +18,10 @@ export const CONFIG = {
   // (filled by `npm run build:locations`); the live site uses R2.
   imageBaseUrl: isLocal || !R2_PUBLIC_URL ? 'panos/' : R2_PUBLIC_URL,
 
+  // The same photos proxied through our own site (see vercel.json), used when
+  // a player's network blocks r2.dev (common on school/work networks).
+  imageProxyUrl: '/photos/',
+
   // Scoring: full points inside `perfectRadiusMeters`, then exponential decay
   // so that a guess `halfPointsMeters` away earns half the max.
   //   15 m  -> 5000   |  250 m -> 2500  |  500 m -> ~1200  |  1 km -> ~270

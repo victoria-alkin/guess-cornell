@@ -1,7 +1,7 @@
 import { CONFIG } from './config.js';
 import { distanceMeters, scoreForDistance, formatDistance, formatPoints } from './scoring.js';
 import { createMap, pinIcon, resetView } from './map.js';
-import { loadLocations, pickRounds, panoUrlFor } from './locations.js';
+import { loadLocations, pickRounds, panoUrlFor, checkImageHost, switchToProxy } from './locations.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -82,6 +82,9 @@ async function init() {
     return;
   }
 
+  // Runs in the background while the start page is showing.
+  state.hostCheck = checkImageHost(state.locations);
+
   els.btnStart.disabled = false;
   els.btnStart.textContent = 'Start game';
   els.btnStart.addEventListener('click', startGame);
@@ -142,24 +145,40 @@ async function startRound() {
 
   // Panorama
   if (state.viewer) { state.viewer.destroy(); state.viewer = null; }
+  await state.hostCheck;
+  if (token !== state.roundToken) return;
+  showPano(loc, token, Math.random() * 360 - 180, false);
+}
+
+async function showPano(loc, token, randomYaw, isRetry) {
   const url = await panoUrlFor(loc, state.index);
   if (token !== state.roundToken) return;
+  if (state.viewer) { state.viewer.destroy(); state.viewer = null; }
 
-  state.viewer = pannellum.viewer('pano', {
+  const viewer = pannellum.viewer('pano', {
     type: 'equirectangular',
     panorama: url,
     autoLoad: true,
-    yaw: loc.startYaw ?? Math.random() * 360 - 180,
+    yaw: loc.startYaw ?? randomYaw,
     hfov: 100,
     minHfov: 40,
     maxHfov: 120,
     showFullscreenCtrl: false,
     compass: false,
   });
+  state.viewer = viewer;
+
   // Clock starts once the photo is visible, so slow downloads don't eat time.
   const begin = () => { if (token === state.roundToken && !state.timerId && !state.submitted) startTimer(); };
-  state.viewer.on('load', begin);
-  state.viewer.on('error', begin);
+  viewer.on('load', begin);
+  viewer.on('error', () => {
+    // Photo host blocked or down: retry this photo (and all later ones) via our proxy.
+    if (!isRetry && token === state.roundToken && switchToProxy()) {
+      setTimeout(() => showPano(loc, token, randomYaw, true), 0);
+    } else {
+      begin();
+    }
+  });
 }
 
 function placeGuess(latlng) {
