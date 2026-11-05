@@ -9,3 +9,8 @@ assets/
 # Built panoramas live on Cloudflare R2, not GitHub.
 panos/*
 !panos/.gitkeep
+
+# Tool caches
+.wrangler/
+__pycache__/
+*.pyc
