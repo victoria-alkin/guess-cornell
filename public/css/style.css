@@ -249,8 +249,49 @@ html, body {
 @media (max-width: 720px) {
   .postcard { grid-template-columns: 1fr; padding: 26px 18px; transform: rotate(-0.6deg); }
   .pc-front { border-right: 0; padding: 10px 4px 4px; }
-  .pc-back { display: none; }
   .title-script { transform: rotate(-6deg) translateX(-12%); }
+
+  /* The back of the card folds underneath: address on the left, stamp and
+     postmark on the right, below a dashed fold line. */
+  .pc-back {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 14px;
+    margin: 18px 4px 2px;
+    padding: 18px 2px 4px 0;
+    border-top: 2px dashed rgba(74, 52, 38, 0.3);
+  }
+  .stamp {
+    grid-column: 2;
+    grid-row: 1;
+    width: 70px;
+    padding: 6px;
+    margin-right: 4px;
+    transform: rotate(5deg);
+  }
+  .stamp-value { left: 10px; bottom: 8px; font-size: 0.8rem; }
+  .postmark {
+    top: 22px;
+    right: 22px;
+    width: 150px;
+    transform: rotate(-10deg);
+  }
+  .address {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    text-align: left;
+  }
+  .address p {
+    padding: 0.35em 0 0.05em 0.3em;
+    font-size: 1.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 /* ---------- Round ---------- */
