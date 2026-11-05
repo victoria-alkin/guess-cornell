@@ -1,40 +1,8 @@
 import { CONFIG } from './config.js';
 import { placeholderPano } from './placeholder.js';
 
-/**
- * Load and validate locations.
- * Each entry: { id, name, lat, lng, image?, funFact?, startYaw? }
- *   image    - filename of an equirectangular JPG (served from
- *              CONFIG.imageBaseUrl) or a full URL. Leave empty/null to use a
- *              generated placeholder.
- *   funFact  - optional text shown on the result card after guessing.
- *   startYaw - optional initial view direction in degrees (0 = image center).
- */
-export async function loadLocations(url) {
-  const res = await fetch(url, { cache: 'no-cache' });
-  if (!res.ok) throw new Error(`Could not load ${url} (HTTP ${res.status})`);
-  const raw = await res.json();
-  const list = Array.isArray(raw) ? raw : raw.locations;
-  if (!Array.isArray(list)) throw new Error(`${url} must be an array of locations`);
-
-  const valid = list.filter((loc, i) => {
-    const ok = Number.isFinite(loc.lat) && Number.isFinite(loc.lng);
-    if (!ok) console.warn(`Skipping location #${i}: lat/lng missing or not numbers`, loc);
-    return ok;
-  });
-  if (valid.length === 0) throw new Error('No valid locations found');
-  return valid.map((loc, i) => ({ id: loc.id ?? `loc-${i}`, ...loc }));
-}
-
-/** Pick `n` random locations without repeats. */
-export function pickRounds(locations, n) {
-  const pool = [...locations];
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  return pool.slice(0, Math.min(n, pool.length));
-}
+// Photo loading for the game: which host to use, preloading, and placeholders.
+// Each round is { id, image, startYaw }; answers stay on the server.
 
 // ---------- Image host (R2, or our own proxy if R2 is blocked) ----------
 
@@ -58,8 +26,8 @@ export function switchToProxy() {
  * Quickly check that the photo host is reachable from this network, so blocked
  * players don't wait out a long timeout on every photo.
  */
-export async function checkImageHost(locations, timeoutMs = 4000) {
-  const sample = locations.find((l) => l.image && !/^(https?:|blob:|data:|\/)/.test(l.image));
+export async function checkImageHost(rounds, timeoutMs = 4000) {
+  const sample = rounds.find((l) => l.image && !/^(https?:|blob:|data:|\/)/.test(l.image));
   if (!sample || !isRemote(CONFIG.imageBaseUrl)) return;
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -94,16 +62,6 @@ export function loadPano(url) {
     downloads.set(url, p);
   }
   return downloads.get(url);
-}
-
-/** Free downloaded photos that aren't in `keepUrls`. */
-export function forgetPanos(keepUrls = []) {
-  const keep = new Set(keepUrls);
-  for (const [url, p] of downloads) {
-    if (keep.has(url)) continue;
-    downloads.delete(url);
-    p.then((blobUrl) => URL.revokeObjectURL(blobUrl)).catch(() => {});
-  }
 }
 
 // ---------- Panorama URLs ----------

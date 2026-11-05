@@ -23,14 +23,24 @@
           <span class="title-script">Guess</span>
           <span class="title-block">CORNELL</span>
         </h1>
-        <p class="tagline">You've been dropped somewhere on campus. Have a look around, then pin where you think you are.</p>
+        <p class="puzzle-no" id="puzzle-no">Daily Puzzle</p>
+        <p class="tagline">Five new spots on campus every day. Have a look around, then pin where you think you are.</p>
         <ul class="rules">
           <li><strong id="rule-rounds">5</strong> rounds</li>
           <li><strong id="rule-time">60s</strong> each</li>
           <li><strong id="rule-points">5,000</strong> pts max</li>
         </ul>
+        <label class="name-field">
+          <span>Your name</span>
+          <input id="player-name" type="text" maxlength="24" autocomplete="nickname" spellcheck="false" placeholder="for the leaderboard">
+        </label>
+        <div id="played-today" class="played-today" hidden>
+          <p>You scored <strong id="played-score">0</strong> today<span id="played-rank"></span></p>
+          <p class="next-in">Next puzzle in <span class="next-in-value">…</span></p>
+        </div>
         <button id="btn-start" class="btn vintage" disabled>Loading…</button>
         <p id="start-error" class="error" hidden></p>
+        <button id="btn-leaderboard" class="link-btn" type="button">Today's leaderboard &rarr;</button>
       </div>
 
       <div class="pc-back" aria-hidden="true">
@@ -63,7 +73,7 @@
         </svg>
 
         <div class="address">
-          <p>To: A Curious Wanderer</p>
+          <p>To: <span id="address-name">A Curious Wanderer</span></p>
           <p>Somewhere on Campus</p>
           <p>Ithaca, N.Y. 14853</p>
         </div>
@@ -137,6 +147,7 @@
           <button id="map-collapse" class="map-tool map-collapse" title="Close map" aria-label="Close map">&times;</button>
         </div>
       </div>
+      <p id="guess-error" class="guess-error" role="alert" hidden></p>
       <button id="btn-guess" class="btn primary" disabled>Place a pin on the map</button>
     </div>
   </section>
@@ -161,7 +172,29 @@
         <thead><tr><th>#</th><th>Location</th><th>Distance</th><th>Points</th></tr></thead>
         <tbody id="summary-rows"></tbody>
       </table>
-      <button id="btn-again" class="btn primary">Play again</button>
+      <div class="mini-board">
+        <h3>Today's leaderboard</h3>
+        <ol id="summary-board" class="board-list compact"></ol>
+        <p id="summary-rank" class="summary-rank"></p>
+      </div>
+      <div class="summary-actions">
+        <button id="btn-full-board" class="btn primary">Full leaderboard</button>
+        <button id="btn-summary-home" class="btn ghost">Home</button>
+      </div>
+      <p class="next-in">Next puzzle in <span class="next-in-value">…</span></p>
+    </div>
+  </section>
+
+  <!-- ===== Leaderboard screen ===== -->
+  <section id="screen-leaderboard" class="screen">
+    <div class="board-card">
+      <p class="kicker">&#10022; Daily Puzzle <span id="board-number"></span> &#10022;</p>
+      <h2 class="board-title">Top Wanderers</h2>
+      <p class="board-meta" id="board-meta"></p>
+      <ol id="board-list" class="board-list"></ol>
+      <p id="board-you" class="board-you" hidden></p>
+      <p class="next-in">Next puzzle in <span class="next-in-value">…</span></p>
+      <button id="btn-board-back" class="btn vintage">Back</button>
     </div>
   </section>
 

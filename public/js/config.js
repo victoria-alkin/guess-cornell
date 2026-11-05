@@ -8,11 +8,8 @@ const isLocal =
   typeof location !== 'undefined' && ['localhost', '127.0.0.1'].includes(location.hostname);
 
 export const CONFIG = {
-  roundsPerGame: 5,
+  // Seconds per round. (Rounds per day and the answers live on the server: api/_lib/daily.js.)
   roundTimeSeconds: 60,
-
-  // Where the list of locations lives (see data/locations.json).
-  locationsUrl: 'data/locations.json',
 
   // Where panorama photos load from. Local development uses the panos/ folder
   // (filled by `npm run build:locations`); the live site uses R2.

@@ -641,3 +641,210 @@ html, body {
 @media (prefers-reduced-motion: reduce) {
   .bear, .bear-arm, .bear-eyes, .dots span { animation: none; }
 }
+
+/* ---------- Daily puzzle: start page additions ---------- */
+
+.puzzle-no {
+  margin: 0.3em 0 0.8em;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sepia);
+  opacity: 0.8;
+}
+
+/* Name written on the postcard in "fountain pen" */
+.name-field {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto 1.3em;
+  max-width: 330px;
+}
+.name-field span {
+  flex: none;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.name-field input {
+  flex: 1;
+  min-width: 0;
+  padding: 0 0.2em 0.05em;
+  border: 0;
+  border-bottom: 1.5px dashed var(--sepia);
+  border-radius: 0;
+  background: transparent;
+  font-family: "Yellowtail", cursive;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  color: #2f3f6b;
+  text-align: center;
+}
+.name-field input::placeholder {
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.85rem;
+  color: rgba(74, 52, 38, 0.45);
+}
+.name-field input:focus { outline: none; border-bottom-style: solid; border-bottom-color: var(--faded-red); }
+
+.played-today {
+  margin: -0.4em 0 1.2em;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.9rem;
+}
+.played-today p { margin: 0.2em 0; }
+.played-today strong { color: var(--faded-red); }
+
+.link-btn {
+  display: block;
+  margin: 1em auto 0;
+  padding: 0.2em 0.4em;
+  border: 0;
+  background: none;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.9rem;
+  color: var(--faded-red);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.link-btn:hover { text-decoration-style: solid; }
+
+.next-in {
+  margin: 0.8em 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.played-today .next-in { color: inherit; opacity: 0.75; }
+
+/* ---------- Round: send errors ---------- */
+
+.guess-error {
+  margin: 0;
+  padding: 0.5em 0.8em;
+  border-radius: 8px;
+  background: rgba(179, 27, 27, 0.95);
+  color: #fff;
+  font-size: 0.85rem;
+  box-shadow: var(--shadow);
+}
+.guess-error[hidden] { display: none; }
+
+/* ---------- Summary: mini leaderboard ---------- */
+
+.mini-board {
+  margin: 0 0 1em;
+  padding: 0.8em 0.9em 0.6em;
+  background: linear-gradient(170deg, #fbf4e3, var(--cream));
+  border: 1.5px dashed rgba(74, 52, 38, 0.4);
+  border-radius: 6px;
+}
+.mini-board h3 {
+  margin: 0 0 0.3em;
+  font-family: "Yellowtail", cursive;
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: var(--faded-red);
+}
+.summary-rank {
+  margin: 0.5em 0 0;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.85rem;
+  color: var(--sepia);
+}
+.summary-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.btn.ghost {
+  background: transparent;
+  border: 2px solid var(--line);
+  color: var(--ink);
+}
+.btn.ghost:hover { border-color: var(--muted); }
+
+/* ---------- Leaderboard screen ---------- */
+
+#screen-leaderboard {
+  padding: 16px;
+  overflow-y: auto;
+  background:
+    radial-gradient(ellipse at center, transparent 40%, rgba(40, 8, 8, 0.55) 100%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0 14px, transparent 14px 28px),
+    #8e1d1b;
+}
+#screen-leaderboard.active { display: grid; place-items: center; }
+
+.board-card {
+  width: min(520px, 100%);
+  padding: 30px 28px 24px;
+  text-align: center;
+  color: var(--sepia);
+  background: radial-gradient(ellipse at 30% 20%, #fbf4e3, var(--cream) 55%, var(--cream-dark));
+  border-radius: 6px;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.45);
+  outline: 2px solid var(--faded-red);
+  outline-offset: -12px;
+  transform: rotate(-0.6deg);
+  animation: postcard-in 0.5s cubic-bezier(0.2, 0.8, 0.25, 1.1) both;
+}
+.board-title {
+  margin: 0.05em 0 0;
+  font-family: "Yellowtail", cursive;
+  font-weight: 400;
+  font-size: clamp(2.4rem, 9vw, 3.2rem);
+  line-height: 1.1;
+  color: var(--faded-red);
+}
+.board-meta {
+  margin: 0.2em 0 1em;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.85rem;
+}
+.board-you {
+  margin: 0.8em 0 0;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.9rem;
+  color: var(--faded-red);
+}
+.board-card .btn { margin-top: 1.2em; }
+.board-card .next-in { color: var(--sepia); opacity: 0.75; }
+
+/* Rows: rank · name · score */
+.board-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 52vh;
+  overflow-y: auto;
+  text-align: left;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.95rem;
+}
+.board-list li {
+  display: grid;
+  grid-template-columns: 3.2em 1fr auto;
+  gap: 8px;
+  align-items: baseline;
+  padding: 0.45em 0.5em;
+  border-bottom: 1px dashed rgba(74, 52, 38, 0.3);
+}
+.board-list li:last-child { border-bottom: 0; }
+.board-list .rank { color: var(--faded-red); }
+.board-list .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-list .score { font-variant-numeric: tabular-nums; }
+.board-list li.you {
+  background: rgba(168, 50, 45, 0.1);
+  border-radius: 4px;
+  font-weight: 700;
+}
+.board-list li.you .name::after { content: " (you)"; font-weight: 400; opacity: 0.7; }
+.board-list li.board-empty,
+.board-list li.board-gap {
+  display: block;
+  text-align: center;
+  color: rgba(74, 52, 38, 0.7);
+}
+.board-list.compact { max-height: none; font-size: 0.85rem; }
+.board-list.compact li { padding: 0.3em 0.4em; }
