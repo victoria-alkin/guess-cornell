@@ -323,8 +323,7 @@ html, body {
   transition: width 0.2s ease, height 0.2s ease;
 }
 .guess-panel.size-0 { --open-w: 640px;  --open-h: 500px;  --open-h-mobile: 55vh; }
-.guess-panel.size-1 { --open-w: 960px;  --open-h: 700px;  --open-h-mobile: 75vh; }
-.guess-panel.size-2 { --open-w: 100vw;  --open-h: 100vh;  --open-h-mobile: 100vh; }
+.guess-panel.size-1 { --open-w: 100vw;  --open-h: 100vh;  --open-h-mobile: 100vh; }
 
 .guess-map-wrap {
   position: relative;

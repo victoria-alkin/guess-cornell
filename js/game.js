@@ -180,7 +180,8 @@ function setMapExpanded(on) {
 
 // ---------- Map size & pin (remembered per browser) ----------
 
-const MAP_SIZES = 3; // size-0 … size-2, see .guess-panel.size-N in style.css
+// Open sizes (the small corner map is the third, closed state).
+const MAP_SIZES = 2; // size-0, size-1: see .guess-panel.size-N in style.css
 const PREFS_KEY = 'guesscornell.map';
 const mapPrefs = loadMapPrefs();
 
