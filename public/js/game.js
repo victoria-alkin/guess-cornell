@@ -43,6 +43,8 @@ const els = {
   summaryRows: $('summary-rows'),
   summaryBoard: $('summary-board'),
   summaryRank: $('summary-rank'),
+  summaryKicker: $('summary-kicker'),
+  summaryVerdict: $('summary-verdict'),
   btnFullBoard: $('btn-full-board'),
   btnSummaryHome: $('btn-summary-home'),
   boardNumber: $('board-number'),
@@ -549,6 +551,15 @@ function nextRound() {
   startRound();
 }
 
+// The word in the postmark stamp, by share of the maximum score.
+function verdictFor(share) {
+  if (share >= 0.9) return 'Legend';
+  if (share >= 0.7) return 'Local';
+  if (share >= 0.45) return 'Explorer';
+  if (share >= 0.2) return 'Wanderer';
+  return 'Lost';
+}
+
 function showSummary() {
   showScreen('result');
   els.resultCard.hidden = true;
@@ -557,7 +568,10 @@ function showSummary() {
   ensureResultMap();
   fitTo(state.results.flatMap((r, i) => drawPair(r, String(i + 1))));
 
-  els.summaryMax.textContent = formatPoints(state.rounds.length * CONFIG.scoring.maxPoints);
+  const max = state.rounds.length * CONFIG.scoring.maxPoints;
+  els.summaryMax.textContent = formatPoints(max);
+  els.summaryKicker.textContent = state.daily ? `✦ Daily Puzzle No. ${state.daily.number} ✦` : '✦ Daily Puzzle ✦';
+  els.summaryVerdict.textContent = verdictFor(max ? totalScore() / max : 0);
   countUp(els.summaryTotal, totalScore());
   els.summaryRows.innerHTML = '';
   state.results.forEach((r, i) => {

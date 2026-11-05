@@ -14,3 +14,5 @@ panos/*
 .wrangler/
 __pycache__/
 *.pyc
+
+.vercel
