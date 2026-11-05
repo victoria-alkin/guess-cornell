@@ -87,7 +87,18 @@
       <div class="guess-map-wrap">
         <div id="guess-map"></div>
         <button id="map-cover" class="map-cover" aria-label="Open map">Tap to open map</button>
-        <button id="map-collapse" class="map-collapse" aria-label="Close map">&times;</button>
+        <div class="map-tools">
+          <button id="map-bigger" class="map-tool" title="Bigger map" aria-label="Bigger map">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h5v5M14 2 9 7M7 14H2V9M2 14l5-5"/></svg>
+          </button>
+          <button id="map-smaller" class="map-tool" title="Smaller map" aria-label="Smaller map">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 7H9V2M9 7l5-5M2 9h5v5M7 9l-5 5"/></svg>
+          </button>
+          <button id="map-pin" class="map-tool" title="Keep map open" aria-label="Keep map open" aria-pressed="false">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M5 1.5h6l-.8 4.5L13 9H3l2.8-3z"/><path d="M8 9v6" stroke="currentColor" stroke-width="1.6"/></svg>
+          </button>
+          <button id="map-collapse" class="map-tool map-collapse" title="Close map" aria-label="Close map">&times;</button>
+        </div>
       </div>
       <button id="btn-guess" class="btn primary" disabled>Place a pin on the map</button>
     </div>

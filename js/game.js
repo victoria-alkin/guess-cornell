@@ -16,6 +16,9 @@ const els = {
   guessPanel: $('guess-panel'),
   mapCover: $('map-cover'),
   mapCollapse: $('map-collapse'),
+  mapBigger: $('map-bigger'),
+  mapSmaller: $('map-smaller'),
+  mapPin: $('map-pin'),
   btnGuess: $('btn-guess'),
   resultCard: $('result-card'),
   resultPlace: $('result-place'),
@@ -86,6 +89,11 @@ async function init() {
   els.btnAgain.addEventListener('click', startGame);
   els.mapCover.addEventListener('click', () => setMapExpanded(true));
   els.mapCollapse.addEventListener('click', () => setMapExpanded(false));
+  els.mapBigger.addEventListener('click', () => setMapSize(mapPrefs.size + 1));
+  els.mapSmaller.addEventListener('click', () => setMapSize(mapPrefs.size - 1));
+  els.mapPin.addEventListener('click', () => setMapPinned(!mapPrefs.pinned));
+  setMapSize(mapPrefs.size);
+  setMapPinned(mapPrefs.pinned);
   els.guessPanel.addEventListener('transitionend', (e) => {
     if (e.target === els.guessPanel) guessMap?.invalidateSize();
   });
@@ -168,6 +176,40 @@ function setGuessButton() {
 
 function setMapExpanded(on) {
   els.guessPanel.classList.toggle('expanded', on);
+}
+
+// ---------- Map size & pin (remembered per browser) ----------
+
+const MAP_SIZES = 3; // size-0 … size-2, see .guess-panel.size-N in style.css
+const PREFS_KEY = 'guesscornell.map';
+const mapPrefs = loadMapPrefs();
+
+function loadMapPrefs() {
+  const prefs = { size: 0, pinned: false };
+  try {
+    Object.assign(prefs, JSON.parse(localStorage.getItem(PREFS_KEY)) || {});
+  } catch { /* storage unavailable: use defaults */ }
+  return prefs;
+}
+
+function saveMapPrefs() {
+  try { localStorage.setItem(PREFS_KEY, JSON.stringify(mapPrefs)); } catch { /* ignore */ }
+}
+
+function setMapSize(size) {
+  mapPrefs.size = Math.max(0, Math.min(MAP_SIZES - 1, size));
+  for (let i = 0; i < MAP_SIZES; i++) els.guessPanel.classList.toggle(`size-${i}`, i === mapPrefs.size);
+  els.mapBigger.disabled = mapPrefs.size === MAP_SIZES - 1;
+  els.mapSmaller.disabled = mapPrefs.size === 0;
+  saveMapPrefs();
+}
+
+function setMapPinned(on) {
+  mapPrefs.pinned = on;
+  els.guessPanel.classList.toggle('pinned', on);
+  els.mapPin.setAttribute('aria-pressed', String(on));
+  els.mapPin.title = on ? 'Let map shrink' : 'Keep map open';
+  saveMapPrefs();
 }
 
 // ---------- Timer ----------

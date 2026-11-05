@@ -307,6 +307,10 @@ html, body {
 
 /* Guess map panel */
 .guess-panel {
+  /* size when open; set by the size-N class (bigger/smaller buttons) */
+  --open-w: 640px;
+  --open-h: 500px;
+  --open-h-mobile: 55vh;
   position: absolute;
   right: 16px;
   bottom: 16px;
@@ -318,6 +322,10 @@ html, body {
   z-index: 10;
   transition: width 0.2s ease, height 0.2s ease;
 }
+.guess-panel.size-0 { --open-w: 640px;  --open-h: 500px;  --open-h-mobile: 55vh; }
+.guess-panel.size-1 { --open-w: 960px;  --open-h: 700px;  --open-h-mobile: 75vh; }
+.guess-panel.size-2 { --open-w: 100vw;  --open-h: 100vh;  --open-h-mobile: 100vh; }
+
 .guess-map-wrap {
   position: relative;
   flex: 1;
@@ -331,19 +339,60 @@ html, body {
 #guess-map { position: absolute; inset: 0; cursor: crosshair; }
 .guess-panel .btn { width: 100%; }
 
-.guess-panel.expanded {
-  width: min(640px, calc(100vw - 32px));
-  height: min(500px, calc(100vh - 110px));
+/* Open states: tapped open (touch), pinned, or hovered (mouse) */
+.guess-panel.expanded,
+.guess-panel.pinned {
+  width: min(var(--open-w), calc(100vw - 32px));
+  height: min(var(--open-h), calc(100vh - 110px));
 }
-.guess-panel.expanded .guess-map-wrap { opacity: 1; }
+.guess-panel.expanded .guess-map-wrap,
+.guess-panel.pinned .guess-map-wrap { opacity: 1; }
+
+/* Size / pin / close buttons */
+.map-tools {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 600;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.guess-panel.expanded .map-tools,
+.guess-panel.pinned .map-tools { opacity: 1; pointer-events: auto; }
+
+.map-tool {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(29, 29, 31, 0.85);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.map-tool svg { width: 16px; height: 16px; }
+.map-tool:hover:not(:disabled) { background: var(--carnelian); }
+.map-tool:disabled { opacity: 0.35; cursor: default; }
+.map-tool[aria-pressed="true"] { background: var(--carnelian); }
 
 @media (hover: hover) {
   .guess-panel:hover {
-    width: min(640px, calc(100vw - 32px));
-    height: min(500px, calc(100vh - 110px));
+    width: min(var(--open-w), calc(100vw - 32px));
+    height: min(var(--open-h), calc(100vh - 110px));
   }
   .guess-panel:hover .guess-map-wrap { opacity: 1; }
+  .guess-panel:hover .map-tools { opacity: 1; pointer-events: auto; }
   .map-cover, .map-collapse { display: none !important; }
+}
+@media (hover: none) {
+  #map-pin { display: none; }
 }
 
 /* Touch: tap the small map to open it, × to close */
@@ -358,28 +407,15 @@ html, body {
   font-weight: 600;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
-.map-collapse {
-  display: none;
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 600;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  border: 0;
-  background: var(--ink);
-  color: #fff;
-  font-size: 1.3rem;
-  line-height: 1;
-}
+.map-collapse { display: none; }
 .guess-panel.expanded .map-cover { display: none; }
-.guess-panel.expanded .map-collapse { display: block; }
+.guess-panel.expanded .map-collapse { display: grid; }
 
 @media (max-width: 600px) {
   .hud-item { min-width: 0; padding: 2px 10px; }
   .guess-panel { left: 16px; width: auto; height: 190px; }
-  .guess-panel.expanded { width: auto; height: calc(100vh - 110px); }
+  .guess-panel.expanded,
+  .guess-panel.pinned { width: auto; height: min(var(--open-h-mobile), calc(100vh - 110px)); }
 }
 
 /* ---------- Pins ---------- */
