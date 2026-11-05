@@ -92,6 +92,11 @@ const currentName = () => els.playerName.value.trim();
 // ---------- Setup ----------
 
 function init() {
+  // The leaderboard screen gets its own copy of the waving-bear loader.
+  els.boardLoading = els.panoLoading.cloneNode(true);
+  els.boardLoading.id = 'board-loading';
+  $('screen-leaderboard').appendChild(els.boardLoading);
+
   $('rule-time').textContent = `${CONFIG.roundTimeSeconds}s`;
   $('rule-points').textContent = formatPoints(CONFIG.scoring.maxPoints);
 
@@ -355,24 +360,31 @@ const LOADING_LINES = [
   'Bundling up for Ithaca weather…',
   'Finding a seat in Libe Café…',
 ];
-let loaderTimer = null;
+const BOARD_LOADING_LINES = [
+  'Tallying the scores…',
+  'Sorting the postcards…',
+  'Checking the mailbag…',
+  'Asking McGraw Tower…',
+  'Licking the stamps…',
+];
+const loaderTimers = new Map();
 
-function showLoader() {
-  const line = els.panoLoading.querySelector('.loader-line');
-  let i = Math.floor(Math.random() * LOADING_LINES.length);
-  line.textContent = LOADING_LINES[i];
-  clearInterval(loaderTimer);
-  loaderTimer = setInterval(() => {
-    i = (i + 1) % LOADING_LINES.length;
-    line.textContent = LOADING_LINES[i];
-  }, 2200);
-  els.panoLoading.hidden = false;
+function showLoader(el = els.panoLoading, lines = LOADING_LINES) {
+  const line = el.querySelector('.loader-line');
+  let i = Math.floor(Math.random() * lines.length);
+  line.textContent = lines[i];
+  clearInterval(loaderTimers.get(el));
+  loaderTimers.set(el, setInterval(() => {
+    i = (i + 1) % lines.length;
+    line.textContent = lines[i];
+  }, 2200));
+  el.hidden = false;
 }
 
-function hideLoader() {
-  clearInterval(loaderTimer);
-  loaderTimer = null;
-  els.panoLoading.hidden = true;
+function hideLoader(el = els.panoLoading) {
+  clearInterval(loaderTimers.get(el));
+  loaderTimers.delete(el);
+  el.hidden = true;
 }
 
 // ---------- Guess map ----------
@@ -603,9 +615,18 @@ async function showLeaderboard(from) {
   els.boardNumber.textContent = state.daily ? `No. ${state.daily.number}` : '';
   els.boardMeta.textContent = '';
   els.boardYou.hidden = true;
-  renderBoardMessage(els.boardList, 'Loading…');
+  const token = (state.boardToken = (state.boardToken || 0) + 1);
+  const card = els.boardLoading.parentElement.querySelector('.board-card');
+  card.hidden = true;
+  showLoader(els.boardLoading, BOARD_LOADING_LINES);
+  const done = () => {
+    hideLoader(els.boardLoading);
+    card.hidden = false;
+  };
   try {
     const b = await getLeaderboard(50);
+    if (token !== state.boardToken) return;
+    done();
     els.boardMeta.textContent = `${formatDate(b.date)} · ${b.players} ${b.players === 1 ? 'player' : 'players'}`;
     renderBoard(els.boardList, b);
     if (b.you && !b.top.some((t) => t.you)) {
@@ -616,6 +637,8 @@ async function showLeaderboard(from) {
       els.boardYou.hidden = !els.boardYou.textContent;
     }
   } catch (err) {
+    if (token !== state.boardToken) return;
+    done();
     renderBoardMessage(els.boardList, err.message);
   }
 }
