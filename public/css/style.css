@@ -1008,3 +1008,58 @@ html, body {
 }
 .board-list.compact { max-height: none; font-size: 0.85rem; }
 .board-list.compact li { padding: 0.3em 0.4em; }
+
+/* ---------- Round: "drag to look around" hint ---------- */
+
+.look-hint {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 14px 22px 12px;
+  color: var(--sepia);
+  background: radial-gradient(ellipse at 30% 20%, #fbf4e3, var(--cream) 60%, var(--cream-dark));
+  border-radius: 6px;
+  outline: 1.5px solid var(--faded-red);
+  outline-offset: -6px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  transform: translate(-50%, -50%) rotate(-1.5deg);
+  pointer-events: none;
+  animation: hint-in 0.35s cubic-bezier(0.2, 0.8, 0.25, 1.1) both;
+  transition: opacity 0.4s;
+}
+.look-hint[hidden] { display: none; }
+.look-hint.fading { opacity: 0; }
+@keyframes hint-in {
+  from { opacity: 0; transform: translate(-50%, -40%) rotate(-4deg); }
+}
+.look-hand {
+  width: 40px;
+  height: 40px;
+  color: var(--faded-red);
+  animation: hand-drag 1.6s ease-in-out infinite;
+}
+@keyframes hand-drag {
+  0%, 100% { transform: translateX(-16px) rotate(-8deg); }
+  50% { transform: translateX(16px) rotate(8deg); }
+}
+.look-text {
+  font-family: "Yellowtail", cursive;
+  font-size: 1.6rem;
+  line-height: 1.3;
+  color: var(--faded-red);
+  white-space: nowrap;
+}
+.look-sub {
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+@media (prefers-reduced-motion: reduce) {
+  .look-hand, .look-hint { animation: none; }
+}

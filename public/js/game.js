@@ -36,6 +36,7 @@ const els = {
   resultDistance: $('result-distance'),
   resultFact: $('result-fact'),
   panoLoading: $('pano-loading'),
+  lookHint: $('look-hint'),
   btnNext: $('btn-next'),
   summaryCard: $('summary-card'),
   summaryTotal: $('summary-total'),
@@ -92,6 +93,9 @@ const currentName = () => els.playerName.value.trim();
 // ---------- Setup ----------
 
 function init() {
+  // Any drag on the photo means they've found out it moves.
+  $('pano').addEventListener('pointerdown', () => { hasLooked = true; hideLookHint(); }, true);
+
   // The leaderboard screen gets its own copy of the waving-bear loader.
   els.boardLoading = els.panoLoading.cloneNode(true);
   els.boardLoading.id = 'board-loading';
@@ -292,6 +296,8 @@ async function startRound() {
 
   // Panorama
   if (state.viewer) { state.viewer.destroy(); state.viewer = null; }
+  clearTimeout(lookHintTimer);
+  els.lookHint.hidden = true;
   showLoader();
   await state.hostCheck;
   if (token !== state.roundToken) return;
@@ -332,7 +338,10 @@ async function showPano(round, token, randomYaw, isRetry) {
   // Clock starts once the photo is visible, so slow downloads don't eat time.
   const begin = () => { if (token === state.roundToken && !state.timerId && !state.submitted) startTimer(); };
   viewer.on('load', () => {
-    if (token === state.roundToken) hideLoader();
+    if (token === state.roundToken) {
+      hideLoader();
+      showLookHint();
+    }
     begin();
     // While this round is played, download the next round's photo.
     prefetch(state.rounds[state.index + 1]);
@@ -379,6 +388,28 @@ function showLoader(el = els.panoLoading, lines = LOADING_LINES) {
     line.textContent = lines[i];
   }, 2200));
   el.hidden = false;
+}
+
+// "Drag to look around": shown on the first round, and on later rounds until
+// the player has actually moved the view once.
+let lookHintTimer = null;
+let hasLooked = false;
+
+function showLookHint() {
+  if (hasLooked && state.index > 0) return;
+  const touch = window.matchMedia('(hover: none)').matches;
+  els.lookHint.querySelector('.look-text').textContent = touch ? 'Swipe to look around' : 'Drag to look around';
+  els.lookHint.classList.remove('fading');
+  els.lookHint.hidden = false;
+  clearTimeout(lookHintTimer);
+  lookHintTimer = setTimeout(hideLookHint, 5000);
+}
+
+function hideLookHint() {
+  clearTimeout(lookHintTimer);
+  if (els.lookHint.hidden) return;
+  els.lookHint.classList.add('fading');
+  lookHintTimer = setTimeout(() => { els.lookHint.hidden = true; }, 400);
 }
 
 function hideLoader(el = els.panoLoading) {
@@ -478,6 +509,7 @@ function renderTimer(msLeft) {
 // ---------- Guessing (scored by the server) ----------
 
 async function submitGuess(timedOut) {
+  hideLookHint();
   if (state.submitting || (state.submitted && !state.failed)) return;
   // If time runs out with a pin on the map, that pin counts as the guess.
   state.timedOut = state.timedOut || timedOut;
