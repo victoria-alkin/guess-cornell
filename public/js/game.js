@@ -186,7 +186,7 @@ function renderStart() {
     els.playedScore.textContent = formatPoints(totalScore());
     els.playedRank.textContent = '';
     getLeaderboard(1).then((b) => {
-      if (b.you) els.playedRank.textContent = ` · #${b.you.rank} of ${b.players}`;
+      if (b.you) els.playedRank.textContent = ` · #${b.you.rank}`;
     }).catch(() => {});
     els.btnStart.textContent = 'See your results';
   } else if (state.results.length > 0) {
@@ -634,7 +634,7 @@ function showSummary() {
   getLeaderboard(5)
     .then((b) => {
       renderBoard(els.summaryBoard, b, { appendYou: true });
-      if (b.you) els.summaryRank.textContent = `You're #${b.you.rank} of ${b.players} today.`;
+      if (b.you) els.summaryRank.textContent = `You're #${b.you.rank} today.`;
     })
     .catch(() => renderBoardMessage(els.summaryBoard, "Couldn't load the leaderboard."));
 }
