@@ -25,6 +25,11 @@ const CANDIDATES = 400; // random draws to try before settling for the closest
 const MIN_EACH_SETTING = 2;
 const OUTDOOR_FIRST_CHANCE = 0.7;
 
+// Same building: names starting with the same two words ("Baker Laboratory
+// 200" / "Baker Laboratory 219"). Such pairs are avoided most days but
+// allowed (one pair at most) on some.
+const SAME_BUILDING_ALLOWED_CHANCE = 0.25;
+
 // ---------- Dates ----------
 
 /** Today's date in Ithaca as YYYY-MM-DD. */
@@ -153,6 +158,8 @@ export function pickMixed(pool, all, rand) {
   const wantIndoor = Math.min(MIN_EACH_SETTING, pool.filter((l) => l.indoor === true).length);
   const wantOutdoor = Math.min(MIN_EACH_SETTING, pool.filter((l) => l.indoor === false).length);
 
+  const maxSameBuilding = rand() < SAME_BUILDING_ALLOWED_CHANCE ? 1 : 0;
+
   let best = null;
   let bestScore = Infinity;
   for (let i = 0; i < CANDIDATES; i++) {
@@ -162,12 +169,27 @@ export function pickMixed(pool, all, rand) {
     const gap = Math.abs(avg - target);
     const missing = (wantEasy && !levels.some(isEasy)) + (wantHard && !levels.some(isHard))
       + Math.max(0, wantIndoor - pick.filter((l) => l.indoor === true).length)
-      + Math.max(0, wantOutdoor - pick.filter((l) => l.indoor === false).length);
+      + Math.max(0, wantOutdoor - pick.filter((l) => l.indoor === false).length)
+      + Math.max(0, sameBuildingPairs(pick) - maxSameBuilding);
     if (gap <= DIFFICULTY_TOLERANCE && !missing) return orderRounds(pick, rand);
     const score = Math.max(0, gap - DIFFICULTY_TOLERANCE) + missing;
     if (score < bestScore) { best = pick; bestScore = score; }
   }
   return orderRounds(best, rand);
+}
+
+const buildingKey = (l) => String(l.name || '').toLowerCase().split(/\s+/).slice(0, 2).join(' ');
+
+export function sameBuilding(a, b) {
+  return buildingKey(a) === buildingKey(b);
+}
+
+function sameBuildingPairs(pick) {
+  let pairs = 0;
+  for (let i = 0; i < pick.length; i++) {
+    for (let j = i + 1; j < pick.length; j++) if (sameBuilding(pick[i], pick[j])) pairs++;
+  }
+  return pairs;
 }
 
 /** Usually start outdoors (a gentler first round), sometimes indoors. */
