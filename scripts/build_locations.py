@@ -187,6 +187,10 @@ def main():
     ws = openpyxl.load_workbook(xlsx, data_only=True).worksheets[0]
     header = [str(c.value or "").strip().lower() for c in ws[1]]
     cols = {COLUMN_ALIASES[h]: i for i, h in enumerate(header) if h in COLUMN_ALIASES}
+    # e.g. "Rating out of 10 (1 = easy, 10 = difficult)"
+    for i, h in enumerate(header):
+        if h.startswith(("rating", "difficulty")) and "difficulty" not in cols:
+            cols["difficulty"] = i
     for required in ("title", "pin"):
         if required not in cols:
             sys.exit(f"Spreadsheet needs a '{required.title()}' column. Found: {header}")
@@ -237,6 +241,8 @@ def main():
         entry = {"id": digest, "name": title, "lat": round(pin[0], 7), "lng": round(pin[1], 7), "image": filename}
         fact = str(get("fact") or "").strip()
         fact = re.sub(r"^\s*fun\s*fact\s*[:\-–]\s*", "", fact, flags=re.IGNORECASE)
+        # Several numbered facts ("1. ...  2. ...") go on separate lines.
+        fact = re.sub(r"\s+(?=\d{1,2}\.\s)", "\n", fact) if re.match(r"1\.\s", fact) else fact
         if fact:
             entry["funFact"] = fact
         yaw = get("yaw")
@@ -245,6 +251,15 @@ def main():
                 entry["startYaw"] = float(yaw)
             except ValueError:
                 problems.append(f"{label}: start direction {yaw!r} is not a number (ignored)")
+        rating = get("difficulty")
+        if rating not in (None, ""):
+            try:
+                value = float(rating)
+                if not 1 <= value <= 10:
+                    raise ValueError
+                entry["difficulty"] = int(value) if value.is_integer() else value
+            except ValueError:
+                problems.append(f"{label}: rating {rating!r} is not a number from 1 to 10 (ignored)")
         locations.append(entry)
 
     Path(args.out_json).write_text(json.dumps(locations, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

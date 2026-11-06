@@ -12,6 +12,13 @@ const DAY_KEY_TTL = 60 * 60 * 24 * 30; // keep each day's picks for 30 days
 const GAME_TTL = 60 * 60 * 24 * 3; // a player's in-progress game
 const AVOID_RECENT_DAYS = 7;
 
+// Difficulty mix. Each location may have a rating from 1 (easy) to 10 (hard);
+// unrated ones count as average. A day's picks should average close to the
+// overall average and include both easier and harder spots.
+const DIFFICULTY_TOLERANCE = 0.75; // allowed gap between a day's average and the overall average
+const EDGE = 1.5; // "easier"/"harder" = at least this far below/above the average
+const CANDIDATES = 400; // random draws to try before settling for the closest
+
 // ---------- Dates ----------
 
 /** Today's date in Ithaca as YYYY-MM-DD. */
@@ -66,14 +73,17 @@ function hashString(s) {
   return h >>> 0;
 }
 
-function seededShuffle(items, seed) {
+function seededRandom(seed) {
   let a = seed || 1;
-  const rand = () => { // mulberry32
+  return () => { // mulberry32
     a = (a + 0x6d2b79f5) | 0;
     let t = Math.imul(a ^ (a >>> 15), 1 | a);
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
+}
+
+function shuffle(items, rand) {
   const out = [...items];
   for (let i = out.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
@@ -101,12 +111,46 @@ export async function dailyIds(date) {
   const fresh = all.filter((l) => !recent.has(l.id));
   const pool = fresh.length >= ROUNDS_PER_DAY ? fresh : all;
   const sorted = [...pool].sort((a, b) => (a.id < b.id ? -1 : 1));
-  const ids = seededShuffle(sorted, hashString(`guess-cornell:${date}`))
-    .slice(0, ROUNDS_PER_DAY)
+  const ids = pickMixed(sorted, all, seededRandom(hashString(`guess-cornell:${date}`)))
     .map((l) => l.id);
 
   await redis('SET', key, JSON.stringify(ids), 'NX', 'EX', DAY_KEY_TTL);
   return JSON.parse(await redis('GET', key)); // whoever stored first wins
+}
+
+/**
+ * Pick a day's locations from `pool` with a balanced mix of difficulties:
+ * random draws, keeping the first that averages near the overall average and
+ * includes at least one clearly easier and one clearly harder spot; if none
+ * does, the draw that comes closest.
+ */
+export function pickMixed(pool, all, rand) {
+  const count = Math.min(ROUNDS_PER_DAY, pool.length);
+  const rated = all.map((l) => Number(l.difficulty)).filter((d) => d >= 1 && d <= 10);
+  const target = rated.length ? rated.reduce((s, d) => s + d, 0) / rated.length : 5;
+  const difficulty = (l) => {
+    const d = Number(l.difficulty);
+    return d >= 1 && d <= 10 ? d : target;
+  };
+  const isEasy = (d) => d <= target - EDGE;
+  const isHard = (d) => d >= target + EDGE;
+  const poolLevels = pool.map(difficulty);
+  const wantEasy = poolLevels.some(isEasy); // only ask for what the pool can give
+  const wantHard = poolLevels.some(isHard);
+
+  let best = null;
+  let bestScore = Infinity;
+  for (let i = 0; i < CANDIDATES; i++) {
+    const pick = shuffle(pool, rand).slice(0, count);
+    const levels = pick.map(difficulty);
+    const avg = levels.reduce((s, d) => s + d, 0) / levels.length;
+    const gap = Math.abs(avg - target);
+    const missing = (wantEasy && !levels.some(isEasy)) + (wantHard && !levels.some(isHard));
+    if (gap <= DIFFICULTY_TOLERANCE && !missing) return pick;
+    const score = Math.max(0, gap - DIFFICULTY_TOLERANCE) + missing;
+    if (score < bestScore) { best = pick; bestScore = score; }
+  }
+  return best;
 }
 
 export async function dailyLocations(date) {

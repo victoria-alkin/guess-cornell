@@ -4,7 +4,8 @@
     "name": "North Baker and Boldt Hall Courtyard",
     "lat": 42.4488333,
     "lng": -76.4888889,
-    "image": "96e7e140a81b10c8.jpg"
+    "image": "96e7e140a81b10c8.jpg",
+    "difficulty": 4
   },
   {
     "id": "6cb947cb0f0e685f",
@@ -12,7 +13,8 @@
     "lat": 42.4490164,
     "lng": -76.4889776,
     "image": "6cb947cb0f0e685f.jpg",
-    "funFact": "Boldt Tower features an embedded red sandstone block taken from the original Waldorf Astoria hotel in Manhattan, given that the complex was named in honor of Cornell trustee and hotel proprietor George C. Boldt."
+    "funFact": "Boldt Tower features an embedded red sandstone block taken from the original Waldorf Astoria hotel in Manhattan, given that the complex was named in honor of Cornell trustee and hotel proprietor George C. Boldt.",
+    "difficulty": 4
   },
   {
     "id": "c4891264344af4e4",
@@ -20,5 +22,39 @@
     "lat": 42.4476111,
     "lng": -76.4853056,
     "image": "c4891264344af4e4.jpg"
+  },
+  {
+    "id": "2e302dd6602059ab",
+    "name": "Baker Laboratory 200",
+    "lat": 42.4504402,
+    "lng": -76.481937,
+    "image": "2e302dd6602059ab.jpg",
+    "funFact": "1. More than 40 percent of all Cornell students will sit in Baker 200 at some point during their undergraduate career.\n2. The Nobel Prize Predictor: The room hosts the famous Baker Lectures - the oldest continuous chemistry lecture series in the United States (established in 1923). Amazingly, 21 Baker Lecturers have gone on to win the Nobel Prize, meaning a presentation in this hall is historically one of the strongest indicators of future Nobel glory.",
+    "difficulty": 2
+  },
+  {
+    "id": "315e66d570066ccf",
+    "name": "Goldwin Smith 132",
+    "lat": 42.4488442,
+    "lng": -76.4834992,
+    "image": "315e66d570066ccf.jpg",
+    "funFact": "Goldwin Smith 132 has a reputation for having some of the most sensitive row desks on campus. Because of how the long wooden desks are anchored, if a single student at the end of a row shakes their leg or erases a mistake aggressively, the entire row vibrates like a mini-earthquake, rattling the laptops and notebooks of everyone sitting in it.",
+    "difficulty": 2
+  },
+  {
+    "id": "88623c33a9a133ff",
+    "name": "Baker Laboratory 219",
+    "lat": 42.4504402,
+    "lng": -76.481937,
+    "image": "88623c33a9a133ff.jpg",
+    "difficulty": 4
+  },
+  {
+    "id": "4915bc6ed2b7d2d1",
+    "name": "Goldwin Smith G76",
+    "lat": 42.4494791,
+    "lng": -76.4835052,
+    "image": "4915bc6ed2b7d2d1.jpg",
+    "difficulty": 3
   }
 ]

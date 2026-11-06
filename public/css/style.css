@@ -486,6 +486,9 @@ html, body {
   bottom: 24px;
   transform: translateX(-50%);
   width: min(460px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
   text-align: center;
   z-index: 1001;
 }
@@ -651,6 +654,7 @@ html, body {
 /* Fun fact: a little vintage note taped to the result card */
 .result-fact {
   position: relative;
+  white-space: pre-line;
   margin: 0.6em 6px 1.5em;
   padding: 1.5em 1.1em 1em;
   background: linear-gradient(170deg, #fbf4e3, var(--cream) 60%, var(--cream-dark));
