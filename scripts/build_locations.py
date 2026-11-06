@@ -191,6 +191,9 @@ def main():
     for i, h in enumerate(header):
         if h.startswith(("rating", "difficulty")) and "difficulty" not in cols:
             cols["difficulty"] = i
+        # e.g. "Indoor/Outdoor (Indoor = 1, Outdoor = 0)"
+        if h.startswith(("indoor", "outdoor")) and "setting" not in cols:
+            cols["setting"] = i
     for required in ("title", "pin"):
         if required not in cols:
             sys.exit(f"Spreadsheet needs a '{required.title()}' column. Found: {header}")
@@ -260,6 +263,14 @@ def main():
                 entry["difficulty"] = int(value) if value.is_integer() else value
             except ValueError:
                 problems.append(f"{label}: rating {rating!r} is not a number from 1 to 10 (ignored)")
+        setting = str(get("setting") if get("setting") is not None else "").strip().lower()
+        if setting:
+            if setting in ("1", "1.0", "indoor", "inside", "in"):
+                entry["indoor"] = True
+            elif setting in ("0", "0.0", "outdoor", "outside", "out"):
+                entry["indoor"] = False
+            else:
+                problems.append(f"{label}: indoor/outdoor {setting!r} should be 1 (indoor) or 0 (outdoor) (ignored)")
         locations.append(entry)
 
     Path(args.out_json).write_text(json.dumps(locations, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

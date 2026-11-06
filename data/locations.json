@@ -5,7 +5,8 @@
     "lat": 42.4488333,
     "lng": -76.4888889,
     "image": "96e7e140a81b10c8.jpg",
-    "difficulty": 4
+    "difficulty": 4,
+    "indoor": false
   },
   {
     "id": "6cb947cb0f0e685f",
@@ -14,14 +15,17 @@
     "lng": -76.4889776,
     "image": "6cb947cb0f0e685f.jpg",
     "funFact": "Boldt Tower features an embedded red sandstone block taken from the original Waldorf Astoria hotel in Manhattan, given that the complex was named in honor of Cornell trustee and hotel proprietor George C. Boldt.",
-    "difficulty": 4
+    "difficulty": 4,
+    "indoor": false
   },
   {
     "id": "c4891264344af4e4",
     "name": "Uris Library 302",
     "lat": 42.4476111,
     "lng": -76.4853056,
-    "image": "c4891264344af4e4.jpg"
+    "image": "c4891264344af4e4.jpg",
+    "difficulty": 4,
+    "indoor": true
   },
   {
     "id": "2e302dd6602059ab",
@@ -30,7 +34,8 @@
     "lng": -76.481937,
     "image": "2e302dd6602059ab.jpg",
     "funFact": "1. More than 40 percent of all Cornell students will sit in Baker 200 at some point during their undergraduate career.\n2. The Nobel Prize Predictor: The room hosts the famous Baker Lectures - the oldest continuous chemistry lecture series in the United States (established in 1923). Amazingly, 21 Baker Lecturers have gone on to win the Nobel Prize, meaning a presentation in this hall is historically one of the strongest indicators of future Nobel glory.",
-    "difficulty": 2
+    "difficulty": 2,
+    "indoor": true
   },
   {
     "id": "315e66d570066ccf",
@@ -39,7 +44,8 @@
     "lng": -76.4834992,
     "image": "315e66d570066ccf.jpg",
     "funFact": "Goldwin Smith 132 has a reputation for having some of the most sensitive row desks on campus. Because of how the long wooden desks are anchored, if a single student at the end of a row shakes their leg or erases a mistake aggressively, the entire row vibrates like a mini-earthquake, rattling the laptops and notebooks of everyone sitting in it.",
-    "difficulty": 2
+    "difficulty": 2,
+    "indoor": true
   },
   {
     "id": "88623c33a9a133ff",
@@ -47,7 +53,8 @@
     "lat": 42.4504402,
     "lng": -76.481937,
     "image": "88623c33a9a133ff.jpg",
-    "difficulty": 4
+    "difficulty": 4,
+    "indoor": true
   },
   {
     "id": "4915bc6ed2b7d2d1",
@@ -55,6 +62,76 @@
     "lat": 42.4494791,
     "lng": -76.4835052,
     "image": "4915bc6ed2b7d2d1.jpg",
-    "difficulty": 3
+    "difficulty": 3,
+    "indoor": true
+  },
+  {
+    "id": "c16f76cbf73f569f",
+    "name": "Cornell Health 1st Floor",
+    "lat": 42.4455605,
+    "lng": -76.4857101,
+    "image": "c16f76cbf73f569f.jpg",
+    "funFact": "Prescribing... Mother Nature? Cornell Health was a pioneer in creating Nature Rx @Cornell, a program where clinicians literally write \"prescriptions\" for stressed-out students to spend time in the campus's famous gorges and botanical gardens to lower their cortisol levels",
+    "difficulty": 4,
+    "indoor": true
+  },
+  {
+    "id": "001cd96d0a0de152",
+    "name": "Willard Straight 414",
+    "lat": 42.4463797,
+    "lng": -76.4854234,
+    "image": "001cd96d0a0de152.jpg",
+    "funFact": "This room features a stunning series of historic paintings displayed on its walls. These were personally collected by Willard Straight himself during his late 19th and early 20th-century travels through East Asia while working as a U.S. diplomat and financial emissary",
+    "difficulty": 3,
+    "indoor": true
+  },
+  {
+    "id": "9292f52e57dcbeb3",
+    "name": "Willard Straight 6th Floor",
+    "lat": 42.4465277,
+    "lng": -76.48546,
+    "image": "9292f52e57dcbeb3.jpg",
+    "funFact": "Rooms 604 and 605 are officially designated as Loft 1 and Loft 2. They serve as cozy, high-demand meeting spots for student club executive boards. Because they feature slanted ceilings and high stone-framed windows directly under the building’s peaks, it feels like holding a club meeting inside a medieval fortress.",
+    "difficulty": 5,
+    "indoor": true
+  },
+  {
+    "id": "65453f7f33820bba",
+    "name": "Willard Straight Loft 3",
+    "lat": 42.4464617,
+    "lng": -76.4854315,
+    "image": "65453f7f33820bba.jpg",
+    "difficulty": 7,
+    "indoor": true
+  },
+  {
+    "id": "6abfc9d767cbb3e6",
+    "name": "Willard Straight Rock Garden",
+    "lat": 42.4461338,
+    "lng": -76.485488,
+    "image": "6abfc9d767cbb3e6.jpg",
+    "funFact": "The garden lines the banks of a small, waterfall-filled stream known across campus by its official, highly unglamorous nickname: Wee Stinky Creek. The name dates back to the early 20th century when the College of Veterinary Science was located nearby and literally drained operational chemicals and animal waste directly into the stream, creating a notorious campus stench. While the creek has been completely clean for decades, the funny historical name permanently stuck",
+    "difficulty": 6,
+    "indoor": false
+  },
+  {
+    "id": "7413eb9e51a5d9ca",
+    "name": "A.D. White Gardens",
+    "lat": 42.4481708,
+    "lng": -76.481675,
+    "image": "7413eb9e51a5d9ca.jpg",
+    "funFact": "Located behind the A.D. House, the garden owes its existence to an incredibly formidable womnn. The garden was first cultivated by A.D. White’s second wife, Helen Magill White - who made history as the very first woman in the United States to earn a Ph.D (in Greek from Boston University).",
+    "difficulty": 5,
+    "indoor": false
+  },
+  {
+    "id": "507e020b98245d0b",
+    "name": "The Secret Garden",
+    "lat": 42.4481307,
+    "lng": -76.4810603,
+    "image": "507e020b98245d0b.jpg",
+    "funFact": "The A.D. White House Secret Garden is a beautifully preserved Victorian-style green space that blends natural serenity with Cornell history. The grand carriage house that sits right next to the secret garden was later converted into what students now know as the Big Red Barn.",
+    "difficulty": 7,
+    "indoor": false
   }
 ]

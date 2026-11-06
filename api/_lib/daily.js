@@ -11,6 +11,7 @@ export const LAUNCH_DATE = '2026-11-05'; // puzzle #1
 const DAY_KEY_TTL = 60 * 60 * 24 * 30; // keep each day's picks for 30 days
 const GAME_TTL = 60 * 60 * 24 * 3; // a player's in-progress game
 const AVOID_RECENT_DAYS = 7;
+const MIN_POOL = ROUNDS_PER_DAY + 3; // leave some choice for the mix below
 
 // Difficulty mix. Each location may have a rating from 1 (easy) to 10 (hard);
 // unrated ones count as average. A day's picks should average close to the
@@ -18,6 +19,11 @@ const AVOID_RECENT_DAYS = 7;
 const DIFFICULTY_TOLERANCE = 0.75; // allowed gap between a day's average and the overall average
 const EDGE = 1.5; // "easier"/"harder" = at least this far below/above the average
 const CANDIDATES = 400; // random draws to try before settling for the closest
+
+// Indoor/outdoor mix: at least this many of each per day (when available),
+// and the first round is outdoor this often.
+const MIN_EACH_SETTING = 2;
+const OUTDOOR_FIRST_CHANCE = 0.7;
 
 // ---------- Dates ----------
 
@@ -103,13 +109,19 @@ export async function dailyIds(date) {
   if (stored) return JSON.parse(stored);
 
   const all = allLocations();
-  const recent = new Set();
+  // Skip spots from recent days: a whole week if there are enough locations,
+  // otherwise as many days back as still leaves room to mix.
+  const pastDays = [];
   for (let i = 1; i <= AVOID_RECENT_DAYS; i++) {
     const prev = await redis('GET', `day:${addDays(date, -i)}`);
-    if (prev) JSON.parse(prev).forEach((id) => recent.add(id));
+    pastDays.push(prev ? JSON.parse(prev) : []);
   }
-  const fresh = all.filter((l) => !recent.has(l.id));
-  const pool = fresh.length >= ROUNDS_PER_DAY ? fresh : all;
+  let pool = all;
+  for (let days = AVOID_RECENT_DAYS; days >= 1; days--) {
+    const recent = new Set(pastDays.slice(0, days).flat());
+    const fresh = all.filter((l) => !recent.has(l.id));
+    if (fresh.length >= MIN_POOL) { pool = fresh; break; }
+  }
   const sorted = [...pool].sort((a, b) => (a.id < b.id ? -1 : 1));
   const ids = pickMixed(sorted, all, seededRandom(hashString(`guess-cornell:${date}`)))
     .map((l) => l.id);
@@ -119,7 +131,8 @@ export async function dailyIds(date) {
 }
 
 /**
- * Pick a day's locations from `pool` with a balanced mix of difficulties:
+ * Pick a day's locations from `pool` with a balanced mix of difficulties and
+ * of indoor/outdoor spots:
  * random draws, keeping the first that averages near the overall average and
  * includes at least one clearly easier and one clearly harder spot; if none
  * does, the draw that comes closest.
@@ -137,6 +150,8 @@ export function pickMixed(pool, all, rand) {
   const poolLevels = pool.map(difficulty);
   const wantEasy = poolLevels.some(isEasy); // only ask for what the pool can give
   const wantHard = poolLevels.some(isHard);
+  const wantIndoor = Math.min(MIN_EACH_SETTING, pool.filter((l) => l.indoor === true).length);
+  const wantOutdoor = Math.min(MIN_EACH_SETTING, pool.filter((l) => l.indoor === false).length);
 
   let best = null;
   let bestScore = Infinity;
@@ -145,12 +160,24 @@ export function pickMixed(pool, all, rand) {
     const levels = pick.map(difficulty);
     const avg = levels.reduce((s, d) => s + d, 0) / levels.length;
     const gap = Math.abs(avg - target);
-    const missing = (wantEasy && !levels.some(isEasy)) + (wantHard && !levels.some(isHard));
-    if (gap <= DIFFICULTY_TOLERANCE && !missing) return pick;
+    const missing = (wantEasy && !levels.some(isEasy)) + (wantHard && !levels.some(isHard))
+      + Math.max(0, wantIndoor - pick.filter((l) => l.indoor === true).length)
+      + Math.max(0, wantOutdoor - pick.filter((l) => l.indoor === false).length);
+    if (gap <= DIFFICULTY_TOLERANCE && !missing) return orderRounds(pick, rand);
     const score = Math.max(0, gap - DIFFICULTY_TOLERANCE) + missing;
     if (score < bestScore) { best = pick; bestScore = score; }
   }
-  return best;
+  return orderRounds(best, rand);
+}
+
+/** Usually start outdoors (a gentler first round), sometimes indoors. */
+function orderRounds(pick, rand) {
+  const wantOutdoor = rand() < OUTDOOR_FIRST_CHANCE;
+  const first = pick.findIndex((l) => l.indoor === !wantOutdoor);
+  if (first <= 0) return pick;
+  const out = [...pick];
+  [out[0], out[first]] = [out[first], out[0]];
+  return out;
 }
 
 export async function dailyLocations(date) {
