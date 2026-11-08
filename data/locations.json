@@ -133,5 +133,74 @@
     "funFact": "The A.D. White House Secret Garden is a beautifully preserved Victorian-style green space that blends natural serenity with Cornell history. The grand carriage house that sits right next to the secret garden was later converted into what students now know as the Big Red Barn.",
     "difficulty": 7,
     "indoor": false
+  },
+  {
+    "id": "93e8076bcc002813",
+    "name": "West Campus Underground Tunnel System",
+    "lat": 42.4488548,
+    "lng": -76.4883159,
+    "image": "93e8076bcc002813.jpg",
+    "funFact": "While the new residential halls have clean, well-lit corridors for students, a separate, highly dangerous network of historic 1920s steam tunnels runs under the Gothic section of West Campus.",
+    "difficulty": 10,
+    "indoor": true
+  },
+  {
+    "id": "aa7c6b2b9c14ed7d",
+    "name": "Warren Hall B60 Lounge",
+    "lat": 42.4492252,
+    "lng": -76.4765306,
+    "image": "aa7c6b2b9c14ed7d.jpg",
+    "difficulty": 3,
+    "indoor": true
+  },
+  {
+    "id": "1d9e76c2f4bc1022",
+    "name": "Barton Hall",
+    "lat": 42.4459835,
+    "lng": -76.4805745,
+    "image": "1d9e76c2f4bc1022.jpg",
+    "funFact": "Built between 1914 and 1917 as a military drill hall, Barton Hall's massive open layout allowed it to function as a hangar and ground school for military aeronautics during World War I.",
+    "difficulty": 1,
+    "indoor": true
+  },
+  {
+    "id": "c28cab74c9668b80",
+    "name": "Uris G01",
+    "lat": 42.4471198,
+    "lng": -76.4821874,
+    "image": "c28cab74c9668b80.jpg",
+    "funFact": "Uris G01 features a monochromatic, aggressively bright red design spanning from the floor carpets to the seats and walls. Maybe the unrelenting red walls are widely joked to be a form of psychological warfare, intentionally amplifying test-taking anxiety right before a major prelim or final exam",
+    "difficulty": 3,
+    "indoor": true
+  },
+  {
+    "id": "0825d0fd9aef7596",
+    "name": "Ezra Cornell's Tomb Inside Sage Chapel Crypt",
+    "lat": 42.4473603,
+    "lng": -76.4845833,
+    "image": "0825d0fd9aef7596.jpg",
+    "funFact": "Did you know Ezra Cornell himself rests inside a secure stone crypt sealed beneath a 700-pound slab of stone in Sage Chapel, while a life-sized marble statue of him lies directly above it to guard his true resting place?",
+    "difficulty": 5,
+    "indoor": true
+  },
+  {
+    "id": "c8a31e48ba1c3dea",
+    "name": "Sage Chapel",
+    "lat": 42.447256,
+    "lng": -76.4844151,
+    "image": "c8a31e48ba1c3dea.jpg",
+    "funFact": "The chapel has hosted many historic human rights figures. Dr. Martin Luther King Jr. stood at the Sage Chapel pulpit and delivered a powerful, memorable sermon to the Cornell community in November of 1961.",
+    "difficulty": 3,
+    "indoor": true
+  },
+  {
+    "id": "0792487b503cac5f",
+    "name": "Underground Tunnel From Barton Hall",
+    "lat": 42.4458838,
+    "lng": -76.4797796,
+    "image": "0792487b503cac5f.jpg",
+    "funFact": "Did you know there exists a lengthy underground tunnel from Barton Hall?",
+    "difficulty": 9,
+    "indoor": true
   }
 ]
