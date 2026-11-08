@@ -178,7 +178,15 @@ export function pickMixed(pool, all, rand) {
   return orderRounds(best, rand);
 }
 
-const buildingKey = (l) => String(l.name || '').toLowerCase().split(/\s+/).slice(0, 2).join(' ');
+// Spots whose name mentions one of these belong to that building, wherever the
+// word appears (e.g. "Ezra Cornell's Tomb Inside Sage Chapel Crypt").
+const NAMED_BUILDINGS = ['sage chapel', 'barton'];
+
+function buildingKey(l) {
+  const name = String(l.name || '').toLowerCase();
+  const named = NAMED_BUILDINGS.find((b) => name.includes(b));
+  return named || name.split(/\s+/).slice(0, 2).join(' ');
+}
 
 export function sameBuilding(a, b) {
   return buildingKey(a) === buildingKey(b);
