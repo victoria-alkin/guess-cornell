@@ -127,6 +127,21 @@ export async function dailyIds(date) {
     const fresh = all.filter((l) => !recent.has(l.id));
     if (fresh.length >= MIN_POOL) { pool = fresh; break; }
   }
+  // Skipping recent spots can leave too few outdoor (or indoor) ones to mix, as
+  // outdoor photos are scarcer. Top each setting back up with the spots that
+  // were used longest ago.
+  const lastUsed = (l) => {
+    const i = pastDays.findIndex((ids) => ids.includes(l.id));
+    return i === -1 ? Infinity : i;
+  };
+  for (const indoor of [true, false]) {
+    const have = pool.filter((l) => l.indoor === indoor).length;
+    const extra = all
+      .filter((l) => l.indoor === indoor && !pool.includes(l))
+      .sort((a, b) => lastUsed(b) - lastUsed(a) || (a.id < b.id ? -1 : 1))
+      .slice(0, Math.max(0, MIN_EACH_SETTING + 1 - have));
+    pool = [...pool, ...extra];
+  }
   const sorted = [...pool].sort((a, b) => (a.id < b.id ? -1 : 1));
   const ids = pickMixed(sorted, all, seededRandom(hashString(`guess-cornell:${date}`)))
     .map((l) => l.id);
