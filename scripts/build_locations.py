@@ -37,6 +37,10 @@ Image.MAX_IMAGE_PIXELS = None  # panoramas are legitimately huge
 
 ROOT = Path(__file__).resolve().parent.parent
 
+# Spreadsheet rows to leave out of the game for now (matched by title, any case),
+# e.g. while a photo is being reshot.
+EXCLUDED_TITLES = {"sage chapel"}
+
 COLUMN_ALIASES = {
     "photo": "photo", "image": "photo", "file": "photo",
     "title": "title", "name": "title",
@@ -209,6 +213,9 @@ def main():
             continue  # blank row
         label = f"Row {row_num} ({title or 'untitled'})"
         print(label)
+        if title.lower() in EXCLUDED_TITLES:
+            print("    skipped (on the excluded list)")
+            continue
 
         pin = parse_pin(pin_text)
         if not pin:

@@ -184,16 +184,6 @@
     "indoor": true
   },
   {
-    "id": "c8a31e48ba1c3dea",
-    "name": "Sage Chapel",
-    "lat": 42.447256,
-    "lng": -76.4844151,
-    "image": "c8a31e48ba1c3dea.jpg",
-    "funFact": "The chapel has hosted many historic human rights figures. Dr. Martin Luther King Jr. stood at the Sage Chapel pulpit and delivered a powerful, memorable sermon to the Cornell community in November of 1961.",
-    "difficulty": 3,
-    "indoor": true
-  },
-  {
     "id": "0792487b503cac5f",
     "name": "Underground Tunnel From Barton Hall",
     "lat": 42.4458838,
