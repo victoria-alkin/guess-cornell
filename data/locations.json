@@ -192,5 +192,53 @@
     "funFact": "Did you know there exists a lengthy underground tunnel from Barton Hall?",
     "difficulty": 9,
     "indoor": true
+  },
+  {
+    "id": "0f2a2d033a42d948",
+    "name": "The Swinging Bench",
+    "lat": 42.4466876,
+    "lng": -76.4830363,
+    "image": "0f2a2d033a42d948.jpg",
+    "funFact": "A great place to relax!",
+    "difficulty": 4,
+    "indoor": false
+  },
+  {
+    "id": "8d2abcffe5b0bc38",
+    "name": "Sage Hall",
+    "lat": 42.4459307,
+    "lng": -76.4838796,
+    "image": "8d2abcffe5b0bc38.jpg",
+    "funFact": "Sage Hall actually opened in 1875 as Cornell’s first residential building for female students. At the time, it was considered one of the most luxurious college dormitories in the United States!",
+    "difficulty": 4,
+    "indoor": false
+  },
+  {
+    "id": "03787f8c29f40cbc",
+    "name": "Path to the Cornell Store",
+    "lat": 42.4467169,
+    "lng": -76.4834303,
+    "image": "03787f8c29f40cbc.jpg",
+    "difficulty": 5,
+    "indoor": false
+  },
+  {
+    "id": "787128189810bb2c",
+    "name": "Lincoln Hall Neylan Rehearsal Hall",
+    "lat": 42.4503032,
+    "lng": -76.4834765,
+    "image": "787128189810bb2c.jpg",
+    "funFact": "Lincoln Hall was originally built in 1888 with an entirely flat back facade because the university ran out of money to finish its planned east wing mid-construction. For over a century, civil engineering students - and later, music students - had to use a structurally lopsided building until a massive $19 million expansion in 2000 finally completed the architects' original vision 112 years later.",
+    "difficulty": 5,
+    "indoor": true
+  },
+  {
+    "id": "38b0b21961937122",
+    "name": "Path from Sage Hall to Ho Plaza",
+    "lat": 42.4461822,
+    "lng": -76.4846916,
+    "image": "38b0b21961937122.jpg",
+    "difficulty": 6,
+    "indoor": false
   }
 ]
