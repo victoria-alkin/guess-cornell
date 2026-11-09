@@ -7,6 +7,7 @@ import {
   addDays, dailyLocations, isDate, loadGame, saveGame, todayDate, totalPoints,
 } from './_lib/daily.js';
 import { cleanName, error, isPlayerId, json, readJson, route } from './_lib/http.js';
+import { isProfane } from './_lib/profanity.js';
 import { pipeline } from './_lib/store.js';
 
 const LEADERBOARD_TTL = 60 * 60 * 24 * 400;
@@ -56,10 +57,12 @@ export const POST = route(async (request) => {
   await saveGame(date, player, game);
 
   const commands = [];
-  const name = cleanName(body.name);
-  if (name) commands.push(['HSET', 'names', player, name]);
   const finished = game.results.length >= locations.length;
   if (finished) {
+    // The name only shows once the score is on the leaderboard, so it's set
+    // (and checked) here; a rude one is left off and shows as anonymous.
+    const name = cleanName(body.name);
+    if (name && !(await isProfane(name))) commands.push(['HSET', 'names', player, name]);
     commands.push(['ZADD', `lb:${date}`, totalPoints(game), player]);
     commands.push(['EXPIRE', `lb:${date}`, LEADERBOARD_TTL]);
   }

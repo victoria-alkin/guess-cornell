@@ -205,22 +205,45 @@ function updateAddress() {
   els.addressName.textContent = currentName() || 'A Curious Wanderer';
 }
 
+const NAME_REJECTED = 422; // the server's profanity check said no
+
 function onNameChange() {
   const name = currentName();
   if (!name) return;
   saveName(name);
   // Already on today's leaderboard? Update the name shown there.
-  if (state.daily?.finished) updateName(name).catch(() => {});
+  if (state.daily?.finished) {
+    updateName(name).catch((err) => {
+      if (err.status === NAME_REJECTED) showStartError(err.message);
+    });
+  }
 }
 
-function onStart() {
-  if (!state.daily || els.btnStart.disabled) return;
+let checkingName = false;
+
+async function onStart() {
+  if (!state.daily || els.btnStart.disabled || checkingName) return;
   if (state.daily.finished) return showSummary();
   const name = currentName();
   if (!name) {
     showStartError('Write your name on the postcard first. It goes on the leaderboard!');
     els.playerName.focus();
     return;
+  }
+  // Check the name before playing. Only a clear "not allowed" stops the game;
+  // if the check can't be reached, play on (the server checks again at the end).
+  checkingName = true;
+  try {
+    await updateName(name);
+  } catch (err) {
+    if (err.status === NAME_REJECTED) {
+      showStartError(err.message);
+      els.playerName.focus();
+      els.playerName.select();
+      return;
+    }
+  } finally {
+    checkingName = false;
   }
   saveName(name);
   state.index = state.results.length;
