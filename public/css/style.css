@@ -1081,10 +1081,35 @@ html, body {
   .look-hand, .look-hint { animation: none; }
 }
 
-/* Scrollable cards and lists scroll without a visible scrollbar */
+/* Scrollable cards and lists: a slim, rounded postmark-red scrollbar */
 .summary-scroll, .overlay-card, .board-list {
-  scrollbar-width: none;
+  overflow-x: hidden;
+}
+/* Firefox has no ::-webkit-scrollbar; Chrome/Safari use the styles below
+   (the standard properties would override them and bring back arrow buttons). */
+@supports not selector(::-webkit-scrollbar) {
+  .summary-scroll, .overlay-card, .board-list {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168, 50, 45, 0.55) transparent;
+  }
 }
 .summary-scroll::-webkit-scrollbar, .overlay-card::-webkit-scrollbar, .board-list::-webkit-scrollbar {
+  width: 6px;
+  height: 0;
+}
+.summary-scroll::-webkit-scrollbar-button, .overlay-card::-webkit-scrollbar-button, .board-list::-webkit-scrollbar-button {
   display: none;
+}
+/* keep the bar clear of the red frame */
+.summary-scroll { margin-right: 6px; }
+.summary-scroll::-webkit-scrollbar-track, .overlay-card::-webkit-scrollbar-track, .board-list::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 10px 0;
+}
+.summary-scroll::-webkit-scrollbar-thumb, .overlay-card::-webkit-scrollbar-thumb, .board-list::-webkit-scrollbar-thumb {
+  background: rgba(168, 50, 45, 0.55);
+  border-radius: 6px;
+}
+.summary-scroll::-webkit-scrollbar-thumb:hover, .overlay-card::-webkit-scrollbar-thumb:hover, .board-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 50, 45, 0.8);
 }
