@@ -1,5 +1,6 @@
-// GET /api/leaderboard?player=<id>&date=YYYY-MM-DD&limit=50
-// Top scores for a day (today by default), plus the asking player's own rank.
+// GET /api/leaderboard?player=<id>&date=YYYY-MM-DD[&limit=N]
+// Scores for a day (today by default), best first, plus the asking player's own
+// rank. Without a limit, every player is listed.
 
 import { isDate, puzzleNumber, todayDate } from './_lib/daily.js';
 import { isPlayerId, json, route } from './_lib/http.js';
@@ -9,12 +10,13 @@ export const GET = route(async (request) => {
   const params = new URL(request.url).searchParams;
   const today = todayDate();
   const date = isDate(params.get('date')) && params.get('date') <= today ? params.get('date') : today;
-  const limit = Math.min(Math.max(Number.parseInt(params.get('limit'), 10) || 50, 1), 100);
+  const asked = Number.parseInt(params.get('limit'), 10);
+  const stop = asked > 0 ? asked - 1 : -1; // -1 = to the end
   const player = isPlayerId(params.get('player')) ? params.get('player') : null;
   const key = `lb:${date}`;
 
   const [flat, count, myRank, myScore] = await pipeline([
-    ['ZRANGE', key, 0, limit - 1, 'REV', 'WITHSCORES'],
+    ['ZRANGE', key, 0, stop, 'REV', 'WITHSCORES'],
     ['ZCARD', key],
     ['ZREVRANK', key, player ?? '-'],
     ['ZSCORE', key, player ?? '-'],

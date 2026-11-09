@@ -656,7 +656,7 @@ async function showLeaderboard(from) {
     card.hidden = false;
   };
   try {
-    const b = await getLeaderboard(50);
+    const b = await getLeaderboard();
     if (token !== state.boardToken) return;
     done();
     els.boardMeta.textContent = `${formatDate(b.date)} · ${b.players} ${b.players === 1 ? 'player' : 'players'}`;

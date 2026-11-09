@@ -59,7 +59,7 @@ export const getDaily = () => request(`/api/daily?player=${playerId()}`);
 /** Score one round; returns the answer and points. */
 export const sendGuess = (body) => post('/api/guess', body);
 
-export const getLeaderboard = (limit = 50) =>
-  request(`/api/leaderboard?player=${playerId()}&limit=${limit}`);
+export const getLeaderboard = (limit) =>
+  request(`/api/leaderboard?player=${playerId()}${limit ? `&limit=${limit}` : ''}`);
 
 export const updateName = (name) => post('/api/name', { name });

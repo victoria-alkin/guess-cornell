@@ -98,7 +98,7 @@ function memory([cmd, key, ...args]) {
     case 'ZRANGE': {
       // Only the form used here: ZRANGE key start stop REV WITHSCORES
       const [start, stop] = [Number(args[0]), Number(args[1])];
-      return zsorted(key).slice(start, stop + 1).flatMap(([m, s]) => [m, String(s)]);
+      return zsorted(key).slice(start, stop === -1 ? undefined : stop + 1).flatMap(([m, s]) => [m, String(s)]);
     }
     default:
       throw new Error(`In-memory store does not support ${cmd}`);
