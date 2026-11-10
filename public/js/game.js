@@ -87,6 +87,15 @@ function showScreen(name) {
   });
 }
 
+/** Send a game event to Google Analytics (skipped if it's blocked). */
+function track(event, params = {}) {
+  try {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', event, { puzzle_number: state.daily?.number, ...params });
+    }
+  } catch { /* analytics must never break the game */ }
+}
+
 const totalScore = () => state.results.reduce((sum, r) => sum + r.points, 0);
 const currentName = () => els.playerName.value.trim();
 
@@ -247,6 +256,7 @@ async function onStart() {
   }
   saveName(name);
   state.index = state.results.length;
+  track(state.index === 0 ? 'puzzle_start' : 'puzzle_resume', { round: state.index + 1 });
   startRound();
 }
 
@@ -554,6 +564,11 @@ async function submitGuess(timedOut) {
     state.results[state.index] = fromServer(res.result);
     state.daily.finished = res.finished;
     state.submitting = false;
+    const r = state.results[state.index];
+    track('round_complete', {
+      round: state.index + 1, points: r.points, distance_m: Math.round(r.distance ?? 0), timed_out: !!r.timedOut,
+    });
+    if (res.finished) track('puzzle_complete', { score: totalScore() });
     showResult();
   } catch (err) {
     if (token !== state.roundToken) return;
@@ -665,6 +680,7 @@ function showSummary() {
 // ---------- Leaderboard ----------
 
 async function showLeaderboard(from) {
+  track('leaderboard_view', { from });
   state.boardReturn = from;
   showScreen('leaderboard');
   els.boardNumber.textContent = state.daily ? `No. ${state.daily.number}` : '';
