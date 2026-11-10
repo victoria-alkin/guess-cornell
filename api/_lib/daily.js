@@ -193,13 +193,18 @@ export function pickMixed(pool, all, rand) {
   return orderRounds(best, rand);
 }
 
-// Spots whose name mentions one of these belong to that building, wherever the
-// word appears (e.g. "Ezra Cornell's Tomb Inside Sage Chapel Crypt").
-const NAMED_BUILDINGS = ['sage chapel', 'barton'];
+// Spots whose name mentions any of these words belong to that building,
+// wherever the word appears (e.g. "Ezra Cornell's Tomb Inside Sage Chapel Crypt").
+const NAMED_BUILDINGS = {
+  'sage chapel': ['sage chapel'],
+  barton: ['barton'],
+  statler: ['statler', 'terrace kitchen'], // the Terrace is inside Statler Hall
+};
 
 function buildingKey(l) {
   const name = String(l.name || '').toLowerCase();
-  const named = NAMED_BUILDINGS.find((b) => name.includes(b));
+  const named = Object.keys(NAMED_BUILDINGS)
+    .find((b) => NAMED_BUILDINGS[b].some((word) => name.includes(word)));
   return named || name.split(/\s+/).slice(0, 2).join(' ');
 }
 

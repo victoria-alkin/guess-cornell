@@ -199,7 +199,7 @@
     "lat": 42.4466876,
     "lng": -76.4830363,
     "image": "0f2a2d033a42d948.jpg",
-    "funFact": "A great place to relax!",
+    "funFact": "\"It don't mean a thing, if it ain't got that swing!\" - Duke Ellington.",
     "difficulty": 4,
     "indoor": false
   },
@@ -240,5 +240,35 @@
     "image": "38b0b21961937122.jpg",
     "difficulty": 6,
     "indoor": false
+  },
+  {
+    "id": "3340586733096a2a",
+    "name": "The Terrace Kitchen",
+    "lat": 42.4461556,
+    "lng": -76.4821758,
+    "image": "3340586733096a2a.jpg",
+    "funFact": "The name \"terrace\" is deeply rooted in Cornell history, founders Ezra Cornell and Andrew Dickson White originally envisioned the entire campus layout as a \"grand terrace\" overlooking Ithaca and Cayuga Lake",
+    "difficulty": 9,
+    "indoor": true
+  },
+  {
+    "id": "3e031d1868b52d55",
+    "name": "The Ramin Room",
+    "lat": 42.4458646,
+    "lng": -76.4758144,
+    "image": "3e031d1868b52d55.jpg",
+    "funFact": "The room honors Richard M. Ramin ('51), a legendary varsity football player who transitioned into a powerhouse Cornell administrator, serving the university for 41 years!",
+    "difficulty": 3,
+    "indoor": true
+  },
+  {
+    "id": "408d3e5bf47d13f2",
+    "name": "Statler Hall Auditorium",
+    "lat": 42.4455454,
+    "lng": -76.4821534,
+    "image": "408d3e5bf47d13f2.jpg",
+    "funFact": "Statler Hall's Nolan School of Hotel Administration gets a famous shout-out in the 1987 film Dirty Dancing. The owner of Kellerman’s resort proudly boasts that his grandson, Neil, attends the \"Cornell School of Hotel Administration.\"",
+    "difficulty": 3,
+    "indoor": true
   }
 ]
