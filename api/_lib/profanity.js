@@ -3,18 +3,21 @@
 // If the service is slow or down, the name is allowed rather than blocking play.
 
 const ENDPOINT = 'https://www.purgomalum.com/service/containsprofanity';
-const TIMEOUT_MS = 3000;
+// The first request from a fresh server can be slow, so wait a while and retry once.
+const ATTEMPT_TIMEOUTS_MS = [5000, 4000];
 
 export async function isProfane(text) {
-  try {
-    const res = await fetch(`${ENDPOINT}?text=${encodeURIComponent(text)}`, {
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    });
-    if (!res.ok) return false;
-    return (await res.text()).trim() === 'true';
-  } catch {
-    return false;
+  for (const timeout of ATTEMPT_TIMEOUTS_MS) {
+    try {
+      const res = await fetch(`${ENDPOINT}?text=${encodeURIComponent(text)}`, {
+        signal: AbortSignal.timeout(timeout),
+      });
+      if (res.ok) return (await res.text()).trim() === 'true';
+    } catch {
+      // timed out or unreachable: try again
+    }
   }
+  return false;
 }
 
 export const NAME_NOT_ALLOWED = "That name isn't allowed. Please pick a different one.";
