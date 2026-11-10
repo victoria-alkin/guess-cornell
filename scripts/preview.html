@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Puzzle Preview</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root { --red: #a8322d; --paper: #f6ecd6; --ink: #3b2a1e; --muted: #7a6650; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 15px/1.45 Georgia, serif; background: #8e1d1b; color: var(--ink); }
+    main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .card { background: var(--paper); border-radius: 10px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 18px rgba(0,0,0,.25); }
+    h1 { margin: 0 0 6px; font-size: 22px; color: var(--red); }
+    p.help { margin: 0 0 10px; color: var(--muted); font-size: 14px; }
+    textarea { width: 100%; min-height: 64px; font: 13px/1.4 Consolas, monospace; padding: 8px; border: 1px solid #c9b48f; border-radius: 6px; background: #fffaf0; }
+    button { font: inherit; cursor: pointer; border: 0; border-radius: 999px; padding: 7px 16px; background: var(--red); color: #fff; }
+    button.tab { background: #fffaf0; color: var(--ink); border: 1px solid #c9b48f; }
+    button.tab.on { background: var(--red); color: #fff; border-color: var(--red); }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+    .summary { margin-top: 10px; font-size: 14px; }
+    .summary .warn { color: var(--red); }
+    .viewer { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+    #pano { height: 460px; border-radius: 8px; overflow: hidden; }
+    #map { height: 260px; border-radius: 8px; }
+    .name { font-size: 20px; margin: 0 0 4px; }
+    .meta { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+    .fact { white-space: pre-line; font-size: 14px; margin-top: 10px; }
+    .error { color: var(--red); margin-top: 8px; }
+    @media (max-width: 760px) { .viewer { grid-template-columns: 1fr; } #pano { height: 320px; } }
+  </style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>Puzzle preview</h1>
+    <p class="help">Paste a day's list: the JSON array of IDs, the whole Upstash <code>SET day:…</code> command, or location names one per line. Only on this computer; nothing is scored or published.</p>
+    <textarea id="input" spellcheck="false" placeholder='SET day:2026-11-10 &apos;["787128189810bb2c", …]&apos; EX 2592000'></textarea>
+    <div class="row"><button id="go">Preview</button></div>
+    <div id="error" class="error" hidden></div>
+    <div id="summary" class="summary"></div>
+  </div>
+
+  <div class="card" id="stage" hidden>
+    <div class="row" id="tabs" style="margin-top:0;margin-bottom:12px"></div>
+    <div class="viewer">
+      <div id="pano"></div>
+      <div>
+        <h2 class="name" id="name"></h2>
+        <div class="meta" id="meta"></div>
+        <div id="map"></div>
+        <div class="fact" id="fact"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+let all = [], picks = [], viewer = null, map = null, marker = null;
+const $ = (id) => document.getElementById(id);
+
+fetch('/locations.json').then((r) => r.json()).then((d) => {
+  all = d;
+  const saved = localStorage.getItem('preview.input');
+  if (saved) { $('input').value = saved; run(); }
+});
+
+function parse(text) {
+  const ids = text.match(/\b[0-9a-f]{16}\b/g);
+  if (ids) return ids.map((id) => all.find((l) => l.id === id) || { missing: id });
+  return text.split('\n').map((s) => s.trim()).filter(Boolean).map((name) =>
+    all.find((l) => l.name.toLowerCase() === name.toLowerCase()) || { missing: name });
+}
+
+function run() {
+  const text = $('input').value;
+  try { localStorage.setItem('preview.input', text); } catch {}
+  picks = parse(text);
+  const missing = picks.filter((p) => p.missing).map((p) => p.missing);
+  $('error').hidden = !missing.length;
+  $('error').textContent = missing.length ? `Not found: ${missing.join(', ')}` : '';
+  picks = picks.filter((p) => !p.missing);
+  if (!picks.length) { $('stage').hidden = true; $('summary').textContent = ''; return; }
+
+  const outdoor = picks.filter((p) => p.indoor === false).length;
+  const avg = picks.reduce((s, p) => s + (p.difficulty || 0), 0) / picks.length;
+  const overall = all.reduce((s, p) => s + (p.difficulty || 0), 0) / all.length;
+  const notes = [];
+  if (picks.length !== 5) notes.push(`<span class="warn">${picks.length} rounds (a day has 5)</span>`);
+  notes.push(`${picks.length - outdoor} indoor · ${outdoor} outdoor`);
+  notes.push(`average rating ${avg.toFixed(1)} (all spots: ${overall.toFixed(1)})`);
+  $('summary').innerHTML = notes.join(' &nbsp;|&nbsp; ');
+
+  $('tabs').innerHTML = '';
+  picks.forEach((p, i) => {
+    const b = document.createElement('button');
+    b.className = 'tab'; b.textContent = `Round ${i + 1}`;
+    b.onclick = () => show(i);
+    $('tabs').appendChild(b);
+  });
+  $('stage').hidden = false;
+  show(0);
+}
+
+function show(i) {
+  const p = picks[i];
+  [...$('tabs').children].forEach((b, j) => b.classList.toggle('on', i === j));
+  $('name').textContent = p.name;
+  $('meta').textContent = `${p.indoor ? 'Indoor' : 'Outdoor'} · rating ${p.difficulty ?? '?'} / 10`;
+  $('fact').textContent = p.funFact || '(no fun fact)';
+  if (viewer) viewer.destroy();
+  viewer = pannellum.viewer('pano', {
+    type: 'equirectangular', panorama: `/panos/${p.image}`, autoLoad: true,
+    showZoomCtrl: false, hfov: 100, yaw: p.startYaw || 0,
+  });
+  if (!map) {
+    map = L.map('map').setView([p.lat, p.lng], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+    marker = L.marker([p.lat, p.lng]).addTo(map);
+  } else {
+    marker.setLatLng([p.lat, p.lng]); map.setView([p.lat, p.lng], 16);
+  }
+}
+
+$('go').onclick = run;
+</script>
+</body>
+</html>

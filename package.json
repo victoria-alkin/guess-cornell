@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node scripts/dev-server.mjs",
     "build:locations": "python scripts/build_locations.py",
-    "upload": "node scripts/upload_r2.mjs"
+    "upload": "node scripts/upload_r2.mjs",
+    "preview": "node scripts/preview-server.mjs"
   }
 }
