@@ -270,5 +270,44 @@
     "funFact": "Statler Hall's Nolan School of Hotel Administration gets a famous shout-out in the 1987 film Dirty Dancing. The owner of Kellerman’s resort proudly boasts that his grandson, Neil, attends the \"Cornell School of Hotel Administration.\"",
     "difficulty": 3,
     "indoor": true
+  },
+  {
+    "id": "53edfe3a0f5c8e28",
+    "name": "Mann Library Gallery",
+    "lat": 42.4489475,
+    "lng": -76.476429,
+    "image": "53edfe3a0f5c8e28.jpg",
+    "funFact": "While the original Art Deco library building itself opened in the early 1950s, the second-floor gallery was added in 2007 during a massive modernization project that also introduced the library's five-story central atrium",
+    "difficulty": 4,
+    "indoor": true
+  },
+  {
+    "id": "fee930e8f12fea63",
+    "name": "Weinhold Chilled Water Plant 1",
+    "lat": 42.4489475,
+    "lng": -76.476429,
+    "image": "fee930e8f12fea63.jpg",
+    "difficulty": 4,
+    "indoor": false
+  },
+  {
+    "id": "a981a75bc3484ac8",
+    "name": "Barton Hall Tower Staircase",
+    "lat": 42.4457162,
+    "lng": -76.4814152,
+    "image": "a981a75bc3484ac8.jpg",
+    "funFact": "Before Barton Hall's towers went up, the site was home to Cornell's third astronomical observatory, which had to be demolished to make room for the drill hall.",
+    "difficulty": 9,
+    "indoor": true
+  },
+  {
+    "id": "38e8392ad58078a1",
+    "name": "The Libe Slope",
+    "lat": 42.4494944,
+    "lng": -76.4869446,
+    "image": "38e8392ad58078a1.jpg",
+    "funFact": "\"Libe\" is simply short for \"Library,\" referring to Uris Library sitting right at the crest of the hill. Students have used the slang term for over a hundred years - it appeared in The Cornell Daily Sun as early as 1926 in a joke about building a fence to block the brutal Ithaca wind.",
+    "difficulty": 4,
+    "indoor": false
   }
 ]
