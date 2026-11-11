@@ -62,8 +62,10 @@
 let all = [], picks = [], viewer = null, map = null, marker = null;
 const $ = (id) => document.getElementById(id);
 
-fetch('/locations.json').then((r) => r.json()).then((d) => {
-  all = d;
+// Reloaded on every preview, so newly imported spots show without refreshing.
+const loadLocations = () => fetch('/locations.json').then((r) => r.json()).then((d) => { all = d; });
+
+loadLocations().then(() => {
   const saved = localStorage.getItem('preview.input');
   if (saved) { $('input').value = saved; run(); }
 });
@@ -125,7 +127,7 @@ function show(i) {
   }
 }
 
-$('go').onclick = run;
+$('go').onclick = () => loadLocations().then(run);
 </script>
 </body>
 </html>
