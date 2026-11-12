@@ -122,12 +122,13 @@ function show(i) {
   const p = picks[i];
   [...$('tabs').children].forEach((b, j) => b.classList.toggle('on', i === j));
   $('name').textContent = p.name;
-  $('meta').textContent = `${p.indoor ? 'Indoor' : 'Outdoor'} · rating ${p.difficulty ?? '?'} / 10`;
+  $('meta').textContent = `${p.indoor ? 'Indoor' : 'Outdoor'} · rating ${p.difficulty ?? '?'} / 10`
+    + (p.startYawRange ? ` · opens facing ${p.startYawRange[0]}° to ${p.startYawRange[1]}°` : '');
   $('fact').textContent = p.funFact || '(no fun fact)';
   if (viewer) viewer.destroy();
   viewer = pannellum.viewer('pano', {
     type: 'equirectangular', panorama: `/panos/${p.image}`, autoLoad: true,
-    showZoomCtrl: false, hfov: 100, yaw: p.startYaw || 0,
+    showZoomCtrl: false, hfov: 100, yaw: p.startYaw ?? (p.startYawRange ? p.startYawRange[0] + Math.random() * (p.startYawRange[1] - p.startYawRange[0]) : 0),
   });
   if (!map) {
     map = L.map('map').setView([p.lat, p.lng], 16);

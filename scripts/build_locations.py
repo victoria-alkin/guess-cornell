@@ -41,6 +41,12 @@ ROOT = Path(__file__).resolve().parent.parent
 # e.g. while a photo is being reshot.
 EXCLUDED_TITLES = {"sage chapel"}
 
+# Photos that should open facing somewhere within a range of directions
+# (degrees, 0 = photo center, increasing to the right), picked at random per player.
+START_YAW_RANGES = {
+    "abby and howard milstein auditorium": [125, 235],  # face the seats, never the screen
+}
+
 COLUMN_ALIASES = {
     "photo": "photo", "image": "photo", "file": "photo",
     "title": "title", "name": "title",
@@ -261,6 +267,8 @@ def main():
                 entry["startYaw"] = float(yaw)
             except ValueError:
                 problems.append(f"{label}: start direction {yaw!r} is not a number (ignored)")
+        if title.lower() in START_YAW_RANGES and "startYaw" not in entry:
+            entry["startYawRange"] = START_YAW_RANGES[title.lower()]
         rating = get("difficulty")
         if rating not in (None, ""):
             try:

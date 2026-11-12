@@ -163,7 +163,7 @@ async function loadDaily() {
   }
 
   const d = state.daily;
-  state.rounds = d.rounds.map((r, i) => ({ id: `round-${i}`, image: r.image, startYaw: r.startYaw }));
+  state.rounds = d.rounds.map((r, i) => ({ id: `round-${i}`, image: r.image, startYaw: r.startYaw, startYawRange: r.startYawRange }));
   state.results = d.results.map(fromServer);
   els.puzzleNo.textContent = `Daily Puzzle No. ${d.number} · ${formatDate(d.date)}`;
   $('rule-rounds').textContent = state.rounds.length;
@@ -334,7 +334,14 @@ async function startRound() {
   showLoader();
   await state.hostCheck;
   if (token !== state.roundToken) return;
-  showPano(round, token, Math.random() * 360 - 180, false);
+  showPano(round, token, startDirection(round), false);
+}
+
+/** A random direction to start facing, within the photo's allowed range if it has one. */
+function startDirection(round) {
+  const [from, to] = round.startYawRange || [-180, 180];
+  const yaw = from + Math.random() * (to - from);
+  return ((yaw + 540) % 360) - 180; // keep within -180..180
 }
 
 async function showPano(round, token, randomYaw, isRetry) {

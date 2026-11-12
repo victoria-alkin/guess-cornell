@@ -347,6 +347,10 @@
     "lng": -76.4837024,
     "image": "94f3f3ce0ffa7e6a.jpg",
     "funFact": "The auditorium's tiered seating is literally built on the outside slope of a giant concrete dome. The inside of that same dome forms a separate, cavern-like critique and exhibition space underneath the auditorium.",
+    "startYawRange": [
+      125,
+      235
+    ],
     "difficulty": 5,
     "indoor": true
   },

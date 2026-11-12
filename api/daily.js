@@ -17,7 +17,7 @@ export const GET = route(async (request) => {
     date,
     number: puzzleNumber(date),
     nextPuzzleAt: nextResetAt(),
-    rounds: locations.map((l) => ({ image: l.image ?? null, startYaw: l.startYaw ?? null })),
+    rounds: locations.map((l) => ({ image: l.image ?? null, startYaw: l.startYaw ?? null, startYawRange: l.startYawRange ?? null })),
     results: game.results,
     finished: locations.length > 0 && game.results.length >= locations.length,
     total: totalPoints(game),
