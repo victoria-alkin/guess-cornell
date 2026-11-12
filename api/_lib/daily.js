@@ -199,6 +199,7 @@ const NAMED_BUILDINGS = {
   'sage chapel': ['sage chapel'],
   barton: ['barton'],
   statler: ['statler', 'terrace kitchen'], // the Terrace is inside Statler Hall
+  milstein: ['milstein', 'green dragon'], // the Green Dragon is on Milstein Hall's lower level
 };
 
 function buildingKey(l) {

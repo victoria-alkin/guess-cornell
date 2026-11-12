@@ -242,11 +242,11 @@
     "indoor": false
   },
   {
-    "id": "3340586733096a2a",
+    "id": "bd69f0e63f6d3ff2",
     "name": "The Terrace Kitchen",
     "lat": 42.4461556,
     "lng": -76.4821758,
-    "image": "3340586733096a2a.jpg",
+    "image": "bd69f0e63f6d3ff2.jpg",
     "funFact": "The name \"terrace\" is deeply rooted in Cornell history, founders Ezra Cornell and Andrew Dickson White originally envisioned the entire campus layout as a \"grand terrace\" overlooking Ithaca and Cayuga Lake",
     "difficulty": 9,
     "indoor": true
@@ -308,6 +308,56 @@
     "image": "38e8392ad58078a1.jpg",
     "funFact": "\"Libe\" is simply short for \"Library,\" referring to Uris Library sitting right at the crest of the hill. Students have used the slang term for over a hundred years. It appeared in The Cornell Daily Sun as early as 1926 in a joke about building a fence to block the brutal Ithaca wind.",
     "difficulty": 4,
+    "indoor": false
+  },
+  {
+    "id": "68337c335952b01f",
+    "name": "Milstein Hall",
+    "lat": 42.4511508,
+    "lng": -76.4833907,
+    "image": "68337c335952b01f.jpg",
+    "funFact": "Milstein Hall is cooled using cold water pumped from the bottom of Cayuga Lake, and its interior features a giant concrete dome that pulls double duty as both a ceiling and stadium seating.",
+    "difficulty": 3,
+    "indoor": true
+  },
+  {
+    "id": "0476ae07bc9bec8f",
+    "name": "Green Dragon Café",
+    "lat": 42.4508266,
+    "lng": -76.4840941,
+    "image": "0476ae07bc9bec8f.jpg",
+    "funFact": "The Green Dragon Café’s iconic ceiling is actually made out of repurposed empty tin cans from Cornell Dining. When architecture, art, and planning students built the café in 1968 using a $100 advance from the college dean, they designed the ceiling with hundreds of salvaged tin cans to house minimalist lighting and give the basement space a cozy, eclectic vibe.",
+    "difficulty": 6,
+    "indoor": true
+  },
+  {
+    "id": "3fcca7e29603eafb",
+    "name": "Rhodes-Rawlings Auditorium, Klarman G70",
+    "lat": 42.4493386,
+    "lng": -76.4832517,
+    "image": "3fcca7e29603eafb.jpg",
+    "funFact": "Alumni Judith Lund Biggs '57 and Suzanne Weiss funded the naming of the auditorium to honor both Rhodes (Cornell's 9th president) and Rawlings (Cornell's 10th president).",
+    "difficulty": 3,
+    "indoor": true
+  },
+  {
+    "id": "94f3f3ce0ffa7e6a",
+    "name": "Abby and Howard Milstein Auditorium",
+    "lat": 42.4512337,
+    "lng": -76.4837024,
+    "image": "94f3f3ce0ffa7e6a.jpg",
+    "funFact": "The auditorium's tiered seating is literally built on the outside slope of a giant concrete dome. The inside of that same dome forms a separate, cavern-like critique and exhibition space underneath the auditorium.",
+    "difficulty": 5,
+    "indoor": true
+  },
+  {
+    "id": "384c879d0e58bb58",
+    "name": "Beebe Lake Trail",
+    "lat": 42.4525375,
+    "lng": -76.478214,
+    "image": "384c879d0e58bb58.jpg",
+    "funFact": "Beebe Lake is completely man-made and used to feature a giant toboggan slide that launched riders onto the frozen water. Before university founder Ezra Cornell built a dam across Fall Creek in 1838 to power local mills, the entire area along the trail was just a tangled, forested swamp.",
+    "difficulty": 5,
     "indoor": false
   }
 ]
