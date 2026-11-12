@@ -73,8 +73,19 @@ loadLocations().then(() => {
 function parse(text) {
   const ids = text.match(/\b[0-9a-f]{16}\b/g);
   if (ids) return ids.map((id) => all.find((l) => l.id === id) || { missing: id });
-  return text.split('\n').map((s) => s.trim()).filter(Boolean).map((name) =>
-    all.find((l) => l.name.toLowerCase() === name.toLowerCase()) || { missing: name });
+  return text.split('\n').map((s) => s.trim()).filter(Boolean).map(findByName);
+}
+
+// Exact name first; otherwise the one spot whose name contains every word typed
+// ("Kitchen" -> The Terrace Kitchen).
+function findByName(name) {
+  const lower = name.toLowerCase();
+  const exact = all.find((l) => l.name.toLowerCase() === lower);
+  if (exact) return exact;
+  const words = lower.split(/\s+/);
+  const hits = all.filter((l) => words.every((w) => l.name.toLowerCase().includes(w)));
+  if (hits.length === 1) return hits[0];
+  return { missing: hits.length ? `${name} (matches ${hits.map((l) => l.name).join(' / ')})` : name };
 }
 
 function run() {
