@@ -79,11 +79,12 @@ function parse(text) {
 // Exact name first; otherwise the one spot whose name contains every word typed
 // ("Kitchen" -> The Terrace Kitchen).
 function findByName(name) {
-  const lower = name.toLowerCase();
-  const exact = all.find((l) => l.name.toLowerCase() === lower);
+  const plain = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); // Café = Cafe
+  const lower = plain(name);
+  const exact = all.find((l) => plain(l.name) === lower);
   if (exact) return exact;
   const words = lower.split(/\s+/);
-  const hits = all.filter((l) => words.every((w) => l.name.toLowerCase().includes(w)));
+  const hits = all.filter((l) => words.every((w) => plain(l.name).includes(w)));
   if (hits.length === 1) return hits[0];
   return { missing: hits.length ? `${name} (matches ${hits.map((l) => l.name).join(' / ')})` : name };
 }
