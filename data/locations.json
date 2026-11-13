@@ -105,11 +105,11 @@
     "indoor": true
   },
   {
-    "id": "6abfc9d767cbb3e6",
+    "id": "f569d6cfdbba9270",
     "name": "Willard Straight Rock Garden",
     "lat": 42.4461338,
     "lng": -76.485488,
-    "image": "6abfc9d767cbb3e6.jpg",
+    "image": "f569d6cfdbba9270.jpg",
     "funFact": "The garden lines the banks of a small, waterfall-filled stream known across campus by its official, highly unglamorous nickname: Wee Stinky Creek. The name dates back to the early 20th century when the College of Veterinary Science was located nearby and literally drained operational chemicals and animal waste directly into the stream, creating a notorious campus stench. While the creek has been completely clean for decades, the funny historical name permanently stuck",
     "difficulty": 6,
     "indoor": false
@@ -363,5 +363,15 @@
     "funFact": "Beebe Lake is completely man-made and used to feature a giant toboggan slide that launched riders onto the frozen water. Before university founder Ezra Cornell built a dam across Fall Creek in 1838 to power local mills, the entire area along the trail was just a tangled, forested swamp.",
     "difficulty": 5,
     "indoor": false
+  },
+  {
+    "id": "9e663c9c5a19bae7",
+    "name": "Ruth Woolsey Findley History of Art Gallery",
+    "lat": 42.4486859,
+    "lng": -76.4835048,
+    "image": "9e663c9c5a19bae7.jpg",
+    "funFact": "The Ruth Woolsey Findley History of Art Gallery and its surrounding hallways in Goldwin Smith Hall serve as a visible showcase for a massive, hidden collection of over 500 antique plaster casts of famous Greek and Roman sculptures.",
+    "difficulty": 8,
+    "indoor": true
   }
 ]
