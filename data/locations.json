@@ -373,5 +373,45 @@
     "funFact": "The Ruth Woolsey Findley History of Art Gallery and its surrounding hallways in Goldwin Smith Hall serve as a visible showcase for a massive, hidden collection of over 500 antique plaster casts of famous Greek and Roman sculptures.",
     "difficulty": 8,
     "indoor": true
+  },
+  {
+    "id": "3d26820d9ba7d873",
+    "name": "The Centennial Garden",
+    "lat": 42.4494384,
+    "lng": -76.4771423,
+    "image": "3d26820d9ba7d873.jpg",
+    "funFact": "The garden was created in 2004 for the 100th anniversary of the College of Agriculture and Life Sciences.",
+    "difficulty": 6,
+    "indoor": false
+  },
+  {
+    "id": "6271730adce6743a",
+    "name": "Liberty Hyde Bailey Conservatory Greenhouse",
+    "lat": 42.4478473,
+    "lng": -76.4768438,
+    "image": "6271730adce6743a.jpg",
+    "funFact": "Home to a living collection of more than 650 plant species, including Cornell's famous Titan arum (corpse flowers), carnivorous plants, orchids, cacti, and a tropical palm house.",
+    "difficulty": 4,
+    "indoor": true
+  },
+  {
+    "id": "c6c347f0dac8c67d",
+    "name": "Atkinson Hall",
+    "lat": 42.4481586,
+    "lng": -76.4731796,
+    "image": "c6c347f0dac8c67d.jpg",
+    "funFact": "Atkinson Hall is Cornell University’s first non-college-affiliated research building, designed as a central hub for cross-disciplinary research and collaboration.",
+    "difficulty": 7,
+    "indoor": false
+  },
+  {
+    "id": "8d3dda67fa6454fd",
+    "name": "Mann Library Slope Natural Area",
+    "lat": 42.4503618,
+    "lng": -76.4775536,
+    "image": "8d3dda67fa6454fd.jpg",
+    "funFact": "The Mann Library Slope Natural Area's trails have zero trail markers, yet the area quietly serves as a secret shortcut connecting Cornell's busy Ag Quad directly to the Cornell Botanic Gardens and Beebe Lake.",
+    "difficulty": 6,
+    "indoor": false
   }
 ]
