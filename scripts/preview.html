@@ -79,7 +79,7 @@ function parse(text) {
 // Exact name first; otherwise the one spot whose name contains every word typed
 // ("Kitchen" -> The Terrace Kitchen).
 function findByName(name) {
-  const plain = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); // Café = Cafe
+  const plain = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[.']/g, '').toLowerCase(); // Café = Cafe, A.D. = AD
   const lower = plain(name);
   const exact = all.find((l) => plain(l.name) === lower);
   if (exact) return exact;
