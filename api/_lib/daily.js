@@ -203,7 +203,7 @@ const NAMED_BUILDINGS = {
   'goldwin smith': ['goldwin smith', 'history of art gallery'], // the gallery is in Goldwin Smith Hall
 };
 
-function buildingKey(l) {
+export function buildingKey(l) {
   const name = String(l.name || '').toLowerCase();
   const named = Object.keys(NAMED_BUILDINGS)
     .find((b) => NAMED_BUILDINGS[b].some((word) => name.includes(word)));

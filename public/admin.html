@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Guess Cornell Admin</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root { --red: #a8322d; --dark: #8e1d1b; --paper: #f6ecd6; --paper2: #fffaf0; --line: #c9b48f; --ink: #3b2a1e; --muted: #7a6650; --ok: #1e7a3a; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--dark); color: var(--ink); }
+    main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    h1 { font: 400 26px Georgia, serif; color: #fff; margin: 4px 0 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    h1 .spacer { flex: 1; }
+    h2 { font: 600 17px Georgia, serif; margin: 0 0 10px; }
+    .card { background: var(--paper); border-radius: 10px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 18px rgba(0,0,0,.25); }
+    .muted { color: var(--muted); font-size: 13px; }
+    button, .btn { font: inherit; cursor: pointer; border: 0; border-radius: 999px; padding: 7px 16px; background: var(--red); color: #fff; }
+    button:disabled { opacity: .5; cursor: default; }
+    button.ghost { background: var(--paper2); color: var(--ink); border: 1px solid var(--line); }
+    button.small { padding: 3px 10px; font-size: 13px; }
+    button.danger { background: #7d1512; }
+    h1 button { font: 14px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    button.tab { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.5); }
+    button.tab.on { background: #fff; color: var(--dark); }
+    input, select { font: inherit; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper2); color: var(--ink); }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .error { color: var(--red); font-weight: 600; margin-top: 8px; }
+    .notice { color: var(--ok); font-weight: 600; margin-top: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #e3d3b2; vertical-align: middle; }
+    th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    td.actions { white-space: nowrap; text-align: right; }
+    .id { font: 12px Consolas, monospace; color: var(--muted); }
+    .scroll { overflow-x: auto; }
+    .days { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+    .day { background: var(--paper2); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+    .day.today { border: 2px solid var(--red); }
+    .day h3 { margin: 0 0 4px; font-size: 14px; display: flex; justify-content: space-between; gap: 8px; }
+    .day ol { margin: 4px 0 8px; padding-left: 20px; }
+    .tag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; background: #eadbbb; color: var(--ink); }
+    .tag.out { background: #d6e8cf; }
+    .tag.warn { background: #f3c9c4; color: #7d1512; }
+    .picked { list-style: none; margin: 0; padding: 0; }
+    .picked li { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid #e3d3b2; }
+    .picked li .n { width: 22px; font-weight: 700; color: var(--red); }
+    .picked li .name { flex: 1; }
+    .summary { margin: 10px 0; font-size: 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+    .viewer { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-top: 12px; }
+    #pano { height: 420px; border-radius: 8px; overflow: hidden; background: #222; }
+    #pmap { height: 230px; border-radius: 8px; }
+    .fact { font-size: 14px; margin-top: 8px; white-space: pre-line; }
+    .used-recent td { color: var(--muted); }
+    @media (max-width: 760px) {
+      .viewer { grid-template-columns: 1fr; } #pano { height: 300px; }
+      .board-table th:nth-child(4), .board-table td:nth-child(4) { display: none; }
+      .board-table td.actions { white-space: normal; text-align: left; }
+      .board-table td.actions button { margin: 2px 0; }
+    }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>
+    <span>Guess Cornell Admin</span><span class="spacer"></span>
+    <span id="nav" class="row" hidden>
+      <button class="tab on" data-tab="board">Leaderboard</button>
+      <button class="tab" data-tab="puzzles">Daily puzzles</button>
+      <button class="tab" id="logout">Sign out</button>
+    </span>
+  </h1>
+
+  <!-- Sign in -->
+  <section id="login" class="card" hidden>
+    <h2>Sign in</h2>
+    <form id="login-form" class="row">
+      <input id="password" type="password" placeholder="Admin password" autocomplete="current-password" required>
+      <button>Sign in</button>
+    </form>
+    <div id="login-error" class="error" hidden></div>
+  </section>
+
+  <!-- Leaderboard moderation -->
+  <section id="tab-board" hidden>
+    <div class="card">
+      <div class="row">
+        <label>Day <input id="board-date" type="date"></label>
+        <input id="board-search" type="search" placeholder="Filter by name or id" style="flex:1;min-width:160px">
+        <button class="ghost" id="board-refresh">Refresh</button>
+      </div>
+      <p class="muted" id="board-info"></p>
+      <div id="board-msg"></div>
+      <div class="scroll">
+        <table class="board-table">
+          <thead><tr><th>#</th><th>Name</th><th>Score</th><th>Player id</th><th></th></tr></thead>
+          <tbody id="board-rows"></tbody>
+        </table>
+      </div>
+      <p class="muted">Rename and Clear name apply to that player on every day (names are shared across days). Remove score only affects the day shown.</p>
+    </div>
+  </section>
+
+  <!-- Daily puzzles -->
+  <section id="tab-puzzles" hidden>
+    <div class="card" id="days-card">
+      <h2>Days</h2>
+      <p class="muted">Days without a puzzle are picked automatically the first time someone plays after midnight (Ithaca time).</p>
+      <div class="days" id="days"></div>
+    </div>
+
+    <div class="card" id="editor" hidden>
+      <div class="row" style="justify-content:space-between">
+        <h2 id="editor-title" style="margin:0"></h2>
+        <button class="ghost small" id="editor-close">Close</button>
+      </div>
+      <div id="editor-warning" class="error" hidden></div>
+      <ul class="picked" id="picked"></ul>
+      <div class="summary" id="summary"></div>
+      <div class="row">
+        <button id="save">Save this day</button>
+        <button class="ghost" id="preview-btn">Preview in 360°</button>
+        <button class="ghost" id="clear-picks">Clear</button>
+      </div>
+      <div id="editor-msg"></div>
+
+      <div id="preview" hidden>
+        <div class="row" id="preview-tabs" style="margin-top:14px"></div>
+        <div class="viewer">
+          <div id="pano"></div>
+          <div>
+            <h2 id="pv-name" style="margin:0 0 2px"></h2>
+            <div class="muted" id="pv-meta"></div>
+            <div id="pmap" style="margin-top:8px"></div>
+            <div class="fact" id="pv-fact"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="spots-card" hidden>
+      <div class="row" style="justify-content:space-between">
+        <h2 style="margin:0">All spots</h2>
+        <div class="row">
+          <input id="spot-search" type="search" placeholder="Search spots">
+          <label class="muted"><input type="checkbox" id="hide-recent" checked> Hide spots used in the last 7 days</label>
+        </div>
+      </div>
+      <div class="scroll" style="margin-top:8px">
+        <table>
+          <thead><tr><th>Spot</th><th>Setting</th><th>Rating</th><th>Fun fact</th><th>Last used</th><th></th></tr></thead>
+          <tbody id="spot-rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmtDate = (d) => new Date(`${d}T12:00:00Z`).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+const fmtNum = (n) => Number(n).toLocaleString('en-US');
+
+async function api(method, body, query = '') {
+  const res = await fetch(`/api/admin${query}`, method === 'GET' ? {} : {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  });
+  let data = null;
+  try { data = await res.json(); } catch {}
+  if (res.status === 401 && body?.action !== 'login') { showLogin(); throw new Error('Please sign in.'); }
+  if (!res.ok) throw new Error(data?.error || `Server error (${res.status})`);
+  return data;
+}
+
+function flash(el, text, ok = true) {
+  el.className = ok ? 'notice' : 'error';
+  el.textContent = text;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.textContent = ''; }, 6000);
+}
+
+// ---------- Sign in / tabs ----------
+
+function showLogin(message) {
+  $('nav').hidden = true; $('tab-board').hidden = true; $('tab-puzzles').hidden = true;
+  $('login').hidden = false;
+  $('login-error').hidden = !message; $('login-error').textContent = message || '';
+  $('password').focus();
+}
+
+$('login-form').onsubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await api('POST', { action: 'login', password: $('password').value });
+    $('password').value = '';
+    start();
+  } catch (err) { showLogin(err.message); }
+};
+
+$('logout').onclick = async () => { await api('POST', { action: 'logout' }).catch(() => {}); showLogin(); };
+
+let tab = 'board';
+document.querySelectorAll('[data-tab]').forEach((b) => { b.onclick = () => switchTab(b.dataset.tab); });
+function switchTab(name) {
+  tab = name;
+  document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle('on', b.dataset.tab === name));
+  $('tab-board').hidden = name !== 'board';
+  $('tab-puzzles').hidden = name !== 'puzzles';
+  if (name === 'board') loadBoard(); else loadPuzzles();
+}
+
+async function start() {
+  try {
+    await loadBoard();
+    $('login').hidden = true; $('nav').hidden = false;
+    switchTab(tab);
+  } catch (err) {
+    if (!$('login').hidden) return;
+    showLogin(err.message === 'Please sign in.' ? '' : err.message);
+  }
+}
+
+// ---------- Leaderboard ----------
+
+let board = null;
+$('board-date').onchange = () => loadBoard();
+$('board-refresh').onclick = () => loadBoard();
+$('board-search').oninput = () => renderBoard();
+
+async function loadBoard() {
+  const date = $('board-date').value;
+  board = await api('GET', null, `?view=board${date ? `&date=${date}` : ''}`);
+  if (!date) $('board-date').value = board.date;
+  $('board-date').max = board.today;
+  renderBoard();
+}
+
+function renderBoard() {
+  const q = $('board-search').value.trim().toLowerCase();
+  const rows = [];
+  let rank = 0;
+  board.players.forEach((p, i) => {
+    rank = i > 0 && p.score === board.players[i - 1].score ? rank : i + 1;
+    if (q && !(p.name || '').toLowerCase().includes(q) && !p.player.includes(q)) return;
+    rows.push(`<tr>
+      <td class="num">${rank}</td>
+      <td>${p.name ? esc(p.name) : '<span class="muted">(no name)</span>'}</td>
+      <td class="num">${fmtNum(p.score)}</td>
+      <td class="id" title="${p.player}">${p.player.slice(0, 8)}…</td>
+      <td class="actions">
+        <button class="ghost small" data-act="rename" data-p="${p.player}">Rename</button>
+        <button class="ghost small" data-act="clear" data-p="${p.player}">Clear name</button>
+        <button class="danger small" data-act="remove" data-p="${p.player}">Remove score</button>
+      </td></tr>`);
+  });
+  $('board-rows').innerHTML = rows.join('') || '<tr><td colspan="5" class="muted">No scores.</td></tr>';
+  $('board-info').textContent = `Puzzle #${board.number} · ${fmtDate(board.date)} · ${board.players.length} players finished`;
+}
+
+$('board-rows').onclick = async (e) => {
+  const b = e.target.closest('button[data-act]');
+  if (!b) return;
+  const p = board.players.find((x) => x.player === b.dataset.p);
+  const label = p.name ? `"${p.name}"` : 'this player';
+  try {
+    if (b.dataset.act === 'rename') {
+      const name = prompt(`New name for ${label} (shown on every day):`, p.name || '');
+      if (name == null || !name.trim()) return;
+      const r = await api('POST', { action: 'rename', player: p.player, name });
+      flash($('board-msg'), `Renamed ${label} to "${r.name}".`);
+    } else if (b.dataset.act === 'clear') {
+      if (!confirm(`Clear the name of ${label}? They'll show as "Anonymous Wanderer" on every day until they pick a new one.`)) return;
+      await api('POST', { action: 'clearName', player: p.player });
+      flash($('board-msg'), `Cleared the name of ${label}.`);
+    } else {
+      if (!confirm(`Remove ${label}'s score (${fmtNum(p.score)}) from the ${fmtDate(board.date)} leaderboard? This can't be undone.`)) return;
+      await api('POST', { action: 'removeScore', date: board.date, player: p.player });
+      flash($('board-msg'), `Removed ${label}'s score.`);
+    }
+    await loadBoard();
+  } catch (err) { flash($('board-msg'), err.message, false); }
+};
+
+// ---------- Daily puzzles ----------
+
+let P = null; // { today, rounds, days, spots }
+let editing = null; // { date, picks: [id] }
+const spotById = (id) => P.spots.find((s) => s.id === id);
+
+async function loadPuzzles() {
+  P = await api('GET', null, '?view=puzzles');
+  renderDays();
+  if (editing) renderEditor();
+}
+
+function renderDays() {
+  const shown = P.days.filter((d) => d.date >= addDays(P.today, -3));
+  $('days').innerHTML = shown.map((d) => {
+    const past = d.date < P.today;
+    const isToday = d.date === P.today;
+    const names = d.ids ? d.ids.map((id) => spotById(id)?.name || `(missing spot ${id})`) : null;
+    return `<div class="day${isToday ? ' today' : ''}">
+      <h3><span>${fmtDate(d.date)}${isToday ? ' · today' : ''}</span><span class="muted">#${d.number}</span></h3>
+      ${names ? `<ol>${names.map((n) => `<li>${esc(n)}</li>`).join('')}</ol>` : `<p class="muted">${past ? 'No puzzle stored.' : 'Not set: will be picked automatically.'}</p>`}
+      <div class="row" style="justify-content:space-between">
+        <span class="muted">${d.players ? `${d.players} finished` : ''}</span>
+        ${past ? '' : `<button class="small${isToday ? ' ghost' : ''}" data-edit="${d.date}">${d.ids ? 'Change' : 'Set'}</button>`}
+      </div></div>`;
+  }).join('');
+}
+
+function addDays(date, n) {
+  const d = new Date(`${date}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10);
+}
+
+$('days').onclick = (e) => {
+  const b = e.target.closest('button[data-edit]');
+  if (!b) return;
+  const day = P.days.find((d) => d.date === b.dataset.edit);
+  editing = { date: day.date, picks: [...(day.ids || [])] };
+  $('preview').hidden = true;
+  renderEditor();
+  $('editor').scrollIntoView({ behavior: 'smooth' });
+};
+$('editor-close').onclick = () => { editing = null; $('editor').hidden = true; $('spots-card').hidden = true; };
+$('clear-picks').onclick = () => { editing.picks = []; renderEditor(); };
+
+// When a spot was last used (or is next used) on a day other than the one being edited.
+function usage(id) {
+  const others = P.days.filter((d) => d.ids && d.ids.includes(id) && d.date !== editing.date);
+  const past = others.filter((d) => d.date <= P.today).map((d) => d.date).sort().pop();
+  const future = others.filter((d) => d.date > P.today).map((d) => d.date).sort()[0];
+  return { past, future };
+}
+const daysBetween = (a, b) => Math.round((Date.parse(`${b}T12:00:00Z`) - Date.parse(`${a}T12:00:00Z`)) / 86400000);
+
+function renderEditor() {
+  const day = P.days.find((d) => d.date === editing.date);
+  $('editor').hidden = false; $('spots-card').hidden = false;
+  $('editor-title').textContent = `Puzzle #${day.number} · ${fmtDate(editing.date)}${editing.date === P.today ? ' (today)' : ''}`;
+  const warn = editing.date === P.today
+    ? `This is today's live puzzle${day.players ? ` and ${day.players} people have already finished it` : ''}. Changing it mixes up the games of anyone partway through, so only change today in an emergency.`
+    : '';
+  $('editor-warning').hidden = !warn; $('editor-warning').textContent = warn;
+
+  $('picked').innerHTML = editing.picks.map((id, i) => {
+    const s = spotById(id);
+    return `<li><span class="n">${i + 1}</span><span class="name">${esc(s.name)}
+      <span class="tag${s.indoor === false ? ' out' : ''}">${s.indoor ? 'indoor' : 'outdoor'}</span>
+      <span class="tag">rating ${s.difficulty ?? '?'}</span>${s.funFact ? '' : ' <span class="tag warn">no fun fact</span>'}</span>
+      <button class="ghost small" data-move="${i}" data-dir="-1" ${i === 0 ? 'disabled' : ''}>↑</button>
+      <button class="ghost small" data-move="${i}" data-dir="1" ${i === editing.picks.length - 1 ? 'disabled' : ''}>↓</button>
+      <button class="ghost small" data-drop="${i}">Remove</button></li>`;
+  }).join('') || `<li class="muted">Add ${P.rounds} spots from the list below.</li>`;
+
+  // Summary and checks
+  const picks = editing.picks.map(spotById);
+  const notes = [`<span>${picks.length} of ${P.rounds} spots</span>`];
+  if (picks.length) {
+    const out = picks.filter((s) => s.indoor === false).length;
+    const rated = P.spots.filter((s) => s.difficulty);
+    const overall = rated.reduce((a, s) => a + s.difficulty, 0) / rated.length;
+    const avg = picks.reduce((a, s) => a + (s.difficulty || overall), 0) / picks.length;
+    notes.push(`<span>${picks.length - out} indoor · ${out} outdoor</span>`);
+    notes.push(`<span>average rating ${avg.toFixed(1)} (all spots ${overall.toFixed(1)})</span>`);
+    const noFact = picks.filter((s) => !s.funFact).length;
+    if (noFact) notes.push(`<span class="tag warn">${noFact} without a fun fact</span>`);
+    const pairs = [];
+    picks.forEach((a, i) => picks.slice(i + 1).forEach((b) => { if (a.building === b.building) pairs.push(`${a.name} + ${b.name}`); }));
+    if (pairs.length) notes.push(`<span class="tag warn">same building: ${esc(pairs.join('; '))}</span>`);
+    const recent = picks.filter((s) => { const u = usage(s.id); return u.past && daysBetween(u.past, editing.date) <= 7; });
+    if (recent.length) notes.push(`<span class="tag warn">used in the past week: ${esc(recent.map((s) => s.name).join(', '))}</span>`);
+  }
+  $('summary').innerHTML = notes.join('');
+  $('save').disabled = editing.picks.length !== P.rounds;
+  $('preview-btn').disabled = !editing.picks.length;
+  renderSpots();
+}
+
+$('picked').onclick = (e) => {
+  const mv = e.target.closest('button[data-move]');
+  const dr = e.target.closest('button[data-drop]');
+  if (mv) {
+    const i = Number(mv.dataset.move), j = i + Number(mv.dataset.dir);
+    [editing.picks[i], editing.picks[j]] = [editing.picks[j], editing.picks[i]];
+  } else if (dr) editing.picks.splice(Number(dr.dataset.drop), 1);
+  else return;
+  renderEditor();
+  if (!$('preview').hidden) openPreview(0);
+};
+
+$('spot-search').oninput = () => renderSpots();
+$('hide-recent').onchange = () => renderSpots();
+
+function renderSpots() {
+  const q = $('spot-search').value.trim().toLowerCase();
+  const hideRecent = $('hide-recent').checked;
+  const rows = P.spots
+    .map((s) => ({ s, u: usage(s.id) }))
+    .filter(({ s }) => !q || s.name.toLowerCase().includes(q))
+    .filter(({ u }) => !hideRecent || !u.past || daysBetween(u.past, editing.date) > 7)
+    .sort((a, b) => (a.u.past || '') < (b.u.past || '') ? -1 : (a.u.past || '') > (b.u.past || '') ? 1 : a.s.name.localeCompare(b.s.name));
+  $('spot-rows').innerHTML = rows.map(({ s, u }) => {
+    const picked = editing.picks.includes(s.id);
+    const last = u.past ? `${fmtDate(u.past)} (${daysBetween(u.past, editing.date)} days before)` : 'never';
+    const next = u.future ? `<br><span class="tag warn">also set for ${fmtDate(u.future)}</span>` : '';
+    return `<tr>
+      <td>${esc(s.name)}</td>
+      <td><span class="tag${s.indoor === false ? ' out' : ''}">${s.indoor ? 'indoor' : 'outdoor'}</span></td>
+      <td class="num">${s.difficulty ?? '?'}</td>
+      <td>${s.funFact ? '✓' : '<span class="muted">none</span>'}</td>
+      <td class="muted">${last}${next}</td>
+      <td class="actions">${picked ? '<span class="muted">added</span>'
+        : `<button class="small" data-add="${s.id}" ${editing.picks.length >= P.rounds ? 'disabled' : ''}>Add</button>`}</td></tr>`;
+  }).join('') || '<tr><td colspan="6" class="muted">No spots match.</td></tr>';
+}
+
+$('spot-rows').onclick = (e) => {
+  const b = e.target.closest('button[data-add]');
+  if (!b || editing.picks.length >= P.rounds) return;
+  editing.picks.push(b.dataset.add);
+  renderEditor();
+};
+
+$('save').onclick = async () => {
+  const day = P.days.find((d) => d.date === editing.date);
+  const list = editing.picks.map((id, i) => `${i + 1}. ${spotById(id).name}`).join('\n');
+  let msg = `Set ${fmtDate(editing.date)} to:\n\n${list}`;
+  if (editing.date === P.today) msg = `WARNING: this changes TODAY's live puzzle${day.players ? ` (${day.players} already finished)` : ''}.\n\n${msg}`;
+  if (!confirm(msg)) return;
+  try {
+    await api('POST', { action: 'setDay', date: editing.date, ids: editing.picks });
+    flash($('editor-msg'), `Saved ${fmtDate(editing.date)}.`);
+    await loadPuzzles();
+  } catch (err) { flash($('editor-msg'), err.message, false); }
+};
+
+// ---------- 360° preview ----------
+
+let viewer = null, pmap = null, pmarker = null;
+$('preview-btn').onclick = () => { $('preview').hidden = false; openPreview(0); };
+
+function openPreview(i) {
+  if (!editing.picks.length) { $('preview').hidden = true; return; }
+  i = Math.min(i, editing.picks.length - 1);
+  $('preview-tabs').innerHTML = editing.picks.map((_, j) =>
+    `<button class="ghost small${j === i ? '' : ''}" data-round="${j}" style="${j === i ? 'background:var(--red);color:#fff;border-color:var(--red)' : ''}">Round ${j + 1}</button>`).join('');
+  const s = spotById(editing.picks[i]);
+  $('pv-name').textContent = s.name;
+  $('pv-meta').textContent = `${s.indoor ? 'Indoor' : 'Outdoor'} · rating ${s.difficulty ?? '?'}`
+    + (s.startYawRange ? ` · opens facing ${s.startYawRange[0]}° to ${s.startYawRange[1]}°` : '');
+  $('pv-fact').textContent = s.funFact || '(no fun fact)';
+  if (viewer) viewer.destroy();
+  const r = s.startYawRange;
+  viewer = pannellum.viewer('pano', {
+    type: 'equirectangular', panorama: `/photos/${s.image}`, autoLoad: true, showZoomCtrl: false, hfov: 100,
+    yaw: s.startYaw ?? (r ? r[0] + Math.random() * (r[1] - r[0]) : 0),
+  });
+  if (!pmap) {
+    pmap = L.map('pmap').setView([s.lat, s.lng], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(pmap);
+    pmarker = L.marker([s.lat, s.lng]).addTo(pmap);
+  } else { pmarker.setLatLng([s.lat, s.lng]); pmap.setView([s.lat, s.lng], 16); }
+}
+$('preview-tabs').onclick = (e) => {
+  const b = e.target.closest('button[data-round]');
+  if (b) openPreview(Number(b.dataset.round));
+};
+
+start();
+</script>
+</body>
+</html>

@@ -66,6 +66,7 @@ createServer(async (req, res) => {
     let file = path.join(ROOT, 'public', rel);
     if (!file.startsWith(path.join(ROOT, 'public'))) return sendFile(res, '');
     if (pathname.endsWith('/')) file = path.join(file, 'index.html');
+    if (pathname === '/admin') file = path.join(ROOT, 'public', 'admin.html');
     return await sendFile(res, file);
   } catch (err) {
     console.error(err);

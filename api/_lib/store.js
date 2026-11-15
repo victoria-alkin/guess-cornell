@@ -75,6 +75,14 @@ function memory([cmd, key, ...args]) {
       return 'OK';
     }
     case 'EXPIRE': return 1;
+    case 'DEL': return mem.delete(key) ? 1 : 0;
+    case 'INCR': {
+      const n = Number(mem.get(key) || 0) + 1;
+      mem.set(key, String(n));
+      return n;
+    }
+    case 'HDEL': return args.filter((f) => mem.get(key)?.delete(String(f))).length;
+    case 'ZREM': return args.filter((m) => zset(key).delete(String(m))).length;
     case 'HSET': {
       if (!mem.has(key)) mem.set(key, new Map());
       for (let i = 0; i < args.length; i += 2) mem.get(key).set(String(args[i]), String(args[i + 1]));
