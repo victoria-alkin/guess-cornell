@@ -290,6 +290,7 @@ $('board-rows').onclick = async (e) => {
 
 // ---------- Daily puzzles ----------
 
+const PUBLIC_LAUNCH = '2026-11-09'; // history starts at the public launch
 let P = null; // { today, rounds, days, spots }
 let editing = null; // { date, picks: [id] }
 const spotById = (id) => P.spots.find((s) => s.id === id);
@@ -301,7 +302,7 @@ async function loadPuzzles() {
 }
 
 function renderDays() {
-  const shown = P.days.filter((d) => d.date >= addDays(P.today, -3));
+  const shown = P.days.filter((d) => d.date >= PUBLIC_LAUNCH);
   $('days').innerHTML = shown.map((d) => {
     const past = d.date < P.today;
     const isToday = d.date === P.today;
