@@ -728,52 +728,105 @@ function ordinal(n) {
 const words = (n) => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][n] ?? String(n);
 const capital = (t) => t[0].toUpperCase() + t.slice(1);
 
+const STEPS = `
+  <ol class="promo-steps">
+    <li><span class="step-n">1</span>Finish the puzzle</li>
+    <li><span class="step-n">2</span>Get your play number<small>1st, 2nd, 3rd&hellip;</small></li>
+    <li><span class="step-n">3</span>Land on a Cornell number and win!</li>
+  </ol>`;
+
 /** kind: 'announce' | 'live' | 'result'. `then` runs when the button is pressed. */
 function showPromo(kind, then, buttonLabel) {
   const promo = state.promo;
   const r = state.promoResult;
-  const card = $('screen-promo').querySelector('.promo-card');
-  const set = (kicker, title, body) => {
+  const won = kind === 'result' && Boolean(r?.won);
+  const card = $('promo-card');
+  card.classList.toggle('win', won);
+  // Restart the entrance animations each time.
+  card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
+
+  const count = words(promo?.winners ?? 5);
+  const prizeText = promo?.prize ?? r?.prize ?? '';
+  const prize = esc(prizeText);
+  const day = promo?.date ?? state.daily?.date;
+  const set = (kicker, script, block, body) => {
     $('promo-kicker').innerHTML = kicker;
-    $('promo-title').textContent = title;
+    $('promo-script').textContent = script;
+    $('promo-block').textContent = block;
     $('promo-body').innerHTML = body;
   };
-  card.classList.toggle('win', kind === 'result' && Boolean(r?.won));
-  const count = words(promo?.winners ?? 5);
-  const prize = esc(promo?.prize ?? r?.prize);
+  $('promo-stamp-value').textContent = (prizeText.match(/\$\d+/) || [''])[0];
+  $('promo-pm-word').textContent = won ? 'Winner' : 'Giveaway';
+  $('promo-pm-date').textContent = day
+    ? new Date(`${day}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
+    : '';
+  $('promo-mail').hidden = true;
 
   if (kind === 'announce') {
-    set('&#10022; A thank-you from Guess Cornell &#10022;', 'Giveaway tomorrow!', `
-      <p>To thank everyone for playing, <strong>${count} players</strong> will each win a <strong>${prize}</strong> on ${esc(longDate(promo.date))}.</p>
-      <p>Winners are picked by play number: when you finish the puzzle, you get the next number (1st, 2nd, 3rd&hellip;). Land on one of ${count} special Cornell numbers and you win!</p>
-      <p>Come back tomorrow, play, and see if your number comes up.</p>`);
+    set('&#10022; A thank-you from Guess Cornell &#10022;', 'Free bagels', 'Tomorrow', `
+      <p class="promo-lead">To thank everyone for playing, <strong>${count} players</strong> will each win a <strong>${prize}</strong> on ${esc(longDate(promo.date))}.</p>
+      ${STEPS}
+      <p class="promo-note">Come back tomorrow and play!</p>`);
   } else if (kind === 'live') {
-    set('&#10022; Today only &#10022;', "It's giveaway day!", `
-      <p><strong>${capital(count)} players</strong> will each win a <strong>${prize}</strong> today.</p>
-      <p>Every finished puzzle gets the next play number (1st, 2nd, 3rd&hellip;), and ${count} special Cornell numbers win.</p>
-      <p>Finish today's puzzle to find out yours!</p>`);
-  } else if (r.won) {
-    const mail = `mailto:${r.email}?subject=${encodeURIComponent(`Guess Cornell giveaway: claim code ${r.code}`)}`
-      + `&body=${encodeURIComponent(`Hi! I was player #${r.n} to finish the puzzle. My claim code is ${r.code}.`)}`;
-    set('&#10022; Giveaway day &#10022;', 'You won!', `
-      <p class="promo-number">#${r.n}</p>
-      <p>You were the <strong>${ordinal(r.n)}</strong> player to finish today's puzzle, and ${r.n} is ${esc(r.why)}.</p>
-      <p>You've won a <strong>${esc(r.prize)}</strong>!</p>
-      <p>Your claim code:<br><span class="promo-code">${esc(r.code)}</span></p>
-      <p>Email <a href="${esc(mail)}">${esc(r.email)}</a> with your claim code and we'll send you your digital gift card.</p>
+    set('&#10022; Today only &#10022;', "It's", 'Giveaway Day', `
+      <p class="promo-lead"><strong>${capital(count)} players</strong> will each win a <strong>${prize}</strong> today.</p>
+      ${STEPS}
+      <p class="promo-note">Good luck out there!</p>`);
+  } else if (won) {
+    set('&#10022; Giveaway day &#10022;', 'You', 'Won!', `
+      <p class="promo-lead">You were the <strong>${ordinal(r.n)}</strong> player to finish today's puzzle, and you've won a <strong>${esc(r.prize)}</strong>!</p>
+      <div class="ticket">
+        <div class="ticket-main"><span class="ticket-label">Play no.</span><span class="ticket-number">${r.n}</span></div>
+        <div class="ticket-stub"><span class="ticket-label">Claim code</span><span class="ticket-code">${esc(r.code)}</span></div>
+      </div>
+      <p class="promo-note">${r.n} is ${esc(r.why)}!</p>
+      <p>Email <a href="${esc(mailto(r))}">${esc(r.email)}</a> with your claim code and we'll send you your digital gift card.</p>
       <p class="small">Take a screenshot so you don't lose your code. It also stays under "See your results" today.</p>`);
+    $('promo-mail').href = mailto(r);
+    $('promo-mail').hidden = false;
+    confetti();
   } else {
     const gap = Math.abs(r.n - r.nearest);
-    set('&#10022; Giveaway day &#10022;', 'Not this time!', `
-      <p class="promo-number">#${r.n}</p>
-      <p>You were the <strong>${ordinal(r.n)}</strong> player to finish today's puzzle.</p>
-      <p>The closest winning number was <strong>#${r.nearest}</strong>, ${esc(r.nearestWhy)}: just ${gap} away!</p>
+    const [left, right] = r.n < r.nearest ? ['you', 'prize'] : ['prize', 'you'];
+    const mark = (who, x) => (who === 'you'
+      ? `<span class="ruler-mark you" style="left:${x}%"><span>you</span><b>${r.n}</b></span>`
+      : `<span class="ruler-mark prize" style="left:${x}%"><span>&#9733; winner</span><b>${r.nearest}</b></span>`);
+    set('&#10022; Giveaway day &#10022;', gap <= 15 ? 'So' : 'Not this', gap <= 15 ? 'Close!' : 'Time', `
+      <p class="promo-lead">You were the <strong>${ordinal(r.n)}</strong> player to finish today's puzzle.</p>
+      <div class="ruler" aria-hidden="true">
+        <div class="ruler-line"></div>
+        ${mark(left, 20)}${mark(right, 80)}
+        <span class="ruler-gap" style="left:50%">&larr; ${gap} away &rarr;</span>
+      </div>
+      <p class="promo-note">#${r.nearest} won: ${esc(r.nearestWhy)}.</p>
       <p>Thanks for playing! Keep playing for chances to win more prizes in the future.</p>`);
   }
   els.btnPromo.textContent = buttonLabel;
   promoThen = then;
   showScreen('promo');
+  $('screen-promo').scrollTop = 0;
   track('promo_view', { kind: kind === 'result' ? (r.won ? 'win' : 'lose') : kind });
+}
+
+const mailto = (r) => `mailto:${r.email}?subject=${encodeURIComponent(`Guess Cornell giveaway: claim code ${r.code}`)}`
+  + `&body=${encodeURIComponent(`Hi! I was player #${r.n} to finish the puzzle. My claim code is ${r.code}.`)}`;
+
+function confetti() {
+  const box = $('promo-confetti');
+  box.innerHTML = '';
+  const colors = ['#a8322d', '#b31b1b', '#f2d39b', '#e2b36f', '#fff8e6', '#4a3426'];
+  for (let i = 0; i < 70; i++) {
+    const bit = document.createElement('i');
+    if (i % 3 === 0) bit.className = 'seed';
+    bit.style.left = `${Math.random() * 100}%`;
+    bit.style.background = i % 3 === 0 ? '#fff8e6' : colors[i % colors.length];
+    bit.style.setProperty('--delay', `${0.5 + Math.random() * 0.9}s`);
+    bit.style.setProperty('--dur', `${2.4 + Math.random() * 1.8}s`);
+    bit.style.setProperty('--drift', `${(Math.random() - 0.5) * 220}px`);
+    bit.style.setProperty('--spin', `${(Math.random() < 0.5 ? -1 : 1) * (360 + Math.random() * 540)}deg`);
+    box.appendChild(bit);
+  }
+  setTimeout(() => { box.innerHTML = ''; }, 5000);
 }
 
 /** /?promoPreview=announce|live|result&n=161 : the admin page's preview (needs the admin sign-in). */

@@ -228,22 +228,35 @@
 
   <!-- ===== Giveaway screen (announcements and play-number results) ===== -->
   <section id="screen-promo" class="screen">
-    <div class="promo-card">
+    <div id="promo-confetti" class="promo-confetti" aria-hidden="true"></div>
+    <div id="promo-card" class="promo-card">
       <p id="promo-preview-tag" class="promo-preview-tag" hidden>Preview</p>
-      <p class="kicker" id="promo-kicker"></p>
-      <div class="promo-bagel">
-        <svg viewBox="0 0 120 80" aria-hidden="true">
-          <ellipse cx="60" cy="44" rx="54" ry="30" fill="#8a5a2b"/>
-          <ellipse cx="60" cy="40" rx="54" ry="30" fill="#d39a55"/>
-          <ellipse cx="60" cy="36" rx="46" ry="23" fill="#e2b36f"/>
-          <ellipse cx="60" cy="38" rx="13" ry="7" fill="#8a5a2b"/>
-          <ellipse cx="60" cy="36" rx="13" ry="6.5" fill="#f6ecd6"/>
-          <g fill="#fff8e6"><ellipse cx="30" cy="30" rx="2.4" ry="1.3" transform="rotate(-20 30 30)"/><ellipse cx="44" cy="22" rx="2.4" ry="1.3" transform="rotate(15 44 22)"/><ellipse cx="62" cy="19" rx="2.4" ry="1.3"/><ellipse cx="80" cy="23" rx="2.4" ry="1.3" transform="rotate(-25 80 23)"/><ellipse cx="92" cy="33" rx="2.4" ry="1.3" transform="rotate(30 92 33)"/><ellipse cx="86" cy="46" rx="2.4" ry="1.3" transform="rotate(-10 86 46)"/><ellipse cx="70" cy="52" rx="2.4" ry="1.3" transform="rotate(20 70 52)"/><ellipse cx="48" cy="52" rx="2.4" ry="1.3" transform="rotate(-30 48 52)"/><ellipse cx="32" cy="45" rx="2.4" ry="1.3" transform="rotate(10 32 45)"/><ellipse cx="25" cy="38" rx="2.4" ry="1.3"/></g>
-        </svg>
+      <div class="promo-postmark" aria-hidden="true">
+        <span class="pm-small">Ithaca N.Y.</span>
+        <span class="pm-word" id="promo-pm-word"></span>
+        <span class="pm-small">&#9733; <span id="promo-pm-date"></span> &#9733;</span>
       </div>
-      <h2 class="promo-title" id="promo-title"></h2>
+      <div class="promo-stamp" aria-hidden="true">
+        <svg viewBox="0 0 120 80" aria-hidden="true">
+            <ellipse cx="60" cy="44" rx="54" ry="30" fill="#8a5a2b"/>
+            <ellipse cx="60" cy="40" rx="54" ry="30" fill="#d39a55"/>
+            <ellipse cx="60" cy="36" rx="46" ry="23" fill="#e2b36f"/>
+            <ellipse cx="60" cy="38" rx="13" ry="7" fill="#8a5a2b"/>
+            <ellipse cx="60" cy="36" rx="13" ry="6.5" fill="#f6ecd6"/>
+            <g fill="#fff8e6"><ellipse cx="30" cy="30" rx="2.4" ry="1.3" transform="rotate(-20 30 30)"/><ellipse cx="44" cy="22" rx="2.4" ry="1.3" transform="rotate(15 44 22)"/><ellipse cx="62" cy="19" rx="2.4" ry="1.3"/><ellipse cx="80" cy="23" rx="2.4" ry="1.3" transform="rotate(-25 80 23)"/><ellipse cx="92" cy="33" rx="2.4" ry="1.3" transform="rotate(30 92 33)"/><ellipse cx="86" cy="46" rx="2.4" ry="1.3" transform="rotate(-10 86 46)"/><ellipse cx="70" cy="52" rx="2.4" ry="1.3" transform="rotate(20 70 52)"/><ellipse cx="48" cy="52" rx="2.4" ry="1.3" transform="rotate(-30 48 52)"/><ellipse cx="32" cy="45" rx="2.4" ry="1.3" transform="rotate(10 32 45)"/><ellipse cx="25" cy="38" rx="2.4" ry="1.3"/></g>
+          </svg>
+        <span class="promo-stamp-value" id="promo-stamp-value"></span>
+      </div>
+      <p class="kicker promo-kicker" id="promo-kicker"></p>
+      <h2 class="promo-heading">
+        <span class="promo-script" id="promo-script"></span>
+        <span class="promo-block" id="promo-block"></span>
+      </h2>
       <div class="promo-body" id="promo-body"></div>
-      <button id="btn-promo" class="btn vintage"></button>
+      <div class="promo-actions">
+        <button id="btn-promo" class="btn vintage"></button>
+        <a id="promo-mail" class="btn vintage ghost promo-mail" hidden>Email us to claim</a>
+      </div>
     </div>
   </section>
 
