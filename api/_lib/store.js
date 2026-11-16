@@ -90,6 +90,8 @@ function memory([cmd, key, ...args]) {
     }
     case 'HGET': return mem.get(key)?.get(String(args[0])) ?? null;
     case 'HMGET': return args.map((f) => mem.get(key)?.get(String(f)) ?? null);
+    case 'HKEYS': return [...(mem.get(key)?.keys() ?? [])];
+    case 'HGETALL': return [...(mem.get(key)?.entries() ?? [])].flat();
     case 'ZADD': {
       zset(key).set(String(args[1]), Number(args[0]));
       return 1;

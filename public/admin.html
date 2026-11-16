@@ -101,7 +101,17 @@
           <tbody id="board-rows"></tbody>
         </table>
       </div>
-      <p class="muted">Rename and Clear name apply to that player on every day (names are shared across days). Remove score only affects the day shown.</p>
+      <p class="muted">Rename and Clear name change the name for everyone, including the player, on every day. Hide and Name for others apply on every day but only for other people: the player still sees their own score and name as normal. Remove score only affects the day shown.</p>
+    </div>
+    <div class="card" id="moderated-card" hidden>
+      <h2>Hidden or renamed for others</h2>
+      <p class="muted">Every day, not just the one above. They still see themselves normally.</p>
+      <div class="scroll">
+        <table class="board-table">
+          <thead><tr><th>Their name</th><th>Others see</th><th></th><th>Player id</th><th></th></tr></thead>
+          <tbody id="moderated-rows"></tbody>
+        </table>
+      </div>
     </div>
   </section>
 
@@ -251,26 +261,64 @@ function renderBoard() {
     if (q && !(p.name || '').toLowerCase().includes(q) && !p.player.includes(q)) return;
     rows.push(`<tr>
       <td class="num">${rank}</td>
-      <td>${p.name ? esc(p.name) : '<span class="muted">(no name)</span>'}</td>
+      <td>${p.name ? esc(p.name) : '<span class="muted">(no name)</span>'}${modTags(p)}</td>
       <td class="num">${fmtNum(p.score)}</td>
       <td class="id" title="${p.player}">${p.player.slice(0, 8)}…</td>
       <td class="actions">
         <button class="ghost small" data-act="rename" data-p="${p.player}">Rename</button>
         <button class="ghost small" data-act="clear" data-p="${p.player}">Clear name</button>
+        ${modButtons(p)}
         <button class="danger small" data-act="remove" data-p="${p.player}">Remove score</button>
       </td></tr>`);
   });
+  $('moderated-card').hidden = !board.moderated.length;
+  $('moderated-rows').innerHTML = board.moderated.map((p) => `<tr>
+      <td>${p.name ? esc(p.name) : '<span class="muted">(no name)</span>'}</td>
+      <td>${p.hidden ? '<span class="tag warn">hidden</span>' : esc(p.publicName)}</td>
+      <td></td>
+      <td class="id" title="${p.player}">${p.player.slice(0, 8)}…</td>
+      <td class="actions">${modButtons(p)}</td></tr>`).join('');
   $('board-rows').innerHTML = rows.join('') || '<tr><td colspan="5" class="muted">No scores.</td></tr>';
   $('board-info').textContent = `Puzzle #${board.number} · ${fmtDate(board.date)} · ${board.players.length} players finished`;
 }
 
-$('board-rows').onclick = async (e) => {
+function modTags(p) {
+  return (p.hidden ? ' <span class="tag warn">hidden from others</span>' : '')
+    + (p.publicName ? ` <span class="tag">others see "${esc(p.publicName)}"</span>` : '');
+}
+
+function modButtons(p) {
+  return (p.hidden
+    ? `<button class="ghost small" data-act="unhide" data-p="${p.player}">Unhide</button>`
+    : `<button class="ghost small" data-act="hide" data-p="${p.player}">Hide from others</button>`) + ' '
+    + (p.publicName
+      ? `<button class="ghost small" data-act="realname" data-p="${p.player}">Show real name</button>`
+      : `<button class="ghost small" data-act="publicname" data-p="${p.player}">Name for others</button>`);
+}
+
+$('board-rows').onclick = $('moderated-rows').onclick = async (e) => {
   const b = e.target.closest('button[data-act]');
   if (!b) return;
-  const p = board.players.find((x) => x.player === b.dataset.p);
+  const p = board.players.find((x) => x.player === b.dataset.p)
+    || board.moderated.find((x) => x.player === b.dataset.p);
   const label = p.name ? `"${p.name}"` : 'this player';
   try {
-    if (b.dataset.act === 'rename') {
+    if (b.dataset.act === 'hide') {
+      if (!confirm(`Hide ${label} from the leaderboard on every day? Everyone else stops seeing them; they still see themselves as normal.`)) return;
+      await api('POST', { action: 'hide', player: p.player });
+      flash($('board-msg'), `${label} is now hidden from everyone else.`);
+    } else if (b.dataset.act === 'unhide') {
+      await api('POST', { action: 'unhide', player: p.player });
+      flash($('board-msg'), `${label} is visible to everyone again.`);
+    } else if (b.dataset.act === 'publicname') {
+      const name = prompt(`Name everyone else sees for ${label} (they still see their own name). Edit it to partly censor, e.g. "B*** Smith":`, 'Anonymous Wanderer');
+      if (name == null || !name.trim()) return;
+      const r = await api('POST', { action: 'setPublicName', player: p.player, name });
+      flash($('board-msg'), `Everyone else now sees ${label} as "${r.name}".`);
+    } else if (b.dataset.act === 'realname') {
+      await api('POST', { action: 'clearPublicName', player: p.player });
+      flash($('board-msg'), `Everyone sees ${label}'s own name again.`);
+    } else if (b.dataset.act === 'rename') {
       const name = prompt(`New name for ${label} (shown on every day):`, p.name || '');
       if (name == null || !name.trim()) return;
       const r = await api('POST', { action: 'rename', player: p.player, name });
