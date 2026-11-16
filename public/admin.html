@@ -36,6 +36,7 @@
     td.num { text-align: right; font-variant-numeric: tabular-nums; }
     td.actions { white-space: nowrap; text-align: right; }
     .id { font: 12px Consolas, monospace; color: var(--muted); }
+    .id.copy { cursor: copy; text-decoration: underline dotted; }
     .scroll { overflow-x: auto; }
     .days { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
     .day { background: var(--paper2); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
@@ -254,7 +255,7 @@ function renderBoard() {
       <td class="num">${rank}</td>
       <td>${p.name ? esc(p.name) : '<span class="muted">(no name)</span>'}${modTags(p)}</td>
       <td class="num">${fmtNum(p.score)}</td>
-      <td class="id" title="${p.player}">${p.player.slice(0, 8)}…</td>
+      <td class="id copy" title="Click to copy: ${p.player}" data-copy="${p.player}">${p.player.slice(0, 8)}…</td>
       <td class="actions">
         <button class="ghost small" data-act="rename" data-p="${p.player}">Rename</button>
         <button class="ghost small" data-act="clear" data-p="${p.player}">Clear name</button>
@@ -293,6 +294,12 @@ $('rescore').onclick = async () => {
 };
 
 $('board-rows').onclick = async (e) => {
+  const cell = e.target.closest('[data-copy]');
+  if (cell) {
+    try { await navigator.clipboard.writeText(cell.dataset.copy); flash($('board-msg'), `Copied player id ${cell.dataset.copy}`); }
+    catch { prompt('Copy this player id:', cell.dataset.copy); }
+    return;
+  }
   const b = e.target.closest('button[data-act]');
   if (!b) return;
   const p = board.players.find((x) => x.player === b.dataset.p);
