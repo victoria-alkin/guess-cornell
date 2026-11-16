@@ -8,6 +8,9 @@ const $ = (id) => document.getElementById(id);
 
 const els = {
   btnStart: $('btn-start'),
+  btnPromo: $('btn-promo'),
+  promoRibbon: $('promo-ribbon'),
+  summaryPromo: $('summary-promo'),
   startError: $('start-error'),
   playerName: $('player-name'),
   addressName: $('address-name'),
@@ -143,8 +146,14 @@ function init() {
   els.guessPanel.addEventListener('mouseenter', () => setTimeout(() => guessMap?.invalidateSize(), 220));
   document.addEventListener('keydown', onKey);
 
+  els.btnPromo.addEventListener('click', () => { const then = promoThen; promoThen = null; then?.(); });
+  els.promoRibbon.addEventListener('click', () => showPromo(state.promo.stage, goHome, 'Back'));
+  els.summaryPromo.addEventListener('click', () => showPromo('result', showSummary, 'See your score'));
+
   setInterval(updateCountdowns, 30_000);
-  loadDaily();
+  const preview = new URLSearchParams(location.search).get('promoPreview');
+  if (preview) previewPromo(preview);
+  else loadDaily();
 }
 
 async function loadDaily() {
@@ -165,6 +174,8 @@ async function loadDaily() {
   const d = state.daily;
   state.rounds = d.rounds.map((r, i) => ({ id: `round-${i}`, image: r.image, startYaw: r.startYaw, startYawRange: r.startYawRange }));
   state.results = d.results.map(fromServer);
+  state.promo = d.promo;
+  state.promoResult = d.promoResult;
   els.puzzleNo.textContent = `Daily Puzzle No. ${d.number} · ${formatDate(d.date)}`;
   $('rule-rounds').textContent = state.rounds.length;
   updateCountdowns();
@@ -191,6 +202,12 @@ function renderStart() {
   if (!d) return;
   els.btnStart.disabled = false;
   els.playedToday.hidden = !d.finished;
+  els.promoRibbon.hidden = !state.promo;
+  if (state.promo) {
+    els.promoRibbon.innerHTML = state.promo.stage === 'live'
+      ? '&#129391; <strong>Giveaway today!</strong> Finish the puzzle to see if you won. Details &rarr;'
+      : '&#129391; <strong>Giveaway tomorrow!</strong> Free bagels for 5 players. Details &rarr;';
+  }
   if (d.finished) {
     els.playedScore.textContent = formatPoints(totalScore());
     els.playedRank.textContent = '';
@@ -257,7 +274,8 @@ async function onStart() {
   saveName(name);
   state.index = state.results.length;
   track(state.index === 0 ? 'puzzle_start' : 'puzzle_resume', { round: state.index + 1 });
-  startRound();
+  if (state.index === 0 && state.promo) showPromo(state.promo.stage, startRound, 'Start round 1');
+  else startRound();
 }
 
 function goHome() {
@@ -570,6 +588,7 @@ async function submitGuess(timedOut) {
     if (token !== state.roundToken) return;
     state.results[state.index] = fromServer(res.result);
     state.daily.finished = res.finished;
+    if (res.promo) state.promoResult = res.promo;
     state.submitting = false;
     const r = state.results[state.index];
     track('round_complete', {
@@ -636,7 +655,10 @@ function showResult() {
 }
 
 function nextRound() {
-  if (state.index >= state.rounds.length - 1) return showSummary();
+  if (state.index >= state.rounds.length - 1) {
+    if (state.promoResult) return showPromo('result', showSummary, 'See your score');
+    return showSummary();
+  }
   state.index++;
   startRound();
 }
@@ -657,6 +679,13 @@ function showSummary() {
   els.summaryVerdict.textContent = when.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).toUpperCase();
   els.summaryYear.textContent = String(when.getUTCFullYear());
   countUp(els.summaryTotal, totalScore());
+  const pr = state.promoResult;
+  els.summaryPromo.hidden = !pr;
+  if (pr) {
+    els.summaryPromo.innerHTML = pr.won
+      ? `&#129391; <strong>You won a ${esc(pr.prize)}!</strong> Claim code <strong>${esc(pr.code)}</strong>. Tap for details.`
+      : `&#129391; Giveaway: you were player <strong>#${pr.n}</strong> to finish. Closest winning number: #${pr.nearest}.`;
+  }
   els.summaryRows.innerHTML = '';
   state.results.forEach((r, i) => {
     const tr = document.createElement('tr');
@@ -682,6 +711,85 @@ function showSummary() {
       if (b.you) els.summaryRank.textContent = `You're #${b.you.rank} today.`;
     })
     .catch(() => renderBoardMessage(els.summaryBoard, "Couldn't load the leaderboard."));
+}
+
+// ---------- Giveaway ----------
+
+let promoThen = null;
+
+const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+const longDate = (date) => new Date(`${date}T12:00:00Z`)
+  .toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' });
+function ordinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`;
+}
+const words = (n) => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][n] ?? String(n);
+const capital = (t) => t[0].toUpperCase() + t.slice(1);
+
+/** kind: 'announce' | 'live' | 'result'. `then` runs when the button is pressed. */
+function showPromo(kind, then, buttonLabel) {
+  const promo = state.promo;
+  const r = state.promoResult;
+  const card = $('screen-promo').querySelector('.promo-card');
+  const set = (kicker, title, body) => {
+    $('promo-kicker').innerHTML = kicker;
+    $('promo-title').textContent = title;
+    $('promo-body').innerHTML = body;
+  };
+  card.classList.toggle('win', kind === 'result' && Boolean(r?.won));
+  const count = words(promo?.winners ?? 5);
+  const prize = esc(promo?.prize ?? r?.prize);
+
+  if (kind === 'announce') {
+    set('&#10022; A thank-you from Guess Cornell &#10022;', 'Giveaway tomorrow!', `
+      <p>To thank everyone for playing, <strong>${count} players</strong> will each win a <strong>${prize}</strong> on ${esc(longDate(promo.date))}.</p>
+      <p>Winners are picked by play number: when you finish the puzzle, you get the next number (1st, 2nd, 3rd&hellip;). Land on one of ${count} special Cornell numbers and you win!</p>
+      <p>Come back tomorrow, play, and see if your number comes up.</p>`);
+  } else if (kind === 'live') {
+    set('&#10022; Today only &#10022;', "It's giveaway day!", `
+      <p><strong>${capital(count)} players</strong> will each win a <strong>${prize}</strong> today.</p>
+      <p>Every finished puzzle gets the next play number (1st, 2nd, 3rd&hellip;), and ${count} special Cornell numbers win.</p>
+      <p>Finish today's puzzle to find out yours!</p>`);
+  } else if (r.won) {
+    const mail = `mailto:${r.email}?subject=${encodeURIComponent(`Guess Cornell giveaway: claim code ${r.code}`)}`
+      + `&body=${encodeURIComponent(`Hi! I was player #${r.n} to finish the puzzle. My claim code is ${r.code}.`)}`;
+    set('&#10022; Giveaway day &#10022;', 'You won!', `
+      <p class="promo-number">#${r.n}</p>
+      <p>You were the <strong>${ordinal(r.n)}</strong> player to finish today's puzzle, and ${r.n} is ${esc(r.why)}.</p>
+      <p>You've won a <strong>${esc(r.prize)}</strong>!</p>
+      <p>Your claim code:<br><span class="promo-code">${esc(r.code)}</span></p>
+      <p>Email <a href="${esc(mail)}">${esc(r.email)}</a> with your claim code and we'll send you your digital gift card.</p>
+      <p class="small">Take a screenshot so you don't lose your code. It also stays under "See your results" today.</p>`);
+  } else {
+    const gap = Math.abs(r.n - r.nearest);
+    set('&#10022; Giveaway day &#10022;', 'Not this time!', `
+      <p class="promo-number">#${r.n}</p>
+      <p>You were the <strong>${ordinal(r.n)}</strong> player to finish today's puzzle.</p>
+      <p>The closest winning number was <strong>#${r.nearest}</strong>, ${esc(r.nearestWhy)}: just ${gap} away!</p>
+      <p>Thanks for playing! Keep playing for chances to win more prizes in the future.</p>`);
+  }
+  els.btnPromo.textContent = buttonLabel;
+  promoThen = then;
+  showScreen('promo');
+  track('promo_view', { kind: kind === 'result' ? (r.won ? 'win' : 'lose') : kind });
+}
+
+/** /?promoPreview=announce|live|result&n=161 : the admin page's preview (needs the admin sign-in). */
+async function previewPromo(kind) {
+  const params = new URLSearchParams(location.search);
+  $('promo-preview-tag').hidden = false;
+  try {
+    const res = await fetch(`/api/admin?view=promoPreview&stage=${encodeURIComponent(kind)}&n=${encodeURIComponent(params.get('n') || '')}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    state.promo = data.promo;
+    state.promoResult = data.promoResult ?? null;
+    showPromo(kind === 'result' ? 'result' : kind, null, kind === 'result' ? 'See your score' : 'Start round 1');
+  } catch (err) {
+    showStartError(`Preview unavailable: ${err.message} Sign in at /admin first.`);
+  }
 }
 
 // ---------- Leaderboard ----------

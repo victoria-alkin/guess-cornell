@@ -8,6 +8,7 @@ import {
 } from './_lib/daily.js';
 import { cleanName, error, isPlayerId, json, readJson, route } from './_lib/http.js';
 import { isProfane } from './_lib/profanity.js';
+import { enterPromo } from './_lib/promo.js';
 import { pipeline } from './_lib/store.js';
 
 const LEADERBOARD_TTL = 60 * 60 * 24 * 400;
@@ -54,10 +55,17 @@ export const POST = route(async (request) => {
     timedOut: Boolean(body.timedOut),
     answer: { name: loc.name, lat: loc.lat, lng: loc.lng, funFact: loc.funFact ?? null },
   });
+  const finished = game.results.length >= locations.length;
+  if (finished) {
+    // Giveaway day: hand out the next play number (never let it block the game).
+    try {
+      const promo = await enterPromo(date, player, cleanName(body.name));
+      if (promo) game.promo = promo;
+    } catch (err) { console.error('promo', err); }
+  }
   await saveGame(date, player, game);
 
   const commands = [];
-  const finished = game.results.length >= locations.length;
   if (finished) {
     // The name only shows once the score is on the leaderboard, so it's set
     // (and checked) here; a rude one is left off and shows as anonymous.
@@ -77,5 +85,6 @@ function response(game, round, roundCount) {
     result: game.results[round],
     finished: game.results.length >= roundCount,
     total: totalPoints(game),
+    promo: game.promo ?? null,
   };
 }

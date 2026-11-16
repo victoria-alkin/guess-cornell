@@ -1113,3 +1113,113 @@ html, body {
 .summary-scroll::-webkit-scrollbar-thumb:hover, .overlay-card::-webkit-scrollbar-thumb:hover, .board-list::-webkit-scrollbar-thumb:hover {
   background: rgba(168, 50, 45, 0.8);
 }
+
+/* ---------- Giveaway screen ---------- */
+
+#screen-promo {
+  padding: 16px;
+  overflow-y: auto;
+  background:
+    radial-gradient(ellipse at center, transparent 40%, rgba(40, 8, 8, 0.55) 100%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0 14px, transparent 14px 28px),
+    #8e1d1b;
+}
+#screen-promo.active { display: grid; place-items: center; }
+
+.promo-card {
+  position: relative;
+  width: min(520px, 100%);
+  padding: 30px 30px 26px;
+  text-align: center;
+  color: var(--sepia);
+  background: radial-gradient(ellipse at 30% 20%, #fbf4e3, var(--cream) 55%, var(--cream-dark));
+  border-radius: 6px;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.45);
+  outline: 2px solid var(--faded-red);
+  outline-offset: -12px;
+  transform: rotate(-0.6deg);
+  animation: postcard-in 0.5s cubic-bezier(0.2, 0.8, 0.25, 1.1) both;
+}
+.promo-preview-tag {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  margin: 0;
+  padding: 2px 8px;
+  font: 700 0.7rem system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--sepia);
+  border-radius: 999px;
+}
+.promo-bagel { width: 110px; margin: 10px auto 0; }
+.promo-bagel svg { display: block; width: 100%; filter: drop-shadow(2px 3px 0 rgba(74, 52, 38, 0.25)); }
+.promo-card.win .promo-bagel { animation: bagel-bounce 0.9s 0.4s ease-out both; }
+@keyframes bagel-bounce {
+  0% { transform: scale(0.6) rotate(-12deg); opacity: 0; }
+  60% { transform: scale(1.12) rotate(6deg); opacity: 1; }
+  100% { transform: none; }
+}
+.promo-title {
+  margin: 0.15em 0 0.25em;
+  font-family: "Yellowtail", cursive;
+  font-weight: 400;
+  font-size: clamp(2.3rem, 9vw, 3.1rem);
+  line-height: 1.1;
+  color: var(--faded-red);
+}
+.promo-body {
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.promo-body p { margin: 0 auto 0.85em; max-width: 40ch; }
+.promo-number {
+  display: inline-block;
+  margin: 0 0 0.35em;
+  font-family: "Abril Fatface", Georgia, serif;
+  font-size: clamp(2.6rem, 12vw, 3.6rem);
+  line-height: 1;
+  color: var(--faded-red);
+  text-shadow: 2px 2px 0 var(--cream), 4px 4px 0 var(--sepia);
+}
+.promo-code {
+  display: inline-block;
+  margin: 0.2em 0 0.4em;
+  padding: 0.35em 0.9em;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 1.5rem;
+  letter-spacing: 0.18em;
+  color: var(--sepia);
+  background: #fffaf0;
+  border: 2px dashed var(--faded-red);
+  border-radius: 4px;
+  user-select: all;
+}
+.promo-body a { color: var(--faded-red); font-weight: 700; }
+.promo-body .small { font-size: 0.8rem; opacity: 0.8; }
+.promo-card .btn { margin-top: 0.6em; }
+
+.promo-ribbon,
+.summary-promo {
+  display: block;
+  margin: 0 auto 1.2em;
+  padding: 0.5em 1em;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--sepia);
+  background: #fff4d6;
+  border: 1.5px dashed var(--faded-red);
+  border-radius: 4px;
+  cursor: pointer;
+  transform: rotate(-1deg);
+}
+.promo-ribbon[hidden], .summary-promo[hidden] { display: none; }
+.promo-ribbon strong, .summary-promo strong { color: var(--faded-red); }
+.summary-promo { margin: 0.2em auto 1em; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .promo-card, .promo-card.win .promo-bagel { animation: none; }
+}

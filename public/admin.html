@@ -62,6 +62,12 @@
       .board-table td.actions { white-space: normal; text-align: left; }
       .board-table td.actions button { margin: 2px 0; }
     }
+    .promo-grid { display: grid; grid-template-columns: 1fr 400px; gap: 16px; align-items: start; }
+    .phone { width: 100%; height: 760px; border: 10px solid #222; border-radius: 28px; background: #8e1d1b; }
+    .numbers td:first-child { font-weight: 700; color: var(--red); width: 60px; }
+    .preview-btns button { margin: 0 4px 6px 0; }
+    .stat { font-size: 28px; font-family: Georgia, serif; color: var(--red); }
+    @media (max-width: 900px) { .promo-grid { grid-template-columns: 1fr; } .phone { height: 680px; } }
     [hidden] { display: none !important; }
   </style>
 </head>
@@ -72,6 +78,7 @@
     <span id="nav" class="row" hidden>
       <button class="tab on" data-tab="board">Leaderboard</button>
       <button class="tab" data-tab="puzzles">Daily puzzles</button>
+      <button class="tab" data-tab="promo">Promotions</button>
       <button class="tab" id="logout">Sign out</button>
     </span>
   </h1>
@@ -160,6 +167,37 @@
       </div>
     </div>
   </section>
+
+  <!-- Promotions -->
+  <section id="tab-promo" hidden>
+    <div class="promo-grid">
+      <div>
+        <div class="card" id="promo-info"></div>
+        <div class="card">
+          <h2>Preview the screens</h2>
+          <p class="muted">Shown in the real game on the right, with the live wording. Nothing is saved or counted.</p>
+          <div class="preview-btns">
+            <button class="ghost" data-preview="announce">Day before (announcement)</button>
+            <button class="ghost" data-preview="live">Giveaway day (before playing)</button>
+          </div>
+          <div class="row" style="margin-top:6px">
+            <label>Finished as player # <input id="preview-n" type="number" min="1" value="161" style="width:90px"></label>
+            <button class="ghost" data-preview="result">Show their result</button>
+          </div>
+          <p class="muted" id="preview-hint"></p>
+        </div>
+        <div class="card">
+          <div class="row" style="justify-content:space-between">
+            <h2 style="margin:0">Winners</h2>
+            <button class="ghost small" id="promo-refresh">Refresh</button>
+          </div>
+          <p class="muted">Match the claim code in their email before sending a gift card. Each code is shown to that winner only.</p>
+          <div id="promo-live"></div>
+        </div>
+      </div>
+      <iframe id="phone" class="phone" title="Game preview"></iframe>
+    </div>
+  </section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
@@ -191,7 +229,7 @@ function flash(el, text, ok = true) {
 // ---------- Sign in / tabs ----------
 
 function showLogin(message) {
-  $('nav').hidden = true; $('tab-board').hidden = true; $('tab-puzzles').hidden = true;
+  $('nav').hidden = true; $('tab-board').hidden = true; $('tab-puzzles').hidden = true; $('tab-promo').hidden = true;
   $('login').hidden = false;
   $('login-error').hidden = !message; $('login-error').textContent = message || '';
   $('password').focus();
@@ -215,7 +253,8 @@ function switchTab(name) {
   document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle('on', b.dataset.tab === name));
   $('tab-board').hidden = name !== 'board';
   $('tab-puzzles').hidden = name !== 'puzzles';
-  if (name === 'board') loadBoard(); else loadPuzzles();
+  $('tab-promo').hidden = name !== 'promo';
+  if (name === 'board') loadBoard(); else if (name === 'promo') loadPromo(); else loadPuzzles();
 }
 
 async function start() {
@@ -228,6 +267,54 @@ async function start() {
     showLogin(err.message === 'Please sign in.' ? '' : err.message);
   }
 }
+
+// ---------- Promotions ----------
+
+let promoData = null;
+
+async function loadPromo() {
+  promoData = await api('GET', null, '?view=promo');
+  const p = promoData.promos[0];
+  if (!p) { $('promo-info').innerHTML = '<h2>No promotion set up</h2>'; return; }
+  const nums = Object.entries(p.numbers).map(([n, why]) => `<tr><td>#${n}</td><td>${esc(why)}</td></tr>`).join('');
+  const stage = promoData.today === p.date ? '<span class="tag out">live today</span>'
+    : promoData.today === p.announce ? '<span class="tag">announcing today</span>'
+    : promoData.today > p.date ? '<span class="tag">finished</span>' : '<span class="tag">upcoming</span>';
+  $('promo-info').innerHTML = `
+    <h2>${esc(p.prize)} giveaway ${stage}</h2>
+    <p class="muted">Announcement screen: ${fmtDate(p.announce)} · Giveaway: ${fmtDate(p.date)} (midnight to midnight, Ithaca time) · Claims go to ${esc(p.email)}</p>
+    <table class="numbers"><thead><tr><th>Wins</th><th>Why it's a Cornell number</th></tr></thead><tbody>${nums}</tbody></table>
+    <p class="muted">The winning numbers are never sent to players' browsers until they finish. To change them, ask Claude (they're in api/_lib/promo.js).</p>`;
+  const won = new Map(p.winners.map((w) => [w.n, w]));
+  const rows = Object.keys(p.numbers).map(Number).map((n) => {
+    const w = won.get(n);
+    return w
+      ? `<tr><td>#${n}</td><td>${w.name ? esc(w.name) : '<span class="muted">(no name)</span>'}</td><td><strong style="font:600 15px Consolas,monospace;letter-spacing:.1em">${esc(w.code)}</strong></td><td>${new Date(w.at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' })}</td><td class="id copy" title="Click to copy: ${w.player}" data-copy="${w.player}">${w.player.slice(0, 8)}…</td></tr>`
+      : `<tr><td>#${n}</td><td colspan="4" class="muted">${p.count >= n ? 'reached, no record' : `not reached yet (${n - p.count} to go)`}</td></tr>`;
+  }).join('');
+  $('promo-live').innerHTML = `
+    <p><span class="stat">${fmtNum(p.count)}</span> finished puzzles counted on ${fmtDate(p.date)}</p>
+    <div class="scroll"><table><thead><tr><th>#</th><th>Name</th><th>Claim code</th><th>Finished</th><th>Player id</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  if (!$('phone').src) showPreview('announce');
+}
+
+function showPreview(kind) {
+  const n = Math.max(1, Number($('preview-n').value) || 1);
+  $('phone').src = `/?promoPreview=${kind}${kind === 'result' ? `&n=${n}` : ''}`;
+  const p = promoData?.promos[0];
+  $('preview-hint').textContent = kind === 'result' && p
+    ? (p.numbers[n] ? `#${n} is a winning number, so this is the winner screen (with a sample claim code).` : `#${n} doesn't win, so this is the "not this time" screen.`)
+    : '';
+}
+
+document.querySelectorAll('[data-preview]').forEach((b) => { b.onclick = () => showPreview(b.dataset.preview); });
+$('preview-n').onkeydown = (e) => { if (e.key === 'Enter') showPreview('result'); };
+$('promo-refresh').onclick = () => loadPromo();
+$('promo-live').onclick = async (e) => {
+  const cell = e.target.closest('[data-copy]');
+  if (!cell) return;
+  try { await navigator.clipboard.writeText(cell.dataset.copy); } catch { prompt('Copy this player id:', cell.dataset.copy); }
+};
 
 // ---------- Leaderboard ----------
 

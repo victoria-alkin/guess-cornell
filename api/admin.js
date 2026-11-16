@@ -5,6 +5,8 @@
 //   POST { action: 'logout' }
 //   GET  ?view=board&date=YYYY-MM-DD            -> that day's full leaderboard, with player ids
 //   GET  ?view=puzzles                          -> every spot (with answers) and the stored days around today
+//   GET  ?view=promo                            -> giveaways: numbers, plays so far, winners and claim codes
+//   GET  ?view=promoPreview&stage=...&n=...     -> data for previewing a giveaway screen in the game
 //   POST { action: 'removeScore', date, player }
 //   POST { action: 'rename', player, name }
 //   POST { action: 'clearName', player }
@@ -22,6 +24,7 @@ import {
 } from './_lib/daily.js';
 import { cleanName, error, isPlayerId, json, readJson, route } from './_lib/http.js';
 import { pipeline, redis } from './_lib/store.js';
+import { promoStatus, resultFor } from './_lib/promo.js';
 
 const COOKIE = 'gc_admin';
 const SESSION_SECONDS = 60 * 60 * 12;
@@ -67,6 +70,8 @@ export const GET = route(async (request) => {
   const view = params.get('view');
   if (view === 'board') return board(params.get('date'));
   if (view === 'puzzles') return puzzles();
+  if (view === 'promo') return json({ today: todayDate(), promos: await promoStatus() });
+  if (view === 'promoPreview') return promoPreview(params);
   return error('Unknown view.');
 });
 
@@ -238,4 +243,16 @@ async function rescore(date, apply) {
     up: changed.filter((c) => c.after > c.before).length,
     down: changed.filter((c) => c.after < c.before).length,
   });
+}
+
+// What the game shows for a giveaway screen, so /admin can preview it in the real game.
+async function promoPreview(params) {
+  const [promo] = await promoStatus();
+  if (!promo) return error('No giveaway set up.');
+  const stage = params.get('stage');
+  const base = { date: promo.date, prize: promo.prize, winners: Object.keys(promo.numbers).length };
+  if (stage === 'announce' || stage === 'live') return json({ promo: { ...base, stage } });
+  const n = Number.parseInt(params.get('n'), 10);
+  if (!(n > 0)) return error('Pick a play number.');
+  return json({ promo: { ...base, stage: 'live' }, promoResult: resultFor(promo, n, 'AB12CD') });
 }
