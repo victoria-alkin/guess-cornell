@@ -43,6 +43,11 @@ EXCLUDED_TITLES = {"sage chapel"}
 
 # Photos that should open facing somewhere within a range of directions
 # (degrees, 0 = photo center, increasing to the right), picked at random per player.
+# Pins that are wrong in the spreadsheet, by title (lowercase): (lat, lng).
+PIN_OVERRIDES = {
+    "the centennial garden": (42.4491637, -76.4762822),  # the Student Centennial Garden, not Deans Garden
+}
+
 START_YAW_RANGES = {
     "abby and howard milstein auditorium": [125, 235],  # face the seats, never the screen
 }
@@ -254,6 +259,7 @@ def main():
             out_path.write_bytes(data)
             print(f"    -> {filename}  {size[0]}x{size[1]}, {len(data) / 1e6:.1f} MB")
 
+        pin = PIN_OVERRIDES.get(title.lower(), pin)
         entry = {"id": digest, "name": title, "lat": round(pin[0], 7), "lng": round(pin[1], 7), "image": filename}
         fact = str(get("fact") or "").strip()
         fact = re.sub(r"^\s*fun\s*fact\s*[:\-–]\s*", "", fact, flags=re.IGNORECASE)

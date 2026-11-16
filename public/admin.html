@@ -92,6 +92,7 @@
         <label>Day <input id="board-date" type="date"></label>
         <input id="board-search" type="search" placeholder="Filter by name or id" style="flex:1;min-width:160px">
         <button class="ghost" id="board-refresh">Refresh</button>
+        <button class="ghost" id="rescore" title="After moving a pin: recompute this day's scores against the current pins">Re-score</button>
       </div>
       <p class="muted" id="board-info"></p>
       <div id="board-msg"></div>
@@ -278,6 +279,18 @@ function modButtons(p) {
       ? `<button class="ghost small" data-act="realname" data-p="${p.player}">Show real name</button>`
       : `<button class="ghost small" data-act="publicname" data-p="${p.player}">Name for others</button>`);
 }
+
+$('rescore').onclick = async () => {
+  const date = board.date;
+  try {
+    const p = await api('POST', { action: 'rescore', date, apply: false });
+    if (!p.changed) { flash($('board-msg'), `All ${p.games} games on ${fmtDate(date)} already match the current pins.`); return; }
+    if (!confirm(`${p.changed} of ${p.games} games on ${fmtDate(date)} were scored against an old pin. Re-score them? ${p.up} go up, ${p.down} go down.`)) return;
+    const r = await api('POST', { action: 'rescore', date, apply: true });
+    flash($('board-msg'), `Re-scored ${r.changed} games (${r.up} up, ${r.down} down).`);
+    await loadBoard();
+  } catch (err) { flash($('board-msg'), err.message, false); }
+};
 
 $('board-rows').onclick = async (e) => {
   const b = e.target.closest('button[data-act]');

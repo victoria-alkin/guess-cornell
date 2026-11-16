@@ -90,10 +90,19 @@ function memory([cmd, key, ...args]) {
     }
     case 'HGET': return mem.get(key)?.get(String(args[0])) ?? null;
     case 'HMGET': return args.map((f) => mem.get(key)?.get(String(f)) ?? null);
+    case 'SCAN': {
+      // Only the form used here: SCAN cursor MATCH prefix* COUNT n (everything at once).
+      // The cursor sits in the "key" slot.
+      const prefix = String(args[1]).replace(/\*$/, '');
+      return ['0', [...mem.keys()].filter((k) => k.startsWith(prefix))];
+    }
     case 'HKEYS': return [...(mem.get(key)?.keys() ?? [])];
     case 'HGETALL': return [...(mem.get(key)?.entries() ?? [])].flat();
     case 'ZADD': {
-      zset(key).set(String(args[1]), Number(args[0]));
+      const xx = String(args[0]).toUpperCase() === 'XX'; // only update existing members
+      const [score, member] = xx ? args.slice(1) : args;
+      if (xx && !zset(key).has(String(member))) return 0;
+      zset(key).set(String(member), Number(score));
       return 1;
     }
     case 'ZSCORE': {

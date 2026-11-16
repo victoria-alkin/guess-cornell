@@ -12,10 +12,13 @@
 //   POST { action: 'hide' | 'unhide', date, player }  -> off that day's leaderboard for everyone but them
 //   POST { action: 'setPublicName', date, player, name } / { action: 'clearPublicName', date, player }
 //                                                      -> the name everyone but them sees that day
+//   POST { action: 'rescore', date, apply }     -> re-score that day's games against the current pins
+//                                                  (after a pin moves); apply: false only previews
 
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
+import { distanceMeters, scoreForDistance } from '../public/js/scoring.js';
 import {
-  addDays, allLocations, buildingKey, isDate, puzzleNumber, ROUNDS_PER_DAY, todayDate,
+  addDays, allLocations, buildingKey, dailyLocations, isDate, puzzleNumber, ROUNDS_PER_DAY, todayDate,
 } from './_lib/daily.js';
 import { cleanName, error, isPlayerId, json, readJson, route } from './_lib/http.js';
 import { pipeline, redis } from './_lib/store.js';
@@ -114,6 +117,7 @@ export const POST = route(async (request) => {
       return json({ ok: true });
     }
     case 'setDay': return setDay(body.date, body.ids);
+    case 'rescore': return rescore(body.date, body.apply === true);
     default: return error('Unknown action.');
   }
 });
@@ -184,4 +188,54 @@ async function setDay(date, ids) {
   }
   await redis('SET', `day:${date}`, JSON.stringify(ids), 'EX', DAY_KEY_TTL);
   return json({ date, ids });
+}
+
+// Games keep the pin they were scored against, so after a pin moves in
+// locations.json, recompute any round whose stored answer is off the current
+// pin, and update the leaderboard for finished games.
+async function rescore(date, apply) {
+  if (!isDate(date)) return error('Missing or invalid date.');
+  if (date < addDays(todayDate(), -2)) return error('Games older than 3 days are no longer stored.');
+  const locations = await dailyLocations(date);
+  const keys = [];
+  let cursor = '0';
+  do {
+    const [next, found] = await redis('SCAN', cursor, 'MATCH', `game:${date}:*`, 'COUNT', 1000);
+    cursor = String(next);
+    keys.push(...found);
+  } while (cursor !== '0');
+  const raws = keys.length ? await pipeline(keys.map((k) => ['GET', k])) : [];
+
+  const writes = [];
+  const changed = [];
+  keys.forEach((key, i) => {
+    if (!raws[i]) return;
+    const game = JSON.parse(raws[i]);
+    const before = game.results.reduce((s, r) => s + r.points, 0);
+    let touched = false;
+    game.results.forEach((r, round) => {
+      const loc = locations[round];
+      if (!loc || !r.answer || (r.answer.lat === loc.lat && r.answer.lng === loc.lng)) return;
+      r.answer = { ...r.answer, lat: loc.lat, lng: loc.lng };
+      r.distance = r.guess ? distanceMeters(r.guess, loc) : null;
+      r.points = r.guess ? scoreForDistance(r.distance) : 0;
+      touched = true;
+    });
+    if (!touched) return;
+    const after = game.results.reduce((s, r) => s + r.points, 0);
+    const player = key.slice(`game:${date}:`.length);
+    const finished = game.results.length >= locations.length;
+    changed.push({ player, before, after });
+    writes.push(['SET', key, JSON.stringify(game), 'KEEPTTL']);
+    if (finished) writes.push(['ZADD', `lb:${date}`, 'XX', after, player]);
+  });
+  if (apply) for (let i = 0; i < writes.length; i += 200) await pipeline(writes.slice(i, i + 200));
+  return json({
+    date,
+    applied: apply,
+    games: keys.length,
+    changed: changed.length,
+    up: changed.filter((c) => c.after > c.before).length,
+    down: changed.filter((c) => c.after < c.before).length,
+  });
 }
