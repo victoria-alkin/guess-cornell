@@ -62,12 +62,16 @@
       .board-table td.actions { white-space: normal; text-align: left; }
       .board-table td.actions button { margin: 2px 0; }
     }
-    .promo-grid { display: grid; grid-template-columns: 1fr 400px; gap: 16px; align-items: start; }
-    .phone { width: 100%; height: 760px; border: 10px solid #222; border-radius: 28px; background: #8e1d1b; }
+    .frames { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); gap: 18px; align-items: start; margin-top: 14px; }
+    .frames figure { margin: 0; }
+    .frames figcaption { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 6px; }
+    .device { position: relative; overflow: hidden; background: #8e1d1b; border: 8px solid #222; border-radius: 12px; }
+    .device.phone { border-width: 10px; border-radius: 26px; }
+    .device iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; }
     .numbers td:first-child { font-weight: 700; color: var(--red); width: 60px; }
     .preview-btns button { margin: 0 4px 6px 0; }
     .stat { font-size: 28px; font-family: Georgia, serif; color: var(--red); }
-    @media (max-width: 900px) { .promo-grid { grid-template-columns: 1fr; } .phone { height: 680px; } }
+    @media (max-width: 700px) { .frames { grid-template-columns: 1fr; } .frames figure:last-child { max-width: 300px; } }
     [hidden] { display: none !important; }
   </style>
 </head>
@@ -170,12 +174,12 @@
 
   <!-- Promotions -->
   <section id="tab-promo" hidden>
-    <div class="promo-grid">
+    <div>
       <div>
         <div class="card" id="promo-info"></div>
         <div class="card">
           <h2>Preview the screens</h2>
-          <p class="muted">Shown in the real game on the right, with the live wording. Nothing is saved or counted.</p>
+          <p class="muted">Shown in the real game on a laptop and a phone, with the live wording. Nothing is saved or counted.</p>
           <div class="preview-btns">
             <button class="ghost" data-preview="announce">Day before (announcement)</button>
             <button class="ghost" data-preview="live">Giveaway day (before playing)</button>
@@ -185,6 +189,10 @@
             <button class="ghost" data-preview="result">Show their result</button>
           </div>
           <p class="muted" id="preview-hint"></p>
+          <div class="frames">
+            <figure><figcaption>Laptop</figcaption><div class="device" data-w="1280" data-h="800"><iframe id="frame-desktop" title="Laptop preview"></iframe></div></figure>
+            <figure><figcaption>Phone</figcaption><div class="device phone" data-w="390" data-h="844"><iframe id="frame-phone" title="Phone preview"></iframe></div></figure>
+          </div>
         </div>
         <div class="card">
           <div class="row" style="justify-content:space-between">
@@ -195,7 +203,6 @@
           <div id="promo-live"></div>
         </div>
       </div>
-      <iframe id="phone" class="phone" title="Game preview"></iframe>
     </div>
   </section>
 </main>
@@ -295,17 +302,32 @@ async function loadPromo() {
   $('promo-live').innerHTML = `
     <p><span class="stat">${fmtNum(p.count)}</span> finished puzzles counted on ${fmtDate(p.date)}</p>
     <div class="scroll"><table><thead><tr><th>#</th><th>Name</th><th>Claim code</th><th>Finished</th><th>Player id</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-  if (!$('phone').src) showPreview('announce');
+  fitFrames();
+  if (!$('frame-phone').src) showPreview('announce');
 }
 
 function showPreview(kind) {
   const n = Math.max(1, Number($('preview-n').value) || 1);
-  $('phone').src = `/?promoPreview=${kind}${kind === 'result' ? `&n=${n}` : ''}`;
+  const url = `/?promoPreview=${kind}${kind === 'result' ? `&n=${n}` : ''}`;
+  $('frame-desktop').src = url;
+  $('frame-phone').src = url;
   const p = promoData?.promos[0];
   $('preview-hint').textContent = kind === 'result' && p
     ? (p.numbers[n] ? `#${n} is a winning number, so this is the winner screen (with a sample claim code).` : `#${n} doesn't win, so this is the "not this time" screen.`)
     : '';
 }
+
+// Each preview renders at real device size, then is scaled down to fit its box.
+function fitFrames() {
+  document.querySelectorAll('.device').forEach((box) => {
+    const w = Number(box.dataset.w), h = Number(box.dataset.h);
+    const scale = box.clientWidth / w;
+    if (!scale) return;
+    box.style.height = `${h * scale + box.offsetWidth - box.clientWidth}px`;
+    Object.assign(box.querySelector('iframe').style, { width: `${w}px`, height: `${h}px`, transform: `scale(${scale})` });
+  });
+}
+window.addEventListener('resize', fitFrames);
 
 document.querySelectorAll('[data-preview]').forEach((b) => { b.onclick = () => showPreview(b.dataset.preview); });
 $('preview-n').onkeydown = (e) => { if (e.key === 'Enter') showPreview('result'); };
