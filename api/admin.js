@@ -9,9 +9,9 @@
 //   POST { action: 'rename', player, name }
 //   POST { action: 'clearName', player }
 //   POST { action: 'setDay', date, ids: [5 location ids] }
-//   POST { action: 'hide' | 'unhide', player }  -> off the leaderboard for everyone but them
-//   POST { action: 'setPublicName', player, name } / { action: 'clearPublicName', player }
-//                                                -> the name everyone but them sees
+//   POST { action: 'hide' | 'unhide', date, player }  -> off that day's leaderboard for everyone but them
+//   POST { action: 'setPublicName', date, player, name } / { action: 'clearPublicName', date, player }
+//                                                      -> the name everyone but them sees that day
 
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 import {
@@ -97,19 +97,20 @@ export const POST = route(async (request) => {
       return json({ cleared: await redis('HDEL', 'names', body.player) });
     }
     case 'hide': case 'unhide': {
-      if (!isPlayerId(body.player)) return error('Missing player.');
-      await redis(...(body.action === 'hide' ? ['HSET', 'hidden', body.player, '1'] : ['HDEL', 'hidden', body.player]));
+      if (!isDate(body.date) || !isPlayerId(body.player)) return error('Missing date or player.');
+      const key = `hidden:${body.date}`;
+      await redis(...(body.action === 'hide' ? ['HSET', key, body.player, '1'] : ['HDEL', key, body.player]));
       return json({ ok: true });
     }
     case 'setPublicName': {
       const name = cleanName(body.name);
-      if (!isPlayerId(body.player) || !name) return error('Missing player or name.');
-      await redis('HSET', 'publicnames', body.player, name);
+      if (!isDate(body.date) || !isPlayerId(body.player) || !name) return error('Missing date, player or name.');
+      await redis('HSET', `publicnames:${body.date}`, body.player, name);
       return json({ name });
     }
     case 'clearPublicName': {
-      if (!isPlayerId(body.player)) return error('Missing player.');
-      await redis('HDEL', 'publicnames', body.player);
+      if (!isDate(body.date) || !isPlayerId(body.player)) return error('Missing date or player.');
+      await redis('HDEL', `publicnames:${body.date}`, body.player);
       return json({ ok: true });
     }
     case 'setDay': return setDay(body.date, body.ids);
@@ -136,8 +137,8 @@ async function board(date) {
   if (!isDate(date)) date = todayDate();
   const [flat, hiddenIds, publicFlat] = await pipeline([
     ['ZRANGE', `lb:${date}`, 0, -1, 'REV', 'WITHSCORES'],
-    ['HKEYS', 'hidden'],
-    ['HGETALL', 'publicnames'],
+    ['HKEYS', `hidden:${date}`],
+    ['HGETALL', `publicnames:${date}`],
   ]);
   const ids = [];
   const scores = [];
@@ -149,12 +150,7 @@ async function board(date) {
 
   const names = ids.length ? await redis('HMGET', 'names', ...ids) : [];
   const players = ids.map((id, i) => ({ player: id, name: names[i] || null, score: scores[i], ...extra(id) }));
-
-  // Everyone hidden or renamed-for-others, on any day, so they can be undone.
-  const modIds = [...new Set([...hidden, ...publicNames.keys()])];
-  const modNames = modIds.length ? await redis('HMGET', 'names', ...modIds) : [];
-  const moderated = modIds.map((id, i) => ({ player: id, name: modNames[i] || null, ...extra(id) }));
-  return json({ date, number: puzzleNumber(date), today: todayDate(), players, moderated });
+  return json({ date, number: puzzleNumber(date), today: todayDate(), players });
 }
 
 async function puzzles() {

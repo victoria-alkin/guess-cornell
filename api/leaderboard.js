@@ -2,10 +2,10 @@
 // Scores for a day (today by default), best first, plus the asking player's own
 // rank. Without a limit, every player is listed.
 //
-// Moderation (set from /admin), applied for everyone except the player themselves,
-// so they don't notice anything:
-//   hash "hidden"      player -> 1      left off the leaderboard entirely
-//   hash "publicnames" player -> name   shown under this name instead of their own
+// Moderation (set from /admin) for one day, applied for everyone except the
+// player themselves, so they don't notice anything:
+//   hash "hidden:{date}"      player -> 1      left off that day's leaderboard
+//   hash "publicnames:{date}" player -> name   shown under this name that day
 
 import { isDate, puzzleNumber, todayDate } from './_lib/daily.js';
 import { isPlayerId, json, route } from './_lib/http.js';
@@ -20,7 +20,7 @@ export const GET = route(async (request) => {
   const key = `lb:${date}`;
 
   const [hiddenAll, count, myRank, myScore] = await pipeline([
-    ['HKEYS', 'hidden'],
+    ['HKEYS', `hidden:${date}`],
     ['ZCARD', key],
     ['ZREVRANK', key, player ?? '-'],
     ['ZSCORE', key, player ?? '-'],
@@ -47,7 +47,7 @@ export const GET = route(async (request) => {
 
   const nameIds = player && !ids.includes(player) ? [...ids, player] : ids;
   const [names, publicNames] = nameIds.length
-    ? await pipeline([['HMGET', 'names', ...nameIds], ['HMGET', 'publicnames', ...nameIds]])
+    ? await pipeline([['HMGET', 'names', ...nameIds], ['HMGET', `publicnames:${date}`, ...nameIds]])
     : [[], []];
   const nameOf = (id) => {
     const i = nameIds.indexOf(id);
