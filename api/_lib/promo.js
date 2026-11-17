@@ -19,7 +19,7 @@ export const PROMOTIONS = [
       21: 'the number of bells in the Cornell Chimes',
       65: 'for 1865, the year Cornell was founded',
       70: "the number on Touchdown the Bear's jersey, honoring the Class of 1970, which funded mascot expenses",
-      161: 'the number of steps up McGraw Tower',
+      161: "the number of steps to the top of McGraw Tower, and the number of items on Cornell's famous bucket list",
       173: 'the height of McGraw Tower in feet',
     },
     // play number -> a special picture on that winner's screen (drawn in public/js/game.js)
