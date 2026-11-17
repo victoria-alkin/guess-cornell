@@ -49,9 +49,11 @@ export function publicPromo(date) {
   return { stage, date: promo.date, prize: promo.prize, winners: Object.keys(promo.numbers).length };
 }
 
+// The winning number a non-winner is compared with: the last one before them,
+// or the first one if they finished before any winner.
 function nearestWinning(promo, n) {
-  return Object.keys(promo.numbers).map(Number)
-    .sort((a, b) => Math.abs(a - n) - Math.abs(b - n) || a - b)[0];
+  const wins = Object.keys(promo.numbers).map(Number).sort((a, b) => a - b);
+  return wins.filter((w) => w < n).pop() ?? wins[0];
 }
 
 /** The result screen's data for play number n (also used by admin previews). */

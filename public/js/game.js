@@ -687,7 +687,7 @@ function showSummary() {
   if (pr) {
     els.summaryPromo.innerHTML = pr.won
       ? `&#129391; <strong>You won a ${esc(pr.prize)}!</strong> Claim code <strong>${esc(pr.code)}</strong>. Tap for details.`
-      : `&#129391; Giveaway: you were player <strong>#${pr.n}</strong> to finish. Closest winning number: #${pr.nearest}.`;
+      : `&#129391; Giveaway: you were player <strong>#${pr.n}</strong> to finish. ${pr.nearest < pr.n ? 'Last' : 'First'} winning number: #${pr.nearest}.`;
   }
   els.summaryRows.innerHTML = '';
   state.results.forEach((r, i) => {
@@ -820,7 +820,7 @@ function showPromo(kind, then, buttonLabel) {
     set('&#10022; Giveaway day &#10022;', 'Not this time!', `
       <p class="promo-number">#${r.n}</p>
       <p>You were the <strong>${ordinal(r.n)}</strong> player to finish today's puzzle.</p>
-      <p>The closest winning number was <strong>#${r.nearest}</strong>, ${esc(r.nearestWhy)}: just ${gap} away!</p>
+      <p>${r.nearest < r.n ? 'The last winning number before you was' : 'The first winning number was'} <strong>#${r.nearest}</strong>, ${esc(r.nearestWhy)}: ${gap <= 15 ? `just ${gap} away!` : `${gap} away.`}</p>
       <p>Thanks for playing! Keep playing for chances to win more prizes in the future.</p>`);
   }
   els.btnPromo.hidden = !buttonLabel;
