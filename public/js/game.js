@@ -885,8 +885,7 @@ function showPromo(kind, then, buttonLabel) {
     set('&#10022; Giveaway day &#10022;', 'Not this time!', `
       <p class="promo-number">#${r.n}</p>
       <p>You were the <strong>${ordinal(r.n)}</strong> player to finish today's puzzle.</p>
-      <p>${r.nearest < r.n ? 'The last winning number before you was' : 'The first winning number was'} <strong>#${r.nearest}</strong>, ${esc(r.nearestWhy)}.</p>
-      <p>${gap <= 15 ? `Just ${gap} away!` : `You were ${gap} away.`}</p>
+      <p>${r.nearest < r.n ? 'The last winning number before you was' : 'The first winning number was'} <strong>#${r.nearest}</strong>, ${esc(r.nearestWhy)}. ${gap <= 15 ? `Just ${gap} away!` : `You were ${gap} away.`}</p>
       <p>Thanks for playing! Keep playing for chances to win more prizes in the future.</p>
       ${PROMO_ART[r.nearestArt] ? `<div class="promo-art-below">${PROMO_ART[r.nearestArt](r.nearest)}</div>` : ''}`);
   }
