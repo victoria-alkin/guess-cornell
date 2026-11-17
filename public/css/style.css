@@ -1199,7 +1199,7 @@ html, body {
 }
 
 /* Second stamp, a coffee cup, tucked behind the bagel */
-.promo-stamp.coffee { right: 104px; top: 30px; transform: rotate(-7deg); z-index: 0; }
+.promo-stamp.coffee { right: 104px; top: 30px; transform: rotate(-7deg); z-index: 2; }
 .promo-stamp.coffee svg { background: linear-gradient(#cfdde9, #93b2cc); }
 
 /* Round ink postmark, top left (says WINNER on a win) */
