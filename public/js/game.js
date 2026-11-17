@@ -731,6 +731,44 @@ function ordinal(n) {
 const words = (n) => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][n] ?? String(n);
 const capital = (t) => t[0].toUpperCase() + t.slice(1);
 
+// Special pictures for some winning numbers (chosen in api/_lib/promo.js).
+const PROMO_ART = {
+  // A cartoon bear in a red football jersey with the winning number, waving.
+  jersey: (n) => `
+    <div class="promo-art jersey" role="img" aria-label="A bear in a red number ${n} jersey, waving">
+      <svg viewBox="0 0 220 210">
+        <ellipse cx="110" cy="204" rx="84" ry="6" fill="#4a3426" opacity=".18"/>
+        <g class="art-wave">
+          <path d="M160 128 Q182 110 186 78" fill="none" stroke="#b31b1b" stroke-width="22" stroke-linecap="round"/>
+          <path d="M162 126 Q180 112 183 92" fill="none" stroke="#fffaf0" stroke-width="4" stroke-dasharray="0 9 30 200" opacity=".9"/>
+          <circle cx="187" cy="70" r="13" fill="#9a6544"/>
+          <circle cx="187" cy="67" r="6" fill="#c89a72"/>
+        </g>
+        <path d="M44 204 V150 Q44 118 78 110 L110 120 L142 110 Q176 118 176 150 V204 Z" fill="#b31b1b"/>
+        <path d="M78 110 L110 120 L142 110 L136 106 L110 113 L84 106 Z" fill="#fffaf0"/>
+        <path d="M44 150 Q44 126 62 116" fill="none" stroke="#fffaf0" stroke-width="5"/>
+        <path d="M176 150 Q176 126 158 116" fill="none" stroke="#fffaf0" stroke-width="5"/>
+        <text x="110" y="183" text-anchor="middle" font-family="Abril Fatface, Georgia, serif" font-size="52" fill="#fffaf0" stroke="#4a3426" stroke-width="2.5" paint-order="stroke">${n}</text>
+        <path d="M58 150 Q40 168 50 198" fill="none" stroke="#b31b1b" stroke-width="20" stroke-linecap="round"/>
+        <circle cx="52" cy="200" r="11" fill="#9a6544"/>
+        <circle cx="72" cy="36" r="15" fill="#8a5a3c"/>
+        <circle cx="148" cy="36" r="15" fill="#8a5a3c"/>
+        <circle cx="72" cy="36" r="7" fill="#c89a72"/>
+        <circle cx="148" cy="36" r="7" fill="#c89a72"/>
+        <circle cx="110" cy="70" r="40" fill="#9a6544"/>
+        <ellipse cx="110" cy="85" rx="18" ry="14" fill="#e3c3a0"/>
+        <ellipse cx="110" cy="78" rx="7" ry="5" fill="#3b2a1e"/>
+        <path d="M102 88 Q110 95 118 88" fill="none" stroke="#3b2a1e" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="94" cy="63" r="4.5" fill="#3b2a1e"/>
+        <circle cx="126" cy="63" r="4.5" fill="#3b2a1e"/>
+        <circle cx="95.5" cy="61.5" r="1.4" fill="#fff"/>
+        <circle cx="127.5" cy="61.5" r="1.4" fill="#fff"/>
+        <circle cx="85" cy="80" r="6" fill="#e88a7a" opacity=".45"/>
+        <circle cx="135" cy="80" r="6" fill="#e88a7a" opacity=".45"/>
+      </svg>
+    </div>`,
+};
+
 /** kind: 'announce' | 'live' | 'result'. `then` runs when the button is pressed. */
 function showPromo(kind, then, buttonLabel) {
   const promo = state.promo;
@@ -771,7 +809,7 @@ function showPromo(kind, then, buttonLabel) {
     const mail = `mailto:${r.email}?subject=${encodeURIComponent(`Guess Cornell giveaway: claim code ${r.code}`)}`
       + `&body=${encodeURIComponent(`Hi! I was player #${r.n} to finish the puzzle. My claim code is ${r.code}.`)}`;
     set('&#10022; Giveaway day &#10022;', 'You won!', `
-      <p class="promo-number">#${r.n}</p>
+      ${PROMO_ART[r.art] ? PROMO_ART[r.art](r.n) : `<p class="promo-number">#${r.n}</p>`}
       <p>You were the <strong>${ordinal(r.n)}</strong> player to finish today's puzzle, and ${r.n} is ${esc(r.why)}.</p>
       <p>You've won a <strong>${esc(r.prize)}</strong>!</p>
       <p>Your claim code:<br><span class="promo-code">${esc(r.code)}</span></p>

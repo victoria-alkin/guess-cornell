@@ -17,11 +17,13 @@ export const PROMOTIONS = [
     // play number -> why it's a Cornell number (finishes the sentence "#161 is ...")
     numbers: {
       21: 'the number of bells in the Cornell Chimes',
-      38: 'the length of Cayuga Lake in miles, as in "Far Above Cayuga\'s Waters"',
       65: 'for 1865, the year Cornell was founded',
+      70: "the number on Touchdown the Bear's jersey, honoring the Class of 1970, which funded mascot expenses",
       161: 'the number of steps up McGraw Tower',
       173: 'the height of McGraw Tower in feet',
     },
+    // play number -> a special picture on that winner's screen (drawn in public/js/game.js)
+    art: { 70: 'jersey' },
   },
 ];
 
@@ -55,7 +57,7 @@ function nearestWinning(promo, n) {
 /** The result screen's data for play number n (also used by admin previews). */
 export function resultFor(promo, n, code = null) {
   const base = { n, prize: promo.prize, email: promo.email };
-  if (promo.numbers[n]) return { ...base, won: true, why: promo.numbers[n], code };
+  if (promo.numbers[n]) return { ...base, won: true, why: promo.numbers[n], art: promo.art?.[n] ?? null, code };
   const near = nearestWinning(promo, n);
   return { ...base, won: false, nearest: near, nearestWhy: promo.numbers[near] };
 }

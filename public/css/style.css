@@ -1273,6 +1273,17 @@ html, body {
   border-radius: 4px;
   user-select: all;
 }
+/* Special winner pictures (e.g. the bear in the #70 jersey) */
+.promo-art { width: 200px; margin: -0.2em auto 0.6em; animation: art-pop 0.6s 0.25s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+.promo-art svg { display: block; width: 100%; overflow: visible; }
+.promo-art .art-wave {
+  transform-box: view-box;
+  transform-origin: 160px 128px;
+  animation: art-wave 1.1s 0.8s ease-in-out 3 both;
+}
+@keyframes art-pop { from { opacity: 0; transform: scale(0.6) rotate(-6deg); } }
+@keyframes art-wave { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-16deg); } }
+@media (prefers-reduced-motion: reduce) { .promo-art, .promo-art .art-wave { animation: none; } }
 .promo-body a { color: var(--faded-red); font-weight: 700; }
 .promo-body .small { font-size: 0.8rem; opacity: 0.8; }
 .promo-card .btn { margin-top: 0.6em; }
