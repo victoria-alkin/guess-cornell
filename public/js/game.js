@@ -731,8 +731,63 @@ function ordinal(n) {
 const words = (n) => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][n] ?? String(n);
 const capital = (t) => t[0].toUpperCase() + t.slice(1);
 
+// A row of tiny students for the 1868 class photo (some in top hats).
+function classRow(y, count, x0, step, row) {
+  const tones = ['#5a4030', '#6e4a2e', '#4a3426', '#7a5a3e'];
+  let out = `<g class="art-row r${row}">`;
+  for (let i = 0; i < count; i++) {
+    const x = x0 + i * step;
+    const tone = tones[(i + row) % tones.length];
+    out += `<path d="M${x - 7} ${y + 15} Q${x - 7} ${y + 5} ${x} ${y + 5} Q${x + 7} ${y + 5} ${x + 7} ${y + 15} Z" fill="${tone}"/>`
+      + `<circle cx="${x}" cy="${y}" r="4.6" fill="#e9d2ad"/>`;
+    if ((i * 7 + row * 3) % 4 === 0) out += `<rect x="${x - 3.5}" y="${y - 12}" width="7" height="8" fill="#3b2a1e"/><rect x="${x - 5.5}" y="${y - 5}" width="11" height="1.8" fill="#3b2a1e"/>`;
+    else out += `<path d="M${x - 4.6} ${y - 1} Q${x} ${y - 7} ${x + 4.6} ${y - 1} Z" fill="${tone}"/>`;
+  }
+  return `${out}</g>`;
+}
+
 // Special pictures for some winning numbers (chosen in api/_lib/promo.js).
 const PROMO_ART = {
+  // A sepia 1868 class photo in a frame, with a brass plaque.
+  classPhoto: (n) => `
+    <div class="promo-art class-photo" role="img" aria-label="A vintage 1868 class photo of ${n} students">
+      <svg viewBox="0 0 250 205">
+        <defs>
+          <linearGradient id="sepia-photo" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e6d3ad"/><stop offset="1" stop-color="#c4a57a"/>
+          </linearGradient>
+          <radialGradient id="photo-vignette" cx=".5" cy=".5" r=".7">
+            <stop offset=".6" stop-color="#4a3426" stop-opacity="0"/><stop offset="1" stop-color="#4a3426" stop-opacity=".45"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="125" cy="199" rx="100" ry="5" fill="#4a3426" opacity=".18"/>
+        <g transform="rotate(-2 125 95)">
+          <rect x="14" y="10" width="222" height="160" rx="4" fill="#6e4a2e"/>
+          <rect x="20" y="16" width="210" height="148" rx="2" fill="#8a5a3c"/>
+          <rect x="28" y="24" width="194" height="132" fill="#f6ecd6"/>
+          <rect x="36" y="32" width="178" height="116" fill="url(#sepia-photo)"/>
+          <!-- the first campus building, behind the class -->
+          <g fill="#a88a62" opacity=".75">
+            <rect x="62" y="48" width="126" height="56"/>
+            <polygon points="58,50 125,36 192,50"/>
+            <rect x="118" y="30" width="14" height="10"/>
+          </g>
+          <g fill="#8a6a48" opacity=".7">
+            <rect x="72" y="58" width="8" height="12"/><rect x="90" y="58" width="8" height="12"/><rect x="108" y="58" width="8" height="12"/>
+            <rect x="134" y="58" width="8" height="12"/><rect x="152" y="58" width="8" height="12"/><rect x="170" y="58" width="8" height="12"/>
+          </g>
+          ${classRow(92, 11, 50, 15, 1)}
+          ${classRow(108, 10, 57, 15, 2)}
+          ${classRow(124, 11, 50, 15, 3)}
+          <rect x="36" y="32" width="178" height="116" fill="url(#photo-vignette)"/>
+          <rect class="art-flash" x="36" y="32" width="178" height="116" fill="#fffdf7"/>
+        </g>
+        <rect x="74" y="168" width="102" height="26" rx="3" fill="#e2b36f" stroke="#8a5a2b" stroke-width="2"/>
+        <circle cx="80" cy="181" r="1.6" fill="#8a5a2b"/><circle cx="170" cy="181" r="1.6" fill="#8a5a2b"/>
+        <text x="125" y="179" text-anchor="middle" font-family="Abril Fatface, Georgia, serif" font-size="10" fill="#4a3426">CLASS OF 1868</text>
+        <text x="125" y="190" text-anchor="middle" font-family="Special Elite, Courier New, monospace" font-size="8.5" letter-spacing="1" fill="#4a3426">${n} STUDENTS</text>
+      </svg>
+    </div>`,
   // McGraw Tower (161 steps) with a "161 steps" sign and a bucket list (161 items).
   tower: (n) => `
     <div class="promo-art tower" role="img" aria-label="McGraw Tower beside a sign saying ${n} steps and a bucket list with item ${n} checked off">

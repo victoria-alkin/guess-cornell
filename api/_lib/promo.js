@@ -23,7 +23,7 @@ export const PROMOTIONS = [
       412: "the number of students in Cornell's inaugural class in 1868",
     },
     // play number -> a special picture on that winner's screen (drawn in public/js/game.js)
-    art: { 70: 'jersey', 161: 'tower' },
+    art: { 70: 'jersey', 161: 'tower', 412: 'classPhoto' },
   },
 ];
 
