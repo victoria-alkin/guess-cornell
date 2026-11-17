@@ -148,8 +148,7 @@ function init() {
 
   const closePromo = () => { const then = promoThen; promoThen = null; then?.(); };
   els.btnPromo.addEventListener('click', closePromo);
-  $('promo-close').addEventListener('click', closePromo);
-  els.promoRibbon.addEventListener('click', () => showPromo(state.promo.stage, goHome));
+  els.promoRibbon.addEventListener('click', () => showPromo(state.promo.stage, goHome, 'Continue'));
   els.summaryPromo.addEventListener('click', () => showPromo('result', showSummary, 'See your score'));
 
   setInterval(updateCountdowns, 30_000);
@@ -195,7 +194,7 @@ async function loadDaily() {
   renderStart();
   // A giveaway announced or running: show it first, then the usual home screen.
   // (Not on giveaway day for players who've already finished: they have their result.)
-  if (state.promo && !(state.promo.stage === 'live' && d.finished)) showPromo(state.promo.stage, goHome);
+  if (state.promo && !(state.promo.stage === 'live' && d.finished)) showPromo(state.promo.stage, goHome, 'Continue');
 }
 
 const fromServer = (r) => ({
@@ -784,7 +783,6 @@ function showPromo(kind, then, buttonLabel) {
       <p>The closest winning number was <strong>#${r.nearest}</strong>, ${esc(r.nearestWhy)}: just ${gap} away!</p>
       <p>Thanks for playing! Keep playing for chances to win more prizes in the future.</p>`);
   }
-  // Announcements close with the X; results also have a button on to the score.
   els.btnPromo.hidden = !buttonLabel;
   els.btnPromo.textContent = buttonLabel || '';
   promoThen = then;
@@ -803,7 +801,7 @@ async function previewPromo(kind) {
     if (!res.ok) throw new Error(data.error);
     state.promo = data.promo;
     state.promoResult = data.promoResult ?? null;
-    showPromo(kind === 'result' ? 'result' : kind, null, kind === 'result' ? 'See your score' : null);
+    showPromo(kind === 'result' ? 'result' : kind, null, kind === 'result' ? 'See your score' : 'Continue');
   } catch (err) {
     showStartError(`Preview unavailable: ${err.message} Sign in at /admin first.`);
   }
