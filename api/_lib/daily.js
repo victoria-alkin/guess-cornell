@@ -201,6 +201,9 @@ const NAMED_BUILDINGS = {
   statler: ['statler', 'terrace kitchen'], // the Terrace is inside Statler Hall
   milstein: ['milstein', 'green dragon'], // the Green Dragon is on Milstein Hall's lower level
   'goldwin smith': ['goldwin smith', 'history of art gallery'], // the gallery is in Goldwin Smith Hall
+  risley: ['risley'], // Risley Hall and its dining hall
+  'mann library': ['mann library'], // the slope and the path behind the library
+  atkinson: ['atkinson'], // Atkinson Hall and the path behind it
 };
 
 export function buildingKey(l) {

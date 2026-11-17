@@ -413,5 +413,72 @@
     "funFact": "The Mann Library Slope Natural Area's trails have zero trail markers, yet the area quietly serves as a secret shortcut connecting Cornell's busy Ag Quad directly to the Cornell Botanic Gardens and Beebe Lake.",
     "difficulty": 6,
     "indoor": false
+  },
+  {
+    "id": "6deb18cb6a4e1360",
+    "name": "Risley Hall",
+    "lat": 42.4529787,
+    "lng": -76.482035,
+    "image": "6deb18cb6a4e1360.jpg",
+    "funFact": "No two rooms in Risley Hall are identical. When the Tudor Gothic dormitory opened in 1913, architect William Henry Miller designed the floor plan at the benefactors' request so every bedroom has a unique layout.",
+    "difficulty": 4,
+    "indoor": false
+  },
+  {
+    "id": "12d97a28e6f1ccbc",
+    "name": "Morgan Japanese Garden",
+    "lat": 42.451094,
+    "lng": -76.4864228,
+    "image": "12d97a28e6f1ccbc.jpg",
+    "funFact": "The garden is an abstract retelling of the ancient Chinese parable \"The Three Laughers of Tiger Glen,\" complete with a clever sensory trick. Designer Marc Peter Keane placed a stone basin with real, trickling water nearby. As you look at the dry stone river, the sound of the basin tricks your brain into \"hearing\" water rushing through the moss.",
+    "difficulty": 7,
+    "indoor": false
+  },
+  {
+    "id": "118dfe7284b33284",
+    "name": "Johnson Museum of Art Loading Dock",
+    "lat": 42.4506427,
+    "lng": -76.4867374,
+    "image": "118dfe7284b33284.jpg",
+    "difficulty": 7,
+    "indoor": false
+  },
+  {
+    "id": "3ccbea406d75f5cc",
+    "name": "Fernow Hall",
+    "lat": 42.4481959,
+    "lng": -76.4752004,
+    "image": "3ccbea406d75f5cc.jpg",
+    "funFact": "Fernow Hall is named after Bernhard Fernow, a pioneering forester who actually lost his job at Cornell after wealthy Adirondack summer residents got his experimental forestry college shut down.",
+    "difficulty": 5,
+    "indoor": false
+  },
+  {
+    "id": "0aa429b23b7b32de",
+    "name": "Path Behind Atkinson Hall",
+    "lat": 42.4480378,
+    "lng": -76.4726687,
+    "image": "0aa429b23b7b32de.jpg",
+    "difficulty": 7,
+    "indoor": false
+  },
+  {
+    "id": "16accf76316efde0",
+    "name": "Path Behind Mann Library",
+    "lat": 42.4490638,
+    "lng": -76.475845,
+    "image": "16accf76316efde0.jpg",
+    "difficulty": 6,
+    "indoor": false
+  },
+  {
+    "id": "0fef47b33a00a983",
+    "name": "Risley Dining Hall Balcony",
+    "lat": 42.4531743,
+    "lng": -76.4821337,
+    "image": "0fef47b33a00a983.jpg",
+    "funFact": "Andrew Dickson White asked that the dining hall be built as a scaled-down replica of the Christ Church Refectory at Oxford University, the exact hall that inspired Hogwarts' Great Hall in the Harry Potter films.",
+    "difficulty": 5,
+    "indoor": true
   }
 ]

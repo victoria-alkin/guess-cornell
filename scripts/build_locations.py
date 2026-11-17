@@ -48,6 +48,11 @@ PIN_OVERRIDES = {
     "the centennial garden": (42.4491637, -76.4762822),  # the Student Centennial Garden, not Deans Garden
 }
 
+# Indoor/outdoor values that are wrong in the spreadsheet, by title (lowercase).
+SETTING_OVERRIDES = {
+    "risley dining hall balcony": True,  # inside the dining hall (spreadsheet says outdoor)
+}
+
 START_YAW_RANGES = {
     "abby and howard milstein auditorium": [125, 235],  # face the seats, never the screen
 }
@@ -292,6 +297,8 @@ def main():
                 entry["indoor"] = False
             else:
                 problems.append(f"{label}: indoor/outdoor {setting!r} should be 1 (indoor) or 0 (outdoor) (ignored)")
+        if title.lower() in SETTING_OVERRIDES:
+            entry["indoor"] = SETTING_OVERRIDES[title.lower()]
         locations.append(entry)
 
     Path(args.out_json).write_text(json.dumps(locations, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
