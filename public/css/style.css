@@ -1233,200 +1233,45 @@ html, body {
 @keyframes promo-stamp-in { from { opacity: 0; transform: rotate(-14deg) scale(1.9); } }
 
 .promo-kicker { margin-top: 70px; }
-.promo-heading { margin: 0.15em 0 0.75em; line-height: 0.95; }
-.promo-script {
-  display: block;
+.promo-title {
+  margin: 0.15em 0 0.3em;
   font-family: "Yellowtail", cursive;
   font-weight: 400;
-  font-size: clamp(2.1rem, 8vw, 2.9rem);
-  color: var(--sepia);
-  transform: rotate(-5deg) translateX(-12%);
-  margin-bottom: 0;
-  position: relative;
-  z-index: 1;
-}
-.promo-block {
-  display: block;
-  font-family: "Abril Fatface", Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(2.2rem, 9.5vw, 3.5rem);
-  letter-spacing: 0.04em;
+  font-size: clamp(2.3rem, 9vw, 3.1rem);
+  line-height: 1.1;
   color: var(--faded-red);
-  text-shadow: 3px 3px 0 var(--cream), 5px 5px 0 var(--sepia);
 }
-
 .promo-body {
   font-family: "Special Elite", "Courier New", monospace;
   font-size: 0.95rem;
   line-height: 1.55;
 }
-.promo-body p { margin: 0 auto 0.9em; max-width: 42ch; }
-.promo-body strong { color: var(--faded-red); }
-.promo-body a { color: var(--faded-red); font-weight: 700; }
-.promo-body .small { font-size: 0.78rem; opacity: 0.75; }
-.promo-lead { font-size: 1.02rem; }
-
-/* Handwritten note in fountain-pen blue */
-.promo-note {
-  font-family: "Yellowtail", cursive;
-  font-size: 1.55rem;
-  line-height: 1.25;
-  color: #2f3f6b;
-  transform: rotate(-1.5deg);
-}
-
-/* How it works: three tags */
-.promo-steps {
-  list-style: none;
-  margin: 1.1em auto 1.2em;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  max-width: 470px;
-}
-.promo-steps li {
-  position: relative;
-  padding: 1.3em 0.6em 0.75em;
-  font-size: 0.82rem;
-  line-height: 1.35;
-  background: #fffaf0;
-  border: 1.5px dashed var(--sepia);
-  border-radius: 4px;
-  transform: rotate(var(--tilt, 0deg));
-}
-.promo-steps li:nth-child(1) { --tilt: -2deg; }
-.promo-steps li:nth-child(2) { --tilt: 1.5deg; }
-.promo-steps li:nth-child(3) { --tilt: -1deg; }
-.promo-steps small { display: block; opacity: 0.7; font-size: 0.72rem; }
-.step-n {
-  position: absolute;
-  top: -13px;
-  left: 50%;
-  translate: -50% 0;
-  width: 26px;
-  height: 26px;
-  display: grid;
-  place-items: center;
+.promo-body p { margin: 0 auto 0.85em; max-width: 40ch; }
+.promo-number {
+  display: inline-block;
+  margin: 0 0 0.35em;
   font-family: "Abril Fatface", Georgia, serif;
-  font-size: 0.9rem;
-  color: var(--cream);
-  background: var(--faded-red);
-  border: 2px solid var(--sepia);
-  border-radius: 50%;
-}
-
-/* Winner's prize ticket: number on the left, tear-off claim code on the right */
-.ticket {
-  position: relative;
-  display: flex;
-  margin: 0.4em auto 1.3em;
-  max-width: 360px;
-  background: #fff4d6;
-  border: 2px solid var(--faded-red);
-  border-radius: 8px;
-  box-shadow: 4px 4px 0 var(--sepia);
-  transform: rotate(-2deg);
-  animation: ticket-in 0.5s 0.25s cubic-bezier(0.2, 0.8, 0.25, 1.2) both;
-}
-@keyframes ticket-in { from { opacity: 0; transform: rotate(-8deg) translateY(16px) scale(0.9); } }
-.ticket-main, .ticket-stub { display: flex; flex-direction: column; justify-content: center; padding: 0.7em 0.6em; }
-.ticket-main { flex: 1; border-right: 2px dashed var(--faded-red); }
-.ticket-stub { flex: 1.25; }
-.ticket::before, .ticket::after {
-  /* notches where the stub tears off */
-  content: "";
-  position: absolute;
-  left: calc(44.4% - 9px);
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--cream);
-  border: 2px solid var(--faded-red);
-}
-.ticket::before { top: -10px; clip-path: inset(50% 0 0 0); }
-.ticket::after { bottom: -10px; clip-path: inset(0 0 50% 0); }
-.ticket-label { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.75; }
-.ticket-number {
-  font-family: "Abril Fatface", Georgia, serif;
-  font-size: 2.7rem;
-  line-height: 1.05;
+  font-size: clamp(2.6rem, 12vw, 3.6rem);
+  line-height: 1;
   color: var(--faded-red);
-  text-shadow: 2px 2px 0 var(--cream), 3px 3px 0 var(--sepia);
+  text-shadow: 2px 2px 0 var(--cream), 4px 4px 0 var(--sepia);
 }
-.ticket-code {
-  margin-top: 0.15em;
-  font-size: 1.45rem;
-  letter-spacing: 0.16em;
+.promo-code {
+  display: inline-block;
+  margin: 0.2em 0 0.4em;
+  padding: 0.35em 0.9em;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 1.5rem;
+  letter-spacing: 0.18em;
   color: var(--sepia);
+  background: #fffaf0;
+  border: 2px dashed var(--faded-red);
+  border-radius: 4px;
   user-select: all;
 }
-
-/* Not a winner: your number and the nearest winning one on a little ruler */
-.ruler { position: relative; max-width: 380px; height: 92px; margin: 0.3em auto 1em; }
-.ruler-line {
-  position: absolute;
-  left: 4%;
-  right: 4%;
-  top: 58px;
-  height: 10px;
-  border-top: 2px solid var(--sepia);
-  background: repeating-linear-gradient(90deg, var(--sepia) 0 1.5px, transparent 1.5px 14px);
-  opacity: 0.7;
-}
-.ruler-mark {
-  position: absolute;
-  bottom: 25px;
-  translate: -50% 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 0.72rem;
-  line-height: 1.2;
-  white-space: nowrap;
-}
-.ruler-mark b { font-family: "Abril Fatface", Georgia, serif; font-weight: 400; font-size: 1.5rem; }
-.ruler-mark::after {
-  content: "";
-  width: 14px;
-  height: 14px;
-  margin-top: 3px;
-  border-radius: 50%;
-  border: 2px solid var(--sepia);
-  background: var(--cream);
-}
-.ruler-mark.you b { color: var(--sepia); }
-.ruler-mark.prize b { color: var(--faded-red); }
-.ruler-mark.prize::after { background: var(--faded-red); }
-.ruler-gap {
-  position: absolute;
-  top: 74px;
-  translate: -50% 0;
-  font-size: 0.72rem;
-  white-space: nowrap;
-  color: var(--faded-red);
-}
-
-.promo-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 0.4em; }
-.promo-mail { text-decoration: none; font-size: 1rem; }
-.promo-mail[hidden] { display: none; }
-
-/* Confetti for winners: sesame seeds and paper bits */
-.promo-confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 5; }
-.promo-confetti i {
-  position: absolute;
-  top: -20px;
-  width: 9px;
-  height: 14px;
-  border-radius: 2px;
-  animation: confetti-fall var(--dur, 3s) var(--delay, 0s) cubic-bezier(0.25, 0.4, 0.6, 1) forwards;
-}
-.promo-confetti i.seed { width: 7px; height: 12px; border-radius: 50%; }
-@keyframes confetti-fall {
-  0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
-  85% { opacity: 1; }
-  100% { opacity: 0; transform: translate(var(--drift, 0px), 105vh) rotate(var(--spin, 540deg)); }
-}
+.promo-body a { color: var(--faded-red); font-weight: 700; }
+.promo-body .small { font-size: 0.8rem; opacity: 0.8; }
+.promo-card .btn { margin-top: 0.6em; }
 
 /* Banners on the start postcard and the score card */
 .promo-ribbon,
@@ -1463,16 +1308,8 @@ html, body {
   .promo-card.win .pm-word { font-size: 0.9rem; }
   .promo-kicker { margin-top: 64px; font-size: 0.72rem; }
   .promo-body { font-size: 0.9rem; }
-  .promo-block { font-size: 2.3rem; text-shadow: 2px 2px 0 var(--cream), 3px 3px 0 var(--sepia); }
-  .promo-script { font-size: 2rem; }
-  .promo-steps { gap: 8px; }
-  .promo-steps li { font-size: 0.74rem; padding: 1.3em 0.35em 0.6em; }
-  .promo-note { font-size: 1.35rem; }
-  .ticket-number { font-size: 2.3rem; }
-  .ticket-code { font-size: 1.2rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .promo-card, .promo-card.win .promo-postmark, .ticket { animation: none; }
-  .promo-confetti { display: none; }
+  .promo-card, .promo-card.win .promo-postmark { animation: none; }
 }
