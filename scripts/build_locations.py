@@ -46,6 +46,7 @@ EXCLUDED_TITLES = {"sage chapel"}
 # Pins that are wrong in the spreadsheet, by title (lowercase): (lat, lng).
 PIN_OVERRIDES = {
     "the centennial garden": (42.4491637, -76.4762822),  # the Student Centennial Garden, not Deans Garden
+    "cornell cis building": (42.4440246, -76.4810929),  # the covered terrace at the building's southwest corner
 }
 
 # Indoor/outdoor values that are wrong in the spreadsheet, by title (lowercase).
