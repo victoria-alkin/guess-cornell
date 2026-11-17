@@ -191,6 +191,9 @@ async function loadDaily() {
   state.hostCheck = checkImageHost(state.rounds);
   if (!d.finished) prefetch(state.rounds[state.results.length]);
   renderStart();
+  // A giveaway announced or running: show it first, then the usual home screen.
+  // (Not on giveaway day for players who've already finished: they have their result.)
+  if (state.promo && !(state.promo.stage === 'live' && d.finished)) showPromo(state.promo.stage, goHome, 'Continue');
 }
 
 const fromServer = (r) => ({
@@ -274,8 +277,7 @@ async function onStart() {
   saveName(name);
   state.index = state.results.length;
   track(state.index === 0 ? 'puzzle_start' : 'puzzle_resume', { round: state.index + 1 });
-  if (state.index === 0 && state.promo) showPromo(state.promo.stage, startRound, 'Start round 1');
-  else startRound();
+  startRound();
 }
 
 function goHome() {
@@ -797,7 +799,7 @@ async function previewPromo(kind) {
     if (!res.ok) throw new Error(data.error);
     state.promo = data.promo;
     state.promoResult = data.promoResult ?? null;
-    showPromo(kind === 'result' ? 'result' : kind, null, kind === 'result' ? 'See your score' : 'Start round 1');
+    showPromo(kind === 'result' ? 'result' : kind, null, kind === 'result' ? 'See your score' : 'Continue');
   } catch (err) {
     showStartError(`Preview unavailable: ${err.message} Sign in at /admin first.`);
   }
