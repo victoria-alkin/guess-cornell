@@ -1285,6 +1285,10 @@ html, body {
 @keyframes art-wave { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-16deg); } }
 .promo-art.tower { width: 250px; }
 .promo-art.class-photo { width: 250px; }
+.promo-art.bridge { width: 250px; }
+.promo-art .art-water { animation: art-water 2.4s linear infinite alternate; }
+@keyframes art-water { to { transform: translateX(10px); } }
+@media (prefers-reduced-motion: reduce) { .promo-art .art-water { animation: none; } }
 .promo-art .art-flash { opacity: 0; animation: art-flash 0.9s 0.55s ease-out both; }
 .promo-art .art-row { animation: art-row-in 0.4s ease-out both; }
 .promo-art .art-row.r1 { animation-delay: 0.9s; }
@@ -1295,7 +1299,7 @@ html, body {
 @media (prefers-reduced-motion: reduce) { .promo-art .art-flash, .promo-art .art-row { animation: none; } }
 /* Non-winners see the winning number's picture under their text, a little smaller */
 .promo-art-below .promo-art { width: 170px; margin: 0.2em auto 0.4em; }
-.promo-art-below .promo-art.tower, .promo-art-below .promo-art.class-photo { width: 210px; }
+.promo-art-below .promo-art.tower, .promo-art-below .promo-art.class-photo, .promo-art-below .promo-art.bridge { width: 210px; }
 .promo-art .art-bell { transform-box: fill-box; transform-origin: 50% 0; animation: art-bell 0.9s 0.7s ease-in-out 4 both; }
 .promo-art .art-bell.two { animation-delay: 0.95s; }
 .promo-art .art-flag { transform-box: fill-box; transform-origin: 0 50%; animation: art-flag 1.6s ease-in-out infinite; }

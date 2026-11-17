@@ -17,13 +17,13 @@ export const PROMOTIONS = [
     // play number -> why it's a Cornell number (finishes the sentence "#161 is ...")
     numbers: {
       21: 'the number of bells in the Cornell Chimes',
-      65: 'for 1865, the year Cornell was founded',
       70: "the number on Touchdown the Bear's jersey, honoring the Class of 1970, which funded mascot expenses",
+      270: 'the length in feet of the Fall Creek Gorge suspension bridge',
       161: "the number of steps to the top of McGraw Tower, and the number of items on Cornell's famous bucket list",
       412: "the number of students in Cornell's inaugural class in 1868",
     },
     // play number -> a special picture on that winner's screen (drawn in public/js/game.js)
-    art: { 70: 'jersey', 161: 'tower', 412: 'classPhoto' },
+    art: { 70: 'jersey', 161: 'tower', 270: 'bridge', 412: 'classPhoto' },
   },
 ];
 

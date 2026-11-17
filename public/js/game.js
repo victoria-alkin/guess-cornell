@@ -748,6 +748,67 @@ function classRow(y, count, x0, step, row) {
 
 // Special pictures for some winning numbers (chosen in api/_lib/promo.js).
 const PROMO_ART = {
+  // The Fall Creek gorge suspension bridge with a measuring arrow and a little bear crossing.
+  bridge: (n) => {
+    const hangers = [84, 96, 108, 120, 132, 144, 156, 168]
+      .map((x) => { const t = (x - 70) / 110; const cable = 70 + 88 * t * (1 - t); const deck = 86 + 40 * t * (1 - t); return `<line x1="${x}" y1="${cable.toFixed(1)}" x2="${x}" y2="${deck.toFixed(1)}"/>`; })
+      .join('');
+    return `
+    <div class="promo-art bridge" role="img" aria-label="The Fall Creek Gorge suspension bridge, ${n} feet long, with a bear walking across">
+      <svg viewBox="0 0 250 195">
+        <defs>
+          <clipPath id="gorge-clip"><rect x="10" y="14" width="230" height="166" rx="10"/></clipPath>
+          <linearGradient id="gorge-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe0ea"/><stop offset="1" stop-color="#f3ead6"/></linearGradient>
+        </defs>
+        <ellipse cx="125" cy="189" rx="104" ry="5" fill="#4a3426" opacity=".18"/>
+        <g clip-path="url(#gorge-clip)">
+          <rect x="10" y="14" width="230" height="166" fill="url(#gorge-sky)"/>
+          <!-- far wall of the gorge -->
+          <path d="M10 100 Q80 92 125 104 T240 98 V180 H10 Z" fill="#b89a74" opacity=".55"/>
+          <!-- creek with a little waterfall -->
+          <path d="M150 112 Q156 135 150 168 L162 168 Q168 135 160 112 Z" fill="#e8f1f6" opacity=".9"/>
+          <rect x="10" y="160" width="230" height="20" fill="#6f9fbf"/>
+          <path class="art-water" d="M20 168 h14 M48 172 h18 M84 167 h12 M110 172 h16 M140 168 h14 M170 172 h18 M200 167 h12 M224 171 h12" stroke="#e8f1f6" stroke-width="2" stroke-linecap="round"/>
+          <!-- cliffs -->
+          <path d="M10 82 L68 84 Q74 120 66 150 L80 180 H10 Z" fill="#8a6a48"/>
+          <path d="M240 82 L182 84 Q176 118 186 150 L172 180 H240 Z" fill="#8a6a48"/>
+          <g stroke="#6e5238" stroke-width="1.5" opacity=".7">
+            <line x1="12" y1="104" x2="64" y2="106"/><line x1="12" y1="126" x2="66" y2="128"/><line x1="14" y1="148" x2="64" y2="150"/>
+            <line x1="238" y1="104" x2="184" y2="106"/><line x1="238" y1="126" x2="182" y2="128"/><line x1="236" y1="148" x2="186" y2="150"/>
+          </g>
+          <!-- trees -->
+          <g fill="#5d7a4a">
+            <polygon points="22,84 30,58 38,84"/><polygon points="36,84 46,50 56,84"/><polygon points="52,84 58,66 64,84"/>
+            <polygon points="188,84 196,62 204,84"/><polygon points="202,84 212,52 222,84"/><polygon points="218,84 226,64 234,84"/>
+          </g>
+          <!-- the bridge -->
+          <rect x="66" y="66" width="6" height="20" fill="#4a3426"/>
+          <rect x="178" y="66" width="6" height="20" fill="#4a3426"/>
+          <path d="M69 68 Q125 114 181 68" fill="none" stroke="#4a3426" stroke-width="2"/>
+          <g stroke="#4a3426" stroke-width="1">${hangers}</g>
+          <path d="M66 86 Q125 106 184 86" fill="none" stroke="#4a3426" stroke-width="4" stroke-linecap="round"/>
+          <!-- a little bear walking across -->
+          <g class="art-walker">
+            <animateMotion dur="7s" begin="0.6s" repeatCount="indefinite" path="M72 86 Q125 106 178 86"/>
+            <g transform="translate(0 -9)">
+              <rect x="-4" y="2" width="8" height="8" rx="3" fill="#b31b1b"/>
+              <circle cx="0" cy="-1" r="4.5" fill="#9a6544"/>
+              <circle cx="-3.2" cy="-4.6" r="1.8" fill="#8a5a3c"/><circle cx="3.2" cy="-4.6" r="1.8" fill="#8a5a3c"/>
+            </g>
+          </g>
+        </g>
+        <rect x="10" y="14" width="230" height="166" rx="10" fill="none" stroke="#4a3426" stroke-width="2.5"/>
+        <!-- measuring arrow -->
+        <g stroke="#b31b1b" stroke-width="2" fill="none" stroke-linecap="round">
+          <line x1="72" y1="40" x2="178" y2="40"/>
+          <path d="M78 35 L72 40 L78 45 M172 35 L178 40 L172 45"/>
+          <line x1="69" y1="34" x2="69" y2="62" stroke-dasharray="2 3"/><line x1="181" y1="34" x2="181" y2="62" stroke-dasharray="2 3"/>
+        </g>
+        <rect x="100" y="29" width="50" height="21" rx="3" fill="#fffaf0" stroke="#b31b1b" stroke-width="2"/>
+        <text x="125" y="44" text-anchor="middle" font-family="Abril Fatface, Georgia, serif" font-size="13" fill="#b31b1b">${n} FT</text>
+      </svg>
+    </div>`;
+  },
   // A sepia 1868 class photo in a frame, with a brass plaque.
   classPhoto: (n) => `
     <div class="promo-art class-photo" role="img" aria-label="A vintage 1868 class photo of ${n} students">
