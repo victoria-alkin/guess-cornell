@@ -748,6 +748,53 @@ function classRow(y, count, x0, step, row) {
 
 // Special pictures for some winning numbers (chosen in api/_lib/promo.js).
 const PROMO_ART = {
+  // A cartoon dragon in a party hat under a "125 years" banner (Dragon Day).
+  dragon: (n) => `
+    <div class="promo-art dragon" role="img" aria-label="A cartoon dragon in a party hat under a banner saying ${n} years">
+      <svg viewBox="0 0 250 200">
+        <ellipse cx="125" cy="192" rx="100" ry="6" fill="#4a3426" opacity=".18"/>
+        <!-- banner -->
+        <g transform="rotate(-5 66 36)">
+          <path d="M14 30 L4 40 L14 50 Z M118 30 L128 40 L118 50 Z" fill="#8c1515"/>
+          <rect x="14" y="24" width="104" height="30" rx="3" fill="#fffaf0" stroke="#b31b1b" stroke-width="2.5"/>
+          <text x="66" y="45" text-anchor="middle" font-family="Abril Fatface, Georgia, serif" font-size="17" fill="#b31b1b">${n} YEARS</text>
+        </g>
+        <!-- tail -->
+        <path d="M78 156 Q36 168 38 136 Q40 118 56 122" fill="none" stroke="#5d8a4a" stroke-width="14" stroke-linecap="round"/>
+        <polygon points="48,118 64,108 62,126" fill="#b31b1b"/>
+        <!-- wing (flaps) -->
+        <path class="art-wing" d="M112 120 Q92 74 128 66 Q122 88 146 100 Z" fill="#7aa364" stroke="#3f5e30" stroke-width="2" stroke-linejoin="round"/>
+        <!-- body -->
+        <ellipse cx="122" cy="150" rx="54" ry="34" fill="#5d8a4a"/>
+        <ellipse cx="130" cy="160" rx="34" ry="20" fill="#e9d9a6"/>
+        <g stroke="#cdb987" stroke-width="2"><line x1="108" y1="152" x2="152" y2="152"/><line x1="104" y1="162" x2="156" y2="162"/><line x1="110" y1="172" x2="150" y2="172"/></g>
+        <g fill="#b31b1b"><polygon points="80,128 86,112 94,126"/><polygon points="96,120 104,104 110,119"/><polygon points="114,117 122,102 128,117"/></g>
+        <!-- legs -->
+        <ellipse cx="98" cy="182" rx="13" ry="8" fill="#4f7a3e"/>
+        <ellipse cx="148" cy="182" rx="13" ry="8" fill="#4f7a3e"/>
+        <g fill="#fffaf0"><circle cx="90" cy="186" r="2"/><circle cx="97" cy="188" r="2"/><circle cx="104" cy="186" r="2"/><circle cx="140" cy="186" r="2"/><circle cx="147" cy="188" r="2"/><circle cx="154" cy="186" r="2"/></g>
+        <!-- neck and head -->
+        <path d="M150 136 Q170 116 174 98" fill="none" stroke="#5d8a4a" stroke-width="28" stroke-linecap="round"/>
+        <ellipse cx="182" cy="84" rx="27" ry="23" fill="#5d8a4a"/>
+        <ellipse cx="203" cy="93" rx="17" ry="12" fill="#6f9c5a"/>
+        <circle cx="210" cy="89" r="1.8" fill="#3f5e30"/><circle cx="215" cy="93" r="1.8" fill="#3f5e30"/>
+        <circle cx="180" cy="76" r="7.5" fill="#fffaf0"/><circle cx="182.5" cy="76" r="3.8" fill="#3b2a1e"/><circle cx="184" cy="74.5" r="1.2" fill="#fff"/>
+        <path d="M190 100 Q199 106 210 101" fill="none" stroke="#3f5e30" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="170" cy="92" r="5" fill="#e88a7a" opacity=".45"/>
+        <polygon points="162,68 160,54 170,64" fill="#e9d9a6"/>
+        <!-- party hat -->
+        <g class="art-hat">
+          <polygon points="172,64 196,60 187,28" fill="#b31b1b"/>
+          <path d="M176 54 L192 51 M180 44 L190 42" stroke="#fffaf0" stroke-width="3"/>
+          <circle cx="187" cy="27" r="4.5" fill="#f2d39b"/>
+        </g>
+        <!-- flame puff -->
+        <g class="art-flame">
+          <path d="M220 94 Q232 84 244 90 Q236 94 246 100 Q232 104 220 98 Z" fill="#f6b26b"/>
+          <path d="M221 95 Q229 90 236 93 Q231 96 237 99 Q229 101 221 97 Z" fill="#f2d39b"/>
+        </g>
+      </svg>
+    </div>`,
   // The Fall Creek gorge suspension bridge with a measuring arrow and a little bear crossing.
   bridge: (n) => {
     const hangers = [84, 96, 108, 120, 132, 144, 156, 168]
