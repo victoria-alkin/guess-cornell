@@ -759,7 +759,9 @@ function showPromo(kind, then, buttonLabel) {
   if (kind === 'announce') {
     set('&#10022; A thank-you from Guess Cornell &#10022;', 'Giveaway tomorrow!', `
       <p>To thank everyone for playing, <strong>${count} players</strong> will each win a <strong>${prize}</strong> on ${esc(longDate(promo.date))}.</p>
-      <p>Every finished puzzle gets the next play number (1st, 2nd, 3rd&hellip;) based on the order of players, and ${count} special Cornell numbers win.</p>      <p>Come back tomorrow, play, and see if your number comes up.</p>`);
+      <p>Every finished puzzle gets the next play number (1st, 2nd, 3rd&hellip;) based on the order of players, and ${count} special Cornell numbers win.</p>
+      <p>E.g. If 80 is selected as a special "Cornell" number (for the 80 majors at Cornell), the 80th person to play on ${esc(longDate(promo.date).split(',')[0])} will be selected as a winner.</p>
+      <p>Come back tomorrow, play, and see if your number comes up.</p>`);
   } else if (kind === 'live') {
     set('&#10022; Today only &#10022;', "It's giveaway day!", `
       <p><strong>${capital(count)} players</strong> will each win a <strong>${prize}</strong> today.</p>
