@@ -1283,7 +1283,22 @@ html, body {
 }
 @keyframes art-pop { from { opacity: 0; transform: scale(0.6) rotate(-6deg); } }
 @keyframes art-wave { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-16deg); } }
-@media (prefers-reduced-motion: reduce) { .promo-art, .promo-art .art-wave { animation: none; } }
+.promo-art.tower { width: 250px; }
+.promo-art .art-bell { transform-box: fill-box; transform-origin: 50% 0; animation: art-bell 0.9s 0.7s ease-in-out 4 both; }
+.promo-art .art-bell.two { animation-delay: 0.95s; }
+.promo-art .art-flag { transform-box: fill-box; transform-origin: 0 50%; animation: art-flag 1.6s ease-in-out infinite; }
+.promo-art .art-check { stroke-dasharray: 30; stroke-dashoffset: 30; animation: art-check 0.35s ease-out forwards; }
+.promo-art .art-check.c1 { animation-delay: 0.7s; }
+.promo-art .art-check.c2 { animation-delay: 1s; }
+.promo-art .art-check.c3 { animation-delay: 1.3s; }
+.promo-art .art-check.c4 { animation-delay: 1.75s; }
+@keyframes art-bell { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(18deg); } 75% { transform: rotate(-18deg); } }
+@keyframes art-flag { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(0.82) skewY(4deg); } }
+@keyframes art-check { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .promo-art, .promo-art .art-wave, .promo-art .art-bell, .promo-art .art-flag { animation: none; }
+  .promo-art .art-check { animation: none; stroke-dashoffset: 0; }
+}
 .promo-body a { color: var(--faded-red); font-weight: 700; }
 .promo-body .small { font-size: 0.8rem; opacity: 0.8; }
 .promo-card .btn { margin-top: 0.6em; }

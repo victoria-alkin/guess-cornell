@@ -23,7 +23,7 @@ export const PROMOTIONS = [
       173: 'the height of McGraw Tower in feet',
     },
     // play number -> a special picture on that winner's screen (drawn in public/js/game.js)
-    art: { 70: 'jersey' },
+    art: { 70: 'jersey', 161: 'tower' },
   },
 ];
 

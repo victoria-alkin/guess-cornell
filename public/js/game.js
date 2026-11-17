@@ -733,6 +733,71 @@ const capital = (t) => t[0].toUpperCase() + t.slice(1);
 
 // Special pictures for some winning numbers (chosen in api/_lib/promo.js).
 const PROMO_ART = {
+  // McGraw Tower (161 steps) with a "161 steps" sign and a bucket list (161 items).
+  tower: (n) => `
+    <div class="promo-art tower" role="img" aria-label="McGraw Tower beside a sign saying ${n} steps and a bucket list with item ${n} checked off">
+      <svg viewBox="0 0 250 220">
+        <ellipse cx="128" cy="211" rx="112" ry="6" fill="#4a3426" opacity=".18"/>
+        <!-- sign post: 161 steps -->
+        <g transform="rotate(-6 42 160)">
+          <rect x="38" y="150" width="7" height="58" fill="#8a5a3c"/>
+          <rect x="8" y="132" width="68" height="30" rx="3" fill="#c89a72" stroke="#4a3426" stroke-width="2"/>
+          <text x="42" y="146" text-anchor="middle" font-family="Abril Fatface, Georgia, serif" font-size="13" fill="#4a3426">${n}</text>
+          <text x="42" y="157" text-anchor="middle" font-family="Special Elite, Courier New, monospace" font-size="8.5" letter-spacing="1" fill="#4a3426">STEPS &#8593;</text>
+        </g>
+        <!-- flag -->
+        <line x1="112" y1="16" x2="112" y2="1" stroke="#4a3426" stroke-width="1.6"/>
+        <path class="art-flag" d="M112 1 L130 5 L112 10 Z" fill="#b31b1b"/>
+        <!-- spire and lantern -->
+        <polygon points="112,14 101,42 123,42" fill="#c9b38c" stroke="#4a3426" stroke-width="1.6" stroke-linejoin="round"/>
+        <rect x="98" y="42" width="28" height="18" fill="#e2d2ae" stroke="#4a3426" stroke-width="1.6"/>
+        <path d="M108 58 V50 a4 4 0 0 1 8 0 V58 Z" fill="#4a3426"/>
+        <!-- belfry with two bells -->
+        <polygon points="89,60 93,48 97,60" fill="#c9b38c" stroke="#4a3426" stroke-width="1.4"/>
+        <polygon points="127,60 131,48 135,60" fill="#c9b38c" stroke="#4a3426" stroke-width="1.4"/>
+        <rect x="89" y="60" width="46" height="32" fill="#d9c7a3" stroke="#4a3426" stroke-width="1.6"/>
+        <path d="M95 89 V72 Q101 62 107 72 V89 Z" fill="#4a3426"/>
+        <path d="M117 89 V72 Q123 62 129 72 V89 Z" fill="#4a3426"/>
+        <g class="art-bell"><path d="M97 82 Q97 74 101 74 Q105 74 105 82 Z" fill="#e2b36f"/><circle cx="101" cy="83" r="1.6" fill="#e2b36f"/></g>
+        <g class="art-bell two"><path d="M119 82 Q119 74 123 74 Q127 74 127 82 Z" fill="#e2b36f"/><circle cx="123" cy="83" r="1.6" fill="#e2b36f"/></g>
+        <rect x="85" y="92" width="54" height="5" fill="#c9b38c" stroke="#4a3426" stroke-width="1.4"/>
+        <!-- shaft with clock -->
+        <rect x="91" y="97" width="42" height="96" fill="#d9c7a3" stroke="#4a3426" stroke-width="1.6"/>
+        <g stroke="#b9a37c" stroke-width="1">
+          <line x1="91" y1="130" x2="133" y2="130"/><line x1="91" y1="144" x2="133" y2="144"/>
+          <line x1="91" y1="158" x2="133" y2="158"/><line x1="91" y1="172" x2="133" y2="172"/>
+          <line x1="112" y1="130" x2="112" y2="144"/><line x1="101" y1="144" x2="101" y2="158"/>
+          <line x1="123" y1="144" x2="123" y2="158"/><line x1="112" y1="158" x2="112" y2="172"/>
+        </g>
+        <circle cx="112" cy="113" r="11" fill="#fffaf0" stroke="#4a3426" stroke-width="1.8"/>
+        <path d="M112 113 V106 M112 113 L117 115" stroke="#4a3426" stroke-width="1.8" stroke-linecap="round"/>
+        <rect x="108" y="133" width="8" height="9" rx="4" fill="#4a3426" opacity=".7"/>
+        <rect x="108" y="161" width="8" height="9" rx="4" fill="#4a3426" opacity=".7"/>
+        <!-- base -->
+        <rect x="85" y="193" width="54" height="15" fill="#c9b38c" stroke="#4a3426" stroke-width="1.6"/>
+        <path d="M106 208 V199 a6 6 0 0 1 12 0 V208 Z" fill="#4a3426"/>
+        <!-- bucket list card -->
+        <g transform="rotate(7 196 160)">
+          <rect x="155" y="108" width="84" height="98" rx="3" fill="#fffaf0" stroke="#4a3426" stroke-width="2"/>
+          <rect x="155" y="108" width="84" height="19" rx="3" fill="#b31b1b"/>
+          <text x="197" y="121" text-anchor="middle" font-family="Special Elite, Courier New, monospace" font-size="9.5" letter-spacing="1" fill="#fffaf0">BUCKET LIST</text>
+          <g font-family="Special Elite, Courier New, monospace" font-size="8" fill="#4a3426">
+            <rect x="162" y="134" width="9" height="9" fill="none" stroke="#4a3426" stroke-width="1.3"/>
+            <line x1="176" y1="140" x2="230" y2="140" stroke="#b9a37c" stroke-width="2"/>
+            <rect x="162" y="151" width="9" height="9" fill="none" stroke="#4a3426" stroke-width="1.3"/>
+            <line x1="176" y1="157" x2="222" y2="157" stroke="#b9a37c" stroke-width="2"/>
+            <rect x="162" y="168" width="9" height="9" fill="none" stroke="#4a3426" stroke-width="1.3"/>
+            <line x1="176" y1="174" x2="228" y2="174" stroke="#b9a37c" stroke-width="2"/>
+            <text x="190" y="193" text-anchor="middle" font-size="7">&#8942;</text>
+          </g>
+          <path class="art-check c1" d="M163 138 l3 4 l6 -8" fill="none" stroke="#1e7a3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="art-check c2" d="M163 155 l3 4 l6 -8" fill="none" stroke="#1e7a3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="art-check c3" d="M163 172 l3 4 l6 -8" fill="none" stroke="#1e7a3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="166" y="201" font-family="Abril Fatface, Georgia, serif" font-size="12" fill="#b31b1b">No. ${n}</text>
+          <path class="art-check c4" d="M213 196 l4 5 l9 -12" fill="none" stroke="#b31b1b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+      </svg>
+    </div>`,
   // A cartoon bear in a red football jersey with the winning number, waving.
   jersey: (n) => `
     <div class="promo-art jersey" role="img" aria-label="A bear in a red number ${n} jersey, waving">
