@@ -61,7 +61,7 @@ export function resultFor(promo, n, code = null) {
   const base = { n, prize: promo.prize, email: promo.email };
   if (promo.numbers[n]) return { ...base, won: true, why: promo.numbers[n], art: promo.art?.[n] ?? null, code };
   const near = nearestWinning(promo, n);
-  return { ...base, won: false, nearest: near, nearestWhy: promo.numbers[near] };
+  return { ...base, won: false, nearest: near, nearestWhy: promo.numbers[near], nearestArt: promo.art?.[near] ?? null };
 }
 
 const newCode = () => Array.from({ length: 6 }, () => CODE_LETTERS[randomInt(CODE_LETTERS.length)]).join('');

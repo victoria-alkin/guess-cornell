@@ -886,7 +886,8 @@ function showPromo(kind, then, buttonLabel) {
       <p class="promo-number">#${r.n}</p>
       <p>You were the <strong>${ordinal(r.n)}</strong> player to finish today's puzzle.</p>
       <p>${r.nearest < r.n ? 'The last winning number before you was' : 'The first winning number was'} <strong>#${r.nearest}</strong>, ${esc(r.nearestWhy)}: ${gap <= 15 ? `just ${gap} away!` : `${gap} away.`}</p>
-      <p>Thanks for playing! Keep playing for chances to win more prizes in the future.</p>`);
+      <p>Thanks for playing! Keep playing for chances to win more prizes in the future.</p>
+      ${PROMO_ART[r.nearestArt] ? `<div class="promo-art-below">${PROMO_ART[r.nearestArt](r.nearest)}</div>` : ''}`);
   }
   els.btnPromo.hidden = !buttonLabel;
   els.btnPromo.textContent = buttonLabel || '';
