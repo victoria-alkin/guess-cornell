@@ -480,5 +480,84 @@
     "funFact": "Andrew Dickson White asked that the dining hall be built as a scaled-down replica of the Christ Church Refectory at Oxford University, the exact hall that inspired Hogwarts' Great Hall in the Harry Potter films.",
     "difficulty": 5,
     "indoor": true
+  },
+  {
+    "id": "557e5994faf74183",
+    "name": "Olin Hall 255",
+    "lat": 42.4456288,
+    "lng": -76.4844896,
+    "image": "557e5994faf74183.jpg",
+    "funFact": "Olin Hall was designed by Shreve, Lamb & Harmon, the same architectural firm that created the Empire State Building.",
+    "difficulty": 6,
+    "indoor": true
+  },
+  {
+    "id": "576509cf8df133af",
+    "name": "The Founders Room in Anabel Taylor Hall",
+    "lat": 42.4450362,
+    "lng": -76.4855337,
+    "image": "576509cf8df133af.jpg",
+    "funFact": "Photos of this room's interior are preserved in the Harry S. Truman Library & Museum!",
+    "difficulty": 6,
+    "indoor": true
+  },
+  {
+    "id": "efe0a67ecdaf4447",
+    "name": "Korean and Vietnam War Memorial",
+    "lat": 42.4449229,
+    "lng": -76.4855892,
+    "image": "efe0a67ecdaf4447.jpg",
+    "funFact": "The Korean and Vietnam War Memorial at Cornell University is a set of engraved stone tablets on the east wall of the Anabel Taylor Hall rotunda that honors the 49 Cornell alumni who died in military service during the Korean War, Vietnam War, and other post-World War II conflicts.",
+    "difficulty": 6,
+    "indoor": true
+  },
+  {
+    "id": "4deb1cb775fe0c71",
+    "name": "Snee Hall",
+    "lat": 42.4436747,
+    "lng": -76.4850068,
+    "image": "4deb1cb775fe0c71.jpg",
+    "funFact": "For 35 years, the lobby featured a classic spinning-drum seismograph that captured famous tremors in real time. In 2011, it famously recorded the rare 5.8-magnitude Virginia earthquake that shook the East Coast.",
+    "difficulty": 6,
+    "indoor": true
+  },
+  {
+    "id": "b0f6c9f636300e43",
+    "name": "Hollister Hall 320",
+    "lat": 42.4443515,
+    "lng": -76.4847402,
+    "image": "b0f6c9f636300e43.jpg",
+    "funFact": "Hollister Hall was built on the site of a former fraternity house, and its namesake explicitly rejected Cornell's traditional Gothic architecture because he felt it was irrelevant to modern science and engineering.",
+    "difficulty": 7,
+    "indoor": true
+  },
+  {
+    "id": "9e50cd6f1500b91f",
+    "name": "The Cornell Rock Park",
+    "lat": 42.4443827,
+    "lng": -76.4842153,
+    "image": "9e50cd6f1500b91f.jpg",
+    "funFact": "Curated with the Department of Earth and Atmospheric Sciences, the park showcases 40 rock, fossil, and ore specimens over a billion years old.",
+    "difficulty": 4,
+    "indoor": false
+  },
+  {
+    "id": "e605d0769f35ab3d",
+    "name": "Cornell CIS Building",
+    "lat": 42.4438269,
+    "lng": -76.4809492,
+    "image": "e605d0769f35ab3d.jpg",
+    "difficulty": 5,
+    "indoor": false
+  },
+  {
+    "id": "fb468677cbd7a00c",
+    "name": "Olin Hall 145",
+    "lat": 42.4455939,
+    "lng": -76.4845762,
+    "image": "fb468677cbd7a00c.jpg",
+    "funFact": "It is one of four \"Olin\" buildings at Cornell!",
+    "difficulty": 7,
+    "indoor": true
   }
 ]

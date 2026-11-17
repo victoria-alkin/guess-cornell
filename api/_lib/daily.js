@@ -204,6 +204,7 @@ const NAMED_BUILDINGS = {
   risley: ['risley'], // Risley Hall and its dining hall
   'mann library': ['mann library'], // the slope and the path behind the library
   atkinson: ['atkinson'], // Atkinson Hall and the path behind it
+  'anabel taylor': ['anabel taylor', 'korean and vietnam war memorial'], // the memorial is in Anabel Taylor Hall's rotunda
 };
 
 export function buildingKey(l) {
