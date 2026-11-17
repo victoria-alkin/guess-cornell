@@ -1198,6 +1198,10 @@ html, body {
   color: var(--faded-red);
 }
 
+/* Second stamp, a coffee cup, tucked behind the bagel */
+.promo-stamp.coffee { right: 104px; top: 30px; transform: rotate(-7deg); z-index: 0; }
+.promo-stamp.coffee svg { background: linear-gradient(#cfdde9, #93b2cc); }
+
 /* Round ink postmark, top left (says WINNER on a win) */
 .promo-postmark {
   position: absolute;
@@ -1232,7 +1236,7 @@ html, body {
 .promo-card.win .pm-word { font-size: 1.05rem; }
 @keyframes promo-stamp-in { from { opacity: 0; transform: rotate(-14deg) scale(1.9); } }
 
-.promo-kicker { margin-top: 70px; }
+.promo-kicker { margin-top: 84px; }
 .promo-title {
   margin: 0.15em 0 0.3em;
   font-family: "Yellowtail", cursive;
@@ -1301,6 +1305,7 @@ html, body {
   .promo-stamp { top: 20px; right: 20px; width: 72px; padding: 6px; }
   .promo-stamp svg { padding: 7px 3px 12px; }
   .promo-stamp-value { font-size: 0.8rem; left: 10px; bottom: 7px; }
+  .promo-stamp.coffee { right: 78px; top: 30px; }
   .promo-postmark { top: 18px; left: 18px; width: 78px; height: 78px; outline-offset: -6px; }
   .promo-card.win .promo-postmark { width: 88px; height: 88px; }
   .pm-small { font-size: 0.46rem; }
