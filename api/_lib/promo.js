@@ -25,16 +25,14 @@ export const PROMOTIONS = [
     // play number -> why it's a Cornell number (finishes the sentence "#161 is ...")
     numbers: {
       70: "the number on Touchdown the Bear's jersey, honoring the Class of 1970, which funded mascot expenses",
-      270: 'the length in feet of the Fall Creek Gorge suspension bridge',
       125: 'the number of years of the Dragon Day tradition, celebrated in 2026',
       161: "the number of steps to the top of McGraw Tower, and the number of items on Cornell's famous bucket list",
       412: "the number of students in Cornell's inaugural class in 1868",
     },
     // play number -> a special picture on that winner's screen (drawn in public/js/game.js)
-    art: { 70: 'jersey', 125: 'dragon', 161: 'tower', 270: 'bridge', 412: 'classPhoto' },
-    // Taken by the automatic player, never by a real one (not one of the five above).
-    // e.g. showcase: { n: 200, why: '...finishes "#200 is ..."', art: null }  (off until the number is picked)
-    showcase: null,
+    art: { 70: 'jersey', 125: 'dragon', 161: 'tower', 412: 'classPhoto' },
+    // Taken by the automatic player, never by a real one (not one of the prizes above).
+    showcase: { n: 270, why: 'the length in feet of the Fall Creek Gorge suspension bridge', art: 'bridge' },
   },
 ];
 
