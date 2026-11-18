@@ -34,7 +34,7 @@ export const PROMOTIONS = [
     // play number -> a special picture on that winner's screen (drawn in public/js/game.js)
     art: { 70: 'jersey', 125: 'dragon', 161: 'tower', 412: 'classPhoto' },
     // Taken by the automatic player, never by a real one (not one of the prizes above).
-    showcase: { n: 270, why: 'the length in feet of the Fall Creek Gorge suspension bridge', art: 'bridge' },
+    showcase: { n: 270, why: 'the length in feet of the Fall Creek Gorge suspension bridge', art: 'bridge', name: 'Alice' },
   },
 ];
 
@@ -130,7 +130,7 @@ async function nextNumber(promo) {
 }
 
 // The automatic player: guesses a short walk from each answer and is scored like
-// anyone else. It goes on the leaderboard with no name ("Anonymous Wanderer").
+// anyone else. It goes on the leaderboard under the showcase's name (or "Anonymous Wanderer").
 // Its winner screen is saved for /admin.
 async function playShowcase(promo, date, n) {
   const locations = await dailyLocations(date);
@@ -150,6 +150,7 @@ async function playShowcase(promo, date, n) {
   const result = resultFor(promo, n, newCode());
   const game = { results, promo: result, showcase: true };
   await saveGame(date, SHOWCASE_PLAYER, game);
+  if (promo.showcase.name) await redis('HSET', 'names', SHOWCASE_PLAYER, promo.showcase.name);
   await redis('ZADD', `lb:${date}`, totalPoints(game), SHOWCASE_PLAYER);
   await redis('EXPIRE', `lb:${date}`, 60 * 60 * 24 * 400);
   await redis('SET', key(promo, 'showcase'), JSON.stringify({ ...result, player: SHOWCASE_PLAYER, total: totalPoints(game), at: Date.now() }), 'EX', KEY_TTL);

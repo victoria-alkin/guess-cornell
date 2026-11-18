@@ -253,7 +253,7 @@ function withExtra(p) {
   const s = p.showcase, played = p.showcasePlayed;
   const time = (at) => new Date(at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
   const status = played
-    ? `#${s.n} was played automatically at ${time(played.at)}, scoring ${played.total.toLocaleString('en-US')}. Claim code <strong>${played.code}</strong> (not a real prize). It's on the leaderboard as Anonymous Wanderer, and its winner screen is exactly what a real winner sees.`
+    ? `#${s.n} was played automatically at ${time(played.at)}, scoring ${played.total.toLocaleString('en-US')}. Claim code <strong>${played.code}</strong> (not a real prize). It's on the leaderboard as ${s.name || 'Anonymous Wanderer'}, and its winner screen is exactly what a real winner sees.`
     : `#${s.n} isn't a real prize. No player gets it: right after player #${s.n - 1} finishes, an automatic player takes it. Until then the screen uses a sample claim code.${p.count < s.n ? ` (${s.n - p.count} to go.)` : ''}`;
   return { ...p, extra: { n: s.n, title: `Showcase winner #${s.n}`, status } };
 }
