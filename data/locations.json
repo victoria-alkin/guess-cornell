@@ -431,6 +431,7 @@
     "lng": -76.4864228,
     "image": "12d97a28e6f1ccbc.jpg",
     "funFact": "The garden is an abstract retelling of the ancient Chinese parable \"The Three Laughers of Tiger Glen,\" complete with a clever sensory trick. Designer Marc Peter Keane placed a stone basin with real, trickling water nearby. As you look at the dry stone river, the sound of the basin tricks your brain into \"hearing\" water rushing through the moss.",
+    "startYaw": -150.0,
     "difficulty": 7,
     "indoor": false
   },
@@ -519,6 +520,7 @@
     "lng": -76.4850068,
     "image": "4deb1cb775fe0c71.jpg",
     "funFact": "For 35 years, the lobby featured a classic spinning-drum seismograph that captured famous tremors in real time. In 2011, it famously recorded the rare 5.8-magnitude Virginia earthquake that shook the East Coast.",
+    "startYaw": 105.0,
     "difficulty": 6,
     "indoor": true
   },
