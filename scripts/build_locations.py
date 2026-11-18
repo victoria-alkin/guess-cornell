@@ -58,7 +58,7 @@ SETTING_OVERRIDES = {
 START_YAWS = {
     "the founders room in anabel taylor hall": 113,  # face the busts on the piano
     "morgan japanese garden": -150,  # face the rocks, moss and pine, not the lawn
-    "snee hall": 105,  # face the exhibit cases
+    "snee hall": -160,  # look down the hallway, away from the restrooms
 }
 
 START_YAW_RANGES = {

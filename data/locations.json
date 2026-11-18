@@ -520,7 +520,7 @@
     "lng": -76.4850068,
     "image": "4deb1cb775fe0c71.jpg",
     "funFact": "For 35 years, the lobby featured a classic spinning-drum seismograph that captured famous tremors in real time. In 2011, it famously recorded the rare 5.8-magnitude Virginia earthquake that shook the East Coast.",
-    "startYaw": 105.0,
+    "startYaw": -160.0,
     "difficulty": 6,
     "indoor": true
   },
