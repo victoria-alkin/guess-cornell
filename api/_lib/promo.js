@@ -28,6 +28,7 @@ export const PROMOTIONS = [
       70: "the number on Touchdown the Bear's jersey, honoring the Class of 1970, which funded mascot expenses",
       125: 'the number of years of the Dragon Day tradition, celebrated in 2026',
       161: "the number of steps to the top of McGraw Tower, and the number of items on Cornell's famous bucket list",
+      300: 'the number of students who can take an exam in one section of Barton Hall, using tables that seat two students each',
       412: "the number of students in Cornell's inaugural class in 1868",
     },
     // play number -> a special picture on that winner's screen (drawn in public/js/game.js)
