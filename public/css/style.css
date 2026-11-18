@@ -1287,6 +1287,10 @@ html, body {
 .promo-art.class-photo { width: 250px; }
 .promo-art.bridge { width: 250px; }
 .promo-art.dragon { width: 240px; }
+.promo-art.exam { width: 250px; }
+.promo-art .art-tick { transform-box: view-box; transform-origin: 125px 72px; animation: art-tick 6s steps(60) infinite; }
+@keyframes art-tick { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .promo-art .art-tick { animation: none; } }
 .promo-art .art-wing { transform-box: fill-box; transform-origin: 20% 100%; animation: art-wing 0.9s ease-in-out infinite alternate; }
 .promo-art .art-flame { transform-box: fill-box; transform-origin: 0 50%; animation: art-flame 0.5s ease-in-out infinite alternate; }
 .promo-art .art-hat { transform-box: fill-box; transform-origin: 50% 100%; animation: art-hat 1.4s ease-in-out infinite alternate; }
@@ -1307,11 +1311,11 @@ html, body {
 @media (prefers-reduced-motion: reduce) { .promo-art .art-flash, .promo-art .art-row { animation: none; } }
 /* Non-winners see the winning number's picture under their text, a little smaller */
 .promo-art-below .promo-art { width: 170px; margin: 0.2em auto 0.4em; }
-.promo-art-below .promo-art.tower, .promo-art-below .promo-art.class-photo, .promo-art-below .promo-art.bridge, .promo-art-below .promo-art.dragon { width: 210px; }
+.promo-art-below .promo-art.tower, .promo-art-below .promo-art.class-photo, .promo-art-below .promo-art.bridge, .promo-art-below .promo-art.dragon, .promo-art-below .promo-art.exam { width: 210px; }
 /* Several earlier winning numbers: smaller pictures side by side */
 .promo-art-below.many { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 4px 14px; }
 .promo-art-below.many .promo-art, .promo-art-below.many .promo-art.tower, .promo-art-below.many .promo-art.class-photo,
-.promo-art-below.many .promo-art.bridge, .promo-art-below.many .promo-art.dragon { width: 150px; margin: 0.2em 0; }
+.promo-art-below.many .promo-art.bridge, .promo-art-below.many .promo-art.dragon, .promo-art-below.many .promo-art.exam { width: 150px; margin: 0.2em 0; }
 .promo-prev { list-style: none; margin: 0 auto 0.85em; padding: 0; max-width: 40ch; }
 .promo-prev li { margin: 0 0 0.5em; }
 .promo-art .art-bell { transform-box: fill-box; transform-origin: 50% 0; animation: art-bell 0.9s 0.7s ease-in-out 4 both; }

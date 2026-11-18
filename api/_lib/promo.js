@@ -32,7 +32,7 @@ export const PROMOTIONS = [
       412: "the number of students in Cornell's inaugural class in 1868",
     },
     // play number -> a special picture on that winner's screen (drawn in public/js/game.js)
-    art: { 70: 'jersey', 125: 'dragon', 161: 'tower', 412: 'classPhoto' },
+    art: { 70: 'jersey', 125: 'dragon', 161: 'tower', 300: 'exam', 412: 'classPhoto' },
     // Taken by the automatic player, never by a real one (not one of the prizes above).
     showcase: { n: 270, why: 'the length in feet of the Fall Creek Gorge suspension bridge', art: 'bridge', name: 'Alice' },
   },

@@ -732,6 +732,28 @@ const words = (n) => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'sev
 const capital = (t) => t[0].toUpperCase() + t.slice(1);
 
 // A row of tiny students for the 1868 class photo (some in top hats).
+// One row of two-seat exam tables, students facing us with their papers out.
+function examRow(y, tables, x0, step, s, row) {
+  const hair = ['#3b2a1e', '#6e4a2e', '#c9a46a', '#4a3426', '#8a5a3a', '#2a1e16'];
+  const shirt = ['#b31b1b', '#3f6e8c', '#5d8a4a', '#8c6a3e', '#6b4e7a', '#c47a3a'];
+  let out = `<g class="art-row r${row}">`;
+  for (let t = 0; t < tables; t++) {
+    const cx = x0 + t * step;
+    for (const [k, dx] of [[0, -10], [1, 10]]) {
+      const x = cx + dx * s, i = t * 2 + k + row * 3;
+      out += `<path d="M${x - 8 * s} ${y} Q${x - 8 * s} ${y - 9 * s} ${x} ${y - 9 * s} Q${x + 8 * s} ${y - 9 * s} ${x + 8 * s} ${y} Z" fill="${shirt[i % shirt.length]}"/>`
+        + `<circle cx="${x}" cy="${y - 14 * s}" r="${5.2 * s}" fill="#e9d2ad"/>`
+        + `<path d="M${x - 5.4 * s} ${y - 14 * s} Q${x} ${y - 22 * s} ${x + 5.4 * s} ${y - 14 * s} Z" fill="${hair[i % hair.length]}"/>`;
+    }
+    out += `<rect x="${cx - 22 * s}" y="${y - 2 * s}" width="${44 * s}" height="${7 * s}" rx="${1.5 * s}" fill="#a87a4e"/>`
+      + `<rect x="${cx - 17 * s}" y="${y - 3.5 * s}" width="${11 * s}" height="${3 * s}" fill="#fffaf0"/>`
+      + `<rect x="${cx + 6 * s}" y="${y - 3.5 * s}" width="${11 * s}" height="${3 * s}" fill="#fffaf0"/>`
+      + `<line x1="${cx - 22 * s}" y1="${y + 5 * s}" x2="${cx - 20 * s}" y2="${y + 13 * s}" stroke="#6e4a2e" stroke-width="${1.6 * s}"/>`
+      + `<line x1="${cx + 22 * s}" y1="${y + 5 * s}" x2="${cx + 20 * s}" y2="${y + 13 * s}" stroke="#6e4a2e" stroke-width="${1.6 * s}"/>`;
+  }
+  return `${out}</g>`;
+}
+
 function classRow(y, count, x0, step, row) {
   const tones = ['#5a4030', '#6e4a2e', '#4a3426', '#7a5a3e'];
   let out = `<g class="art-row r${row}">`;
@@ -748,6 +770,48 @@ function classRow(y, count, x0, step, row) {
 
 // Special pictures for some winning numbers (chosen in api/_lib/promo.js).
 const PROMO_ART = {
+  // Barton Hall set up for an exam: rows of two-seat tables under the arched roof, a ticking clock.
+  exam: (n) => `
+    <div class="promo-art exam" role="img" aria-label="Barton Hall set up for an exam, with ${n} students at tables for two">
+      <svg viewBox="0 -10 250 215">
+        <defs><clipPath id="exam-clip"><rect x="8" y="16" width="234" height="176" rx="10"/></clipPath></defs>
+        <ellipse cx="125" cy="199" rx="105" ry="5" fill="#4a3426" opacity=".16"/>
+        <g clip-path="url(#exam-clip)">
+          <rect x="8" y="16" width="234" height="176" fill="#efe3c8"/>
+          <!-- arched roof trusses -->
+          <g fill="none" stroke="#8c6a4e" stroke-width="5">
+            <path d="M8 96 Q125 -10 242 96"/>
+          </g>
+          <g fill="none" stroke="#a88a6a" stroke-width="2">
+            <path d="M8 104 Q125 12 242 104"/>
+            <line x1="62" y1="40" x2="70" y2="60"/><line x1="96" y1="26" x2="99" y2="48"/><line x1="125" y1="22" x2="125" y2="44"/><line x1="154" y1="26" x2="151" y2="48"/><line x1="188" y1="40" x2="180" y2="60"/>
+          </g>
+          <!-- high windows -->
+          <g fill="#cfe0ea" stroke="#8c6a4e" stroke-width="1.5">
+            <rect x="20" y="80" width="14" height="22" rx="7"/><rect x="216" y="80" width="14" height="22" rx="7"/>
+          </g>
+          <!-- floor -->
+          <path d="M8 112 L242 112 L242 192 L8 192 Z" fill="#d9c09a"/>
+          <g stroke="#c9ad84" stroke-width="1"><line x1="8" y1="128" x2="242" y2="128"/><line x1="8" y1="150" x2="242" y2="150"/><line x1="8" y1="176" x2="242" y2="176"/></g>
+          ${examRow(122, 5, 41, 42, 0.74, 1)}
+          ${examRow(153, 4, 42, 55, 0.95, 2)}
+          ${examRow(188, 3, 50, 75, 1.2, 3)}
+        </g>
+        <rect x="8" y="16" width="234" height="176" rx="10" fill="none" stroke="#8c6a4e" stroke-width="3"/>
+        <!-- clock -->
+        <circle cx="125" cy="72" r="15" fill="#fffaf0" stroke="#3b2a1e" stroke-width="2.5"/>
+        <g stroke="#3b2a1e" stroke-width="1.6"><line x1="125" y1="60" x2="125" y2="63"/><line x1="137" y1="72" x2="134" y2="72"/><line x1="125" y1="84" x2="125" y2="81"/><line x1="113" y1="72" x2="116" y2="72"/></g>
+        <line x1="125" y1="72" x2="131" y2="76" stroke="#3b2a1e" stroke-width="2.4" stroke-linecap="round"/>
+        <line class="art-tick" x1="125" y1="72" x2="125" y2="61" stroke="#b31b1b" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="125" cy="72" r="1.8" fill="#3b2a1e"/>
+        <!-- banner -->
+        <g transform="rotate(-4 125 14)">
+          <path d="M66 4 L56 14 L66 24 Z M184 4 L194 14 L184 24 Z" fill="#8c1515"/>
+          <rect x="66" y="-1" width="118" height="30" rx="3" fill="#fffaf0" stroke="#b31b1b" stroke-width="2.5"/>
+          <text x="125" y="20" text-anchor="middle" font-family="Abril Fatface, Georgia, serif" font-size="16" fill="#b31b1b">${n} STUDENTS</text>
+        </g>
+      </svg>
+    </div>`,
   // A cartoon dragon in a party hat under a "125 years" banner (Dragon Day).
   dragon: (n) => `
     <div class="promo-art dragon" role="img" aria-label="A cartoon dragon in a party hat under a banner saying ${n} years">
