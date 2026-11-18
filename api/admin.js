@@ -71,7 +71,7 @@ export const GET = route(async (request) => {
   const view = params.get('view');
   if (view === 'board') return board(params.get('date'));
   if (view === 'puzzles') return puzzles();
-  if (view === 'promo') return json({ today: todayDate(), promos: await promoStatus() });
+  if (view === 'promo') return json({ today: todayDate(), promos: (await promoStatus()).map(withExtra) });
   if (view === 'promoPreview') return promoPreview(params);
   return error('Unknown view.');
 });
@@ -246,6 +246,18 @@ async function rescore(date, apply) {
   });
 }
 
+// The showcase number's card on /admin. Its wording lives here (behind the sign-in)
+// rather than in admin.html, which anyone can download.
+function withExtra(p) {
+  if (!p.showcase) return p;
+  const s = p.showcase, played = p.showcasePlayed;
+  const time = (at) => new Date(at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
+  const status = played
+    ? `#${s.n} was played automatically at ${time(played.at)}, scoring ${played.total.toLocaleString('en-US')}. Claim code <strong>${played.code}</strong> (not a real prize). It's on the leaderboard as Anonymous Wanderer, and its winner screen is exactly what a real winner sees.`
+    : `#${s.n} isn't a real prize. No player gets it: right after player #${s.n - 1} finishes, an automatic player takes it. Until then the screen uses a sample claim code.${p.count < s.n ? ` (${s.n - p.count} to go.)` : ''}`;
+  return { ...p, extra: { n: s.n, title: `Showcase winner #${s.n}`, status } };
+}
+
 // What the game shows for a giveaway screen, so /admin can preview it in the real game.
 async function promoPreview(params) {
   const [promo] = await promoStatus();
@@ -253,8 +265,8 @@ async function promoPreview(params) {
   const stage = params.get('stage');
   const base = { date: promo.date, prize: promo.prize, winners: Object.keys(promo.numbers).length };
   if (stage === 'announce' || stage === 'live') return json({ promo: { ...base, stage } });
-  if (stage === 'showcase') {
-    // The automatic player's real winner screen (or a sample until it has played).
+  if (stage === 'winner') {
+    // The showcase number's winner screen: the automatic player's real one, or a sample until it has played.
     if (!promo.showcase) return error('No showcase number set up.');
     const played = promo.showcasePlayed;
     return json({ promo: { ...base, stage: 'live' }, promoResult: played ?? resultFor(promo, promo.showcase.n, 'AB12CD'), played: Boolean(played) });
