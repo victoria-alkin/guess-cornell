@@ -7,6 +7,7 @@
 //   GET  ?view=puzzles                          -> every spot (with answers) and the stored days around today
 //   GET  ?view=promo                            -> giveaways: numbers, plays so far, winners and claim codes
 //   GET  ?view=promoPreview&stage=...&n=...     -> data for previewing a giveaway screen in the game
+//                                                 (stage=showcase: the automatic player's winner screen)
 //   POST { action: 'removeScore', date, player }
 //   POST { action: 'rename', player, name }
 //   POST { action: 'clearName', player }
@@ -252,6 +253,12 @@ async function promoPreview(params) {
   const stage = params.get('stage');
   const base = { date: promo.date, prize: promo.prize, winners: Object.keys(promo.numbers).length };
   if (stage === 'announce' || stage === 'live') return json({ promo: { ...base, stage } });
+  if (stage === 'showcase') {
+    // The automatic player's real winner screen (or a sample until it has played).
+    if (!promo.showcase) return error('No showcase number set up.');
+    const played = promo.showcasePlayed;
+    return json({ promo: { ...base, stage: 'live' }, promoResult: played ?? resultFor(promo, promo.showcase.n, 'AB12CD'), played: Boolean(played) });
+  }
   const n = Number.parseInt(params.get('n'), 10);
   if (!(n > 0)) return error('Pick a play number.');
   return json({ promo: { ...base, stage: 'live' }, promoResult: resultFor(promo, n, 'AB12CD') });

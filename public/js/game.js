@@ -1060,17 +1060,22 @@ function showPromo(kind, then, buttonLabel) {
   track('promo_view', { kind: kind === 'result' ? (r.won ? 'win' : 'lose') : kind });
 }
 
-/** /?promoPreview=announce|live|result&n=161 : the admin page's preview (needs the admin sign-in). */
+/**
+ * /?promoPreview=announce|live|result&n=161 : the admin page's preview (needs the admin sign-in).
+ * promoPreview=showcase is the automatic player's winner screen, exactly as a winner sees it
+ * (no "Preview" tag), for saving as a picture.
+ */
 async function previewPromo(kind) {
   const params = new URLSearchParams(location.search);
-  $('promo-preview-tag').hidden = false;
+  $('promo-preview-tag').hidden = kind === 'showcase';
   try {
     const res = await fetch(`/api/admin?view=promoPreview&stage=${encodeURIComponent(kind)}&n=${encodeURIComponent(params.get('n') || '')}`);
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
     state.promo = data.promo;
     state.promoResult = data.promoResult ?? null;
-    showPromo(kind === 'result' ? 'result' : kind, null, kind === 'result' ? 'See your score' : 'Continue');
+    const result = kind === 'result' || kind === 'showcase';
+    showPromo(result ? 'result' : kind, null, result ? 'See your score' : 'Continue');
   } catch (err) {
     showStartError(`Preview unavailable: ${err.message} Sign in at /admin first.`);
   }

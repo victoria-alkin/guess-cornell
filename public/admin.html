@@ -20,7 +20,7 @@
     .muted { color: var(--muted); font-size: 13px; }
     button, .btn { font: inherit; cursor: pointer; border: 0; border-radius: 999px; padding: 7px 16px; background: var(--red); color: #fff; }
     button:disabled { opacity: .5; cursor: default; }
-    button.ghost { background: var(--paper2); color: var(--ink); border: 1px solid var(--line); }
+    button.ghost, a.btn.ghost { text-decoration: none; background: var(--paper2); color: var(--ink); border: 1px solid var(--line); }
     button.small { padding: 3px 10px; font-size: 13px; }
     button.danger { background: #7d1512; }
     h1 button { font: 14px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
@@ -202,6 +202,15 @@
           <p class="muted">Match the claim code in their email before sending a gift card. Each code is shown to that winner only.</p>
           <div id="promo-live"></div>
         </div>
+        <div class="card" id="showcase-card" hidden>
+          <h2>Showcase winner</h2>
+          <p class="muted" id="showcase-status"></p>
+          <div class="row">
+            <button class="ghost" id="showcase-show">Show the showcase screen</button>
+            <a class="btn ghost" href="/?promoPreview=showcase" target="_blank" rel="noopener">Open it full size in a new tab</a>
+          </div>
+          <p class="muted">To save a picture, open it full size and take a screenshot. For a phone picture, sign in to /admin on your phone first, then open the full-size link there.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -302,9 +311,29 @@ async function loadPromo() {
   $('promo-live').innerHTML = `
     <p><span class="stat">${fmtNum(p.count)}</span> finished puzzles counted on ${fmtDate(p.date)}</p>
     <div class="scroll"><table><thead><tr><th>#</th><th>Name</th><th>Claim code</th><th>Finished</th><th>Player id</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  renderShowcase(p);
   fitFrames();
   if (!$('frame-phone').src) showPreview('announce');
 }
+
+// The showcase number: taken by an automatic player right after the player before it finishes.
+function renderShowcase(p) {
+  $('showcase-card').hidden = !p.showcase;
+  if (!p.showcase) return;
+  const s = p.showcase, played = p.showcasePlayed;
+  $('showcase-status').innerHTML = played
+    ? `#${s.n} (${esc(s.why)}) was played automatically at ${new Date(played.at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' })}, scoring ${fmtNum(played.total)}. Claim code <strong>${esc(played.code)}</strong> (not a real prize). It's on the leaderboard as Anonymous Wanderer. Its winner screen is exactly what a winner sees.`
+    : `#${s.n} (${esc(s.why)}) isn't one of the five prizes. No player gets it: right after player #${s.n - 1} finishes on ${fmtDate(p.date)}, an automatic player takes it. Until then the screen below uses a sample claim code. ${p.count < s.n ? `(${s.n - p.count} to go.)` : ''}`;
+}
+
+function showShowcase() {
+  const url = '/?promoPreview=showcase';
+  $('frame-desktop').src = url;
+  $('frame-phone').src = url;
+  $('preview-hint').textContent = 'The showcase winner screen, without the Preview tag.';
+}
+$('showcase-show').onclick = showShowcase;
+
 
 function showPreview(kind) {
   const n = Math.max(1, Number($('preview-n').value) || 1);
@@ -313,7 +342,7 @@ function showPreview(kind) {
   $('frame-phone').src = url;
   const p = promoData?.promos[0];
   $('preview-hint').textContent = kind === 'result' && p
-    ? (p.numbers[n] ? `#${n} is a winning number, so this is the winner screen (with a sample claim code).` : `#${n} doesn't win, so this is the "not this time" screen.`)
+    ? (p.showcase?.n === n ? `#${n} is the showcase number, so this is the winner screen (with a sample claim code).` : p.numbers[n] ? `#${n} is a winning number, so this is the winner screen (with a sample claim code).` : `#${n} doesn't win, so this is the "not this time" screen.`)
     : '';
 }
 
