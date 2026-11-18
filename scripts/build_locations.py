@@ -54,6 +54,11 @@ SETTING_OVERRIDES = {
     "risley dining hall balcony": True,  # inside the dining hall (spreadsheet says outdoor)
 }
 
+# Fixed start directions (yaw in degrees), by title (lowercase), when the spreadsheet has none.
+START_YAWS = {
+    "the founders room in anabel taylor hall": 113,  # face the busts on the piano
+}
+
 START_YAW_RANGES = {
     "abby and howard milstein auditorium": [125, 235],  # face the seats, never the screen
 }
@@ -279,6 +284,8 @@ def main():
                 entry["startYaw"] = float(yaw)
             except ValueError:
                 problems.append(f"{label}: start direction {yaw!r} is not a number (ignored)")
+        if title.lower() in START_YAWS and "startYaw" not in entry:
+            entry["startYaw"] = float(START_YAWS[title.lower()])
         if title.lower() in START_YAW_RANGES and "startYaw" not in entry:
             entry["startYawRange"] = START_YAW_RANGES[title.lower()]
         rating = get("difficulty")
