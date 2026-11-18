@@ -1097,6 +1097,7 @@ function showPromo(kind, then, buttonLabel) {
       <p><strong>${capital(count)} players</strong> will each win a <strong>${prize}</strong> today.</p>
       ${promo.update ? `<p class="promo-update"><strong>Update:</strong> ${esc(promo.update)}</p>` : ''}
       <p>Every finished puzzle gets the next play number (1st, 2nd, 3rd&hellip;) based on the order of players, and ${count} special Cornell numbers win.</p>
+      <p>E.g. If 80 is selected as a special "Cornell" number (for the 80 majors at Cornell), the 80th person to play today will be selected as a winner.</p>
       <p>Finish today's puzzle to find out yours!</p>`);
   } else if (won) {
     const mail = `mailto:${r.email}?subject=${encodeURIComponent(`Guess Cornell giveaway: claim code ${r.code}`)}`
