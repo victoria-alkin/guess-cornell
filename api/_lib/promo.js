@@ -80,7 +80,16 @@ export function resultFor(promo, n, code = null) {
   const base = { n, prize: promo.prize, email: promo.email };
   if (whyFor(promo, n)) return { ...base, won: true, why: whyFor(promo, n), art: artFor(promo, n), code };
   const near = nearestWinning(promo, n);
-  return { ...base, won: false, nearest: near, nearestWhy: whyFor(promo, near), nearestArt: artFor(promo, near) };
+  const previous = winningNumbers(promo).filter((w) => w < n).sort((a, b) => a - b)
+    .map((w) => ({ n: w, why: whyFor(promo, w), art: artFor(promo, w) }));
+  return { ...base, won: false, nearest: near, nearestWhy: whyFor(promo, near), nearestArt: artFor(promo, near), previous };
+}
+
+/** A saved non-winner result, brought up to date (e.g. results saved before `previous` existed). */
+export function refreshResult(date, saved) {
+  if (!saved || saved.won) return saved ?? null;
+  const promo = PROMOTIONS.find((p) => p.date === date);
+  return promo ? resultFor(promo, saved.n) : saved;
 }
 
 const newCode = () => Array.from({ length: 6 }, () => CODE_LETTERS[randomInt(CODE_LETTERS.length)]).join('');

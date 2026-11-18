@@ -1045,12 +1045,26 @@ function showPromo(kind, then, buttonLabel) {
       <p class="small">Take a screenshot so you don't lose your code. It also stays under "See your results" today.</p>`);
   } else {
     const gap = Math.abs(r.n - r.nearest);
+    const away = gap <= 15 ? `Just ${gap} away!` : `You were ${gap} away.`;
+    // Every winning number before this player (older saved results only know the nearest one).
+    const prev = r.previous ?? (r.nearest < r.n ? [{ n: r.nearest, why: r.nearestWhy, art: r.nearestArt }] : []);
+    let about;
+    if (!prev.length) {
+      about = `<p>The first winning number will be <strong>#${r.nearest}</strong>, ${esc(r.nearestWhy)}. ${away}</p>`;
+    } else if (prev.length === 1) {
+      about = `<p>The winning number before you was <strong>#${prev[0].n}</strong>, ${esc(prev[0].why)}. ${away}</p>`;
+    } else {
+      about = `<p>The winning numbers before you were:</p>
+      <ul class="promo-prev">${prev.map((w) => `<li><strong>#${w.n}</strong>, ${esc(w.why)}</li>`).join('')}</ul>
+      <p>${gap <= 15 ? `Just ${gap} away from #${r.nearest}!` : `You were ${gap} away from #${r.nearest}.`}</p>`;
+    }
+    const arts = (prev.length ? prev : [{ n: r.nearest, art: r.nearestArt }]).filter((w) => PROMO_ART[w.art]);
     set('&#10022; Giveaway day &#10022;', 'Not this time!', `
       <p class="promo-number">#${r.n}</p>
       <p>You were the <strong>${ordinal(r.n)}</strong> player to finish today's puzzle.</p>
-      <p>${r.nearest < r.n ? 'The last winning number before you was' : 'The first winning number will be'} <strong>#${r.nearest}</strong>, ${esc(r.nearestWhy)}. ${gap <= 15 ? `Just ${gap} away!` : `You were ${gap} away.`}</p>
+      ${about}
       <p>Thanks for playing! Keep playing for chances to win more prizes in the future.</p>
-      ${PROMO_ART[r.nearestArt] ? `<div class="promo-art-below">${PROMO_ART[r.nearestArt](r.nearest)}</div>` : ''}`);
+      ${arts.length ? `<div class="promo-art-below${arts.length > 1 ? ' many' : ''}">${arts.map((w) => PROMO_ART[w.art](w.n)).join('')}</div>` : ''}`);
   }
   els.btnPromo.hidden = !buttonLabel;
   els.btnPromo.textContent = buttonLabel || '';

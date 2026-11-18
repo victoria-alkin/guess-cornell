@@ -1308,6 +1308,12 @@ html, body {
 /* Non-winners see the winning number's picture under their text, a little smaller */
 .promo-art-below .promo-art { width: 170px; margin: 0.2em auto 0.4em; }
 .promo-art-below .promo-art.tower, .promo-art-below .promo-art.class-photo, .promo-art-below .promo-art.bridge, .promo-art-below .promo-art.dragon { width: 210px; }
+/* Several earlier winning numbers: smaller pictures side by side */
+.promo-art-below.many { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 4px 14px; }
+.promo-art-below.many .promo-art, .promo-art-below.many .promo-art.tower, .promo-art-below.many .promo-art.class-photo,
+.promo-art-below.many .promo-art.bridge, .promo-art-below.many .promo-art.dragon { width: 150px; margin: 0.2em 0; }
+.promo-prev { list-style: none; margin: 0 auto 0.85em; padding: 0; max-width: 40ch; }
+.promo-prev li { margin: 0 0 0.5em; }
 .promo-art .art-bell { transform-box: fill-box; transform-origin: 50% 0; animation: art-bell 0.9s 0.7s ease-in-out 4 both; }
 .promo-art .art-bell.two { animation-delay: 0.95s; }
 .promo-art .art-flag { transform-box: fill-box; transform-origin: 0 50%; animation: art-flag 1.6s ease-in-out infinite; }

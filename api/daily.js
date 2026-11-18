@@ -6,7 +6,7 @@ import {
   dailyLocations, loadGame, nextResetAt, puzzleNumber, todayDate, totalPoints,
 } from './_lib/daily.js';
 import { isPlayerId, json, route } from './_lib/http.js';
-import { publicPromo } from './_lib/promo.js';
+import { publicPromo, refreshResult } from './_lib/promo.js';
 
 export const GET = route(async (request) => {
   const player = new URL(request.url).searchParams.get('player');
@@ -23,6 +23,6 @@ export const GET = route(async (request) => {
     finished: locations.length > 0 && game.results.length >= locations.length,
     total: totalPoints(game),
     promo: publicPromo(date), // a giveaway announced for tomorrow or running today
-    promoResult: game.promo ?? null, // this player's play number, once they've finished
+    promoResult: refreshResult(date, game.promo), // this player's play number, once they've finished
   });
 });
