@@ -21,7 +21,8 @@ export const PROMOTIONS = [
     announce: '2026-11-17', // "tomorrow" screen
     date: '2026-11-18', // giveaway day
     prize: '$5 Collegetown Bagels gift card',
-    winners: 5, // how many winners the screens promise
+    promised: 5, // how many winners the screens promise
+    update: 'More prizes have been added!', // shown at the top of the giveaway-day screen (or null)
     email: 'guesscornell@gmail.com',
     // play number -> why it's a Cornell number (finishes the sentence "#161 is ...")
     numbers: {
@@ -60,7 +61,7 @@ export function publicPromo(date) {
   const on = promoOn(date);
   if (!on) return null;
   const { promo, stage } = on;
-  return { stage, date: promo.date, prize: promo.prize, winners: promo.winners ?? Object.keys(promo.numbers).length };
+  return { stage, date: promo.date, prize: promo.prize, winners: promo.promised ?? Object.keys(promo.numbers).length, update: promo.update ?? null };
 }
 
 // Every number that shows a winner screen: the real ones plus the showcase.

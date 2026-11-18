@@ -263,7 +263,7 @@ async function promoPreview(params) {
   const [promo] = await promoStatus();
   if (!promo) return error('No giveaway set up.');
   const stage = params.get('stage');
-  const base = { date: promo.date, prize: promo.prize, winners: promo.winners ?? Object.keys(promo.numbers).length };
+  const base = { date: promo.date, prize: promo.prize, winners: promo.promised ?? Object.keys(promo.numbers).length, update: promo.update ?? null };
   if (stage === 'announce' || stage === 'live') return json({ promo: { ...base, stage } });
   if (stage === 'winner') {
     // The showcase number's winner screen: the automatic player's real one, or a sample until it has played.

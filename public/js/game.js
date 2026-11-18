@@ -1094,6 +1094,7 @@ function showPromo(kind, then, buttonLabel) {
       <p>Come back tomorrow, play, and see if your number comes up.</p>`);
   } else if (kind === 'live') {
     set('&#10022; Today only &#10022;', "It's giveaway day!", `
+      ${promo.update ? `<p class="promo-update"><strong>Update:</strong> ${esc(promo.update)}</p>` : ''}
       <p><strong>${capital(count)} players</strong> will each win a <strong>${prize}</strong> today.</p>
       <p>Every finished puzzle gets the next play number (1st, 2nd, 3rd&hellip;) based on the order of players, and ${count} special Cornell numbers win.</p>
       <p>Finish today's puzzle to find out yours!</p>`);
