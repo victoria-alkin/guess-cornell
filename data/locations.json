@@ -562,5 +562,44 @@
     "funFact": "It is one of four \"Olin\" buildings at Cornell!",
     "difficulty": 7,
     "indoor": true
+  },
+  {
+    "id": "17aa19c9d8883957",
+    "name": "104 Mary Ann Wood Drive",
+    "lat": 42.4461057,
+    "lng": -76.489388,
+    "image": "17aa19c9d8883957.jpg",
+    "funFact": "Before becoming the 28th U.S. President, Woodrow Wilson taught political economy at Cornell during the fall of 1886 and regularly dined here!",
+    "difficulty": 6,
+    "indoor": false
+  },
+  {
+    "id": "7f1e8971ff5b26d9",
+    "name": "Equity and Engagement Living-Learning Community",
+    "lat": 42.4464669,
+    "lng": -76.4887565,
+    "image": "7f1e8971ff5b26d9.jpg",
+    "funFact": "Cornell invested nearly $2 million (from a $3.5 million budget) to renovate the former fraternity house before opening the EEC in August 2018.",
+    "difficulty": 8,
+    "indoor": true
+  },
+  {
+    "id": "066668ca6fcafd2b",
+    "name": "Equity and Engagement Living-Learning Community",
+    "lat": 42.4464669,
+    "lng": -76.4887565,
+    "image": "066668ca6fcafd2b.jpg",
+    "funFact": "The building at 2 Forest Park Lane was originally a fraternity house (Psi Upsilon) before Cornell converted it into the Equity & Engagement Living-Learning Community.",
+    "difficulty": 8,
+    "indoor": true
+  },
+  {
+    "id": "803bdffa62cd134b",
+    "name": "Telluride House Balcony",
+    "lat": 42.4458543,
+    "lng": -76.4870864,
+    "image": "803bdffa62cd134b.jpg",
+    "difficulty": 8,
+    "indoor": false
   }
 ]
