@@ -205,6 +205,7 @@ const NAMED_BUILDINGS = {
   'mann library': ['mann library'], // the slope and the path behind the library
   atkinson: ['atkinson'], // Atkinson Hall and the path behind it
   'anabel taylor': ['anabel taylor', 'korean and vietnam war memorial'], // the memorial is in Anabel Taylor Hall's rotunda
+  'a.d. white': ['a.d. white'], // the house, its rooms, the path outside and the gardens
 };
 
 export function buildingKey(l) {

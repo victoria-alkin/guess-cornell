@@ -601,5 +601,44 @@
     "image": "803bdffa62cd134b.jpg",
     "difficulty": 8,
     "indoor": false
+  },
+  {
+    "id": "4e3ed3d65c88b97a",
+    "name": "A.D. White House",
+    "lat": 42.4482742,
+    "lng": -76.4819196,
+    "image": "4e3ed3d65c88b97a.jpg",
+    "funFact": "The Big Red Barn, Cornell's popular graduate student center right next door, used to be the A.D. White House's private carriage house.",
+    "difficulty": 6,
+    "indoor": true
+  },
+  {
+    "id": "bb1e2a815fa4afa5",
+    "name": "A.D. White House",
+    "lat": 42.4482742,
+    "lng": -76.4819196,
+    "image": "bb1e2a815fa4afa5.jpg",
+    "funFact": "One of the A.D. White House's co-architects, William Henry Miller, was actually one of Cornell's very first architecture students when he drew up the plans.",
+    "difficulty": 8,
+    "indoor": true
+  },
+  {
+    "id": "488f8a86f007494c",
+    "name": "Path Outside A.D. White House",
+    "lat": 42.4480467,
+    "lng": -76.481847,
+    "image": "488f8a86f007494c.jpg",
+    "difficulty": 7,
+    "indoor": false
+  },
+  {
+    "id": "1fc1a8d965b3bf14",
+    "name": "Mary Rockwell Azalea Garden",
+    "lat": 42.4478408,
+    "lng": -76.480436,
+    "image": "1fc1a8d965b3bf14.jpg",
+    "funFact": "The garden's namesake, Mary Rockwell, served as an informal adviser to President Richard Nixon and First Lady Pat Nixon ahead of their historic 1972 presidential trip to China.",
+    "difficulty": 6,
+    "indoor": false
   }
 ]
