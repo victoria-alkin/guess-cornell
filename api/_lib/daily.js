@@ -206,6 +206,8 @@ const NAMED_BUILDINGS = {
   atkinson: ['atkinson'], // Atkinson Hall and the path behind it
   'anabel taylor': ['anabel taylor', 'korean and vietnam war memorial'], // the memorial is in Anabel Taylor Hall's rotunda
   'a.d. white': ['a.d. white'], // the house, its rooms, the path outside and the gardens
+  ives: ['ives hall', 'thomas p. golden'], // Ives Hall, its courtyard, the path outside and the Golden Courtyard
+  'baker laboratory': ['baker laboratory'], // the lecture halls, outside and the path outside
 };
 
 export function buildingKey(l) {

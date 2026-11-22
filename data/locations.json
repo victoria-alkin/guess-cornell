@@ -640,5 +640,113 @@
     "funFact": "The garden's namesake, Mary Rockwell, served as an informal adviser to President Richard Nixon and First Lady Pat Nixon ahead of their historic 1972 presidential trip to China.",
     "difficulty": 6,
     "indoor": false
+  },
+  {
+    "id": "9df061e3ef51dd7e",
+    "name": "Path Outside Ives Hall",
+    "lat": 42.4465,
+    "lng": -76.4811389,
+    "image": "9df061e3ef51dd7e.jpg",
+    "difficulty": 4,
+    "indoor": false
+  },
+  {
+    "id": "9561a7bac0ee4d18",
+    "name": "Thomas P. Golden Courtyard",
+    "lat": 42.4469444,
+    "lng": -76.4803611,
+    "image": "9561a7bac0ee4d18.jpg",
+    "funFact": "Despite being an outdoor garden with a waterfall, it was wired with enhanced Wi-Fi and outdoor electrical outlets so students can treat it like an open-air library.",
+    "difficulty": 4,
+    "indoor": false
+  },
+  {
+    "id": "c03a18ecee81393c",
+    "name": "Ives Hall 108",
+    "lat": 42.44725,
+    "lng": -76.4812222,
+    "image": "c03a18ecee81393c.jpg",
+    "funFact": "When the ILR library first opened before moving into the Ives complex, its entire collection consisted of a single dictionary.",
+    "difficulty": 6,
+    "indoor": true
+  },
+  {
+    "id": "6d343e19a937a075",
+    "name": "Ives Hall Courtyard",
+    "lat": 42.4469444,
+    "lng": -76.4810833,
+    "image": "6d343e19a937a075.jpg",
+    "funFact": "The Ives Hall courtyard acts as a natural microclimate that stays noticeably warmer than the rest of Cornell’s campus. Because the space is enclosed on nearly all sides by the surrounding ILR buildings, with only a single entryway on the west side, it blocks Ithaca's famously brisk winds and traps heat, creating a sheltered pocket of greenery.",
+    "difficulty": 3,
+    "indoor": false
+  },
+  {
+    "id": "a44861a5c3ca6ba6",
+    "name": "Outside Baker Laboratory",
+    "lat": 42.4501944,
+    "lng": -76.48225,
+    "image": "a44861a5c3ca6ba6.jpg",
+    "funFact": "Baker Laboratory only exists because a massive fire destroyed Cornell's original chemistry building, Morse Hall, in 1916.",
+    "difficulty": 1,
+    "indoor": false
+  },
+  {
+    "id": "375f38b5c0bf97d9",
+    "name": "Duffield Hall Atrium",
+    "lat": 42.4446944,
+    "lng": -76.4826389,
+    "image": "375f38b5c0bf97d9.jpg",
+    "funFact": "The Atrium sits directly on top of a massive, ultra-sensitive cleanroom facility where even a tiny footstep vibration or speck of dust could ruin nanoscale experiments.",
+    "difficulty": 3,
+    "indoor": true
+  },
+  {
+    "id": "da8b1ebe10e60aa5",
+    "name": "Arts Quad",
+    "lat": 42.4504722,
+    "lng": -76.4845833,
+    "image": "da8b1ebe10e60aa5.jpg",
+    "funFact": "Several of the historic stone buildings lining the Arts Quad are built from 360- to 440-million-year-old sedimentary rock packed with marine fossils, turning a casual walk across the quad into a prehistoric scavenger hunt.",
+    "difficulty": 2,
+    "indoor": false
+  },
+  {
+    "id": "cff0cd7a2c02ca10",
+    "name": "Path Outside Baker Laboratory",
+    "lat": 42.4509444,
+    "lng": -76.4822222,
+    "image": "cff0cd7a2c02ca10.jpg",
+    "difficulty": 2,
+    "indoor": false
+  },
+  {
+    "id": "5a4bc27693224b3c",
+    "name": "Morrill Hall 107",
+    "lat": 42.44861,
+    "lng": -76.48528,
+    "image": "5a4bc27693224b3c.jpg",
+    "funFact": "Originally, Morrill Hall was divided into three completely separate sections: a student dorm wing (with no running water), a central classroom and library wing, and an office wing.",
+    "difficulty": 5,
+    "indoor": true
+  },
+  {
+    "id": "ca04179a04afd466",
+    "name": "Morrill Hall Second Floor",
+    "lat": 42.44861,
+    "lng": -76.48528,
+    "image": "ca04179a04afd466.jpg",
+    "funFact": "When construction began in 1866 on Cornell's very first building, planners expected the campus to expand westward down Libe Slope. As a result, Morrill Hall was originally built with its main front entrances facing the slope.",
+    "difficulty": 6,
+    "indoor": true
+  },
+  {
+    "id": "a9699ab224ee830f",
+    "name": "Morrill Hall 106",
+    "lat": 42.44861,
+    "lng": -76.48528,
+    "image": "a9699ab224ee830f.jpg",
+    "funFact": "As Cornell's very first campus building, Morrill Hall went up under the close eye of founder Ezra Cornell, who frequently visited the construction site to inspect the masons' work. When he noticed uneven mortar joints or poorly laid blocks of local Ithaca bluestone, he famously made the builders tear down entire sections and start over.",
+    "difficulty": 5,
+    "indoor": true
   }
 ]

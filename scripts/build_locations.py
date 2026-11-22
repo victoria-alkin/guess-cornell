@@ -54,6 +54,21 @@ SETTING_OVERRIDES = {
     "risley dining hall balcony": True,  # inside the dining hall (spreadsheet says outdoor)
 }
 
+# Fun facts that were corrected here but not in the spreadsheet, by title (lowercase).
+FACT_OVERRIDES = {
+    "a.d. white gardens": "Located behind the A.D. White House, the garden owes its existence to an incredibly formidable woman. The garden was first cultivated by A.D. White’s second wife, Helen Magill White, who made history as the very first woman in the United States to earn a Ph.D (in Greek from Boston University).",
+    "mann library gallery": "While the original Art Deco library building itself opened in the early 1950s, the second-floor gallery was added in 2007 during a massive modernization project that also introduced the library's five-story central atrium.",
+    "the libe slope": "\"Libe\" is simply short for \"Library,\" referring to Uris Library sitting right at the crest of the hill. Students have used the slang term for over a hundred years. It appeared in The Cornell Daily Sun as early as 1926 in a joke about building a fence to block the brutal Ithaca wind.",
+    "milstein hall": "Milstein Hall is cooled using cold water pumped from the bottom of Cayuga Lake, and its interior features a giant concrete dome that pulls double duty as both a ceiling and stadium seating.",
+    "beebe lake trail": "Beebe Lake is completely man-made and used to feature a giant toboggan slide that launched riders onto the frozen water. Before university founder Ezra Cornell built a dam across Fall Creek in 1838 to power local mills, the entire area along the trail was just a tangled, forested swamp.",
+    "mann library slope natural area": "The Mann Library Slope Natural Area's trails have zero trail markers, yet the area quietly serves as a secret shortcut connecting Cornell's busy Ag Quad directly to the Cornell Botanic Gardens and Beebe Lake.",
+}
+
+# Titles with typos in the spreadsheet, by title (lowercase): the name players see.
+TITLE_OVERRIDES = {
+    "morril hall second floor": "Morrill Hall Second Floor",
+}
+
 # Fixed start directions (yaw in degrees), by title (lowercase), when the spreadsheet has none.
 START_YAWS = {
     "the founders room in anabel taylor hall": 113,  # face the busts on the piano
@@ -273,11 +288,13 @@ def main():
             print(f"    -> {filename}  {size[0]}x{size[1]}, {len(data) / 1e6:.1f} MB")
 
         pin = PIN_OVERRIDES.get(title.lower(), pin)
+        title = TITLE_OVERRIDES.get(title.lower(), title)
         entry = {"id": digest, "name": title, "lat": round(pin[0], 7), "lng": round(pin[1], 7), "image": filename}
         fact = str(get("fact") or "").strip()
         fact = re.sub(r"^\s*fun\s*fact\s*[:\-–]\s*", "", fact, flags=re.IGNORECASE)
         # Several numbered facts ("1. ...  2. ...") go on separate lines.
         fact = re.sub(r"\s+(?=\d{1,2}\.\s)", "\n", fact) if re.match(r"1\.\s", fact) else fact
+        fact = FACT_OVERRIDES.get(title.lower(), fact)
         if fact:
             entry["funFact"] = fact
         yaw = get("yaw")
